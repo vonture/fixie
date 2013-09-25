@@ -5,6 +5,7 @@ set(FIXIE_SOURCE
     context.cpp
     context.hpp
     fixie.cpp
+    math_util.hpp
 )
 
 add_library(fixie SHARED ${FIXIE_SOURCE})
