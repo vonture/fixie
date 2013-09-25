@@ -1,8 +1,10 @@
 set(FIXIE_SOURCE
+    color.hpp
+    color.cpp
     debug.hpp
-    fixie.cpp
     context.cpp
     context.hpp
+    fixie.cpp
 )
 
 add_library(fixie SHARED ${FIXIE_SOURCE})
