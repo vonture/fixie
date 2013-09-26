@@ -10,6 +10,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG BUILD_DEBUG=1)
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_RELEASE BUILD_RELEASE=1)
 
+find_package(OpenGL REQUIRED)
+
 include_directories(include)
 
 add_subdirectory(src)

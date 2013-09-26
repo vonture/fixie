@@ -33,4 +33,8 @@ set_target_properties(fixie PROPERTIES
     VERSION ${FIXIE_VERSION}
 )
 
+target_link_libraries(fixie
+    ${OPENGL_LIBRARIES}
+)
+
 add_definitions(-DFIXIE_EXPORT)
