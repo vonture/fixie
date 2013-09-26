@@ -16,6 +16,8 @@ set(FIXIE_SOURCE
     material.hpp
     material.cpp
     math_util.hpp
+    vector.hpp
+    vector.cpp
 )
 
 set(FIXIE_INCLUDE
