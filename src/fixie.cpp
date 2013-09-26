@@ -10,6 +10,7 @@
 
 #include "debug.hpp"
 #include "context.hpp"
+#include "exceptions.hpp"
 
 namespace fixie
 {
@@ -47,6 +48,11 @@ namespace fixie
         if (!current_context && all_contexts.size() == 0)
         {
             current_context = create_context();
+        }
+
+        if (!current_context)
+        {
+            throw no_context_error();
         }
 
         return current_context;
