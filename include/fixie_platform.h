@@ -1,6 +1,8 @@
 #ifndef _FIXIE_PLATFORM_H_
 #define _FIXIE_PLATFORM_H_
 
+#include <stdint.h>
+
 #ifndef FIXIE_API
     #if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__)
         #if defined(FIXIE_EXPORT)
@@ -19,6 +21,18 @@
     #else
         #define FIXIE_API
     #endif
+#endif
+
+#ifndef FIXIE_APIENTRY
+    #if defined(_WIN32) && !defined(_WIN32_WCE) && !defined(__SCITECH_SNAP__)
+        #define FIXIE_APIENTRY __stdcall
+    #else
+        #define FIXIE_APIENTRY
+    #endif
+#endif
+
+#ifndef FIXIE_APIENTRYP
+    #define FIXIE_APIENTRYP FIXIE_APIENTRY*
 #endif
 
 #endif // _FIXIE_PLATFORM_H_

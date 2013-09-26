@@ -12,10 +12,10 @@ typedef void* fixie_context;
 
 #define FIXIE_ERROR 0
 
-FIXIE_API fixie_context fixie_create_context();
-FIXIE_API void fixie_destroy_context(fixie_context ctx);
+FIXIE_API fixie_context FIXIE_APIENTRY fixie_create_context();
+FIXIE_API void FIXIE_APIENTRY fixie_destroy_context(fixie_context ctx);
 
-FIXIE_API void fixie_set_context(fixie_context ctx);
+FIXIE_API void FIXIE_APIENTRY fixie_set_context(fixie_context ctx);
 
 #ifdef __cplusplus
 }
