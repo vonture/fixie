@@ -10,7 +10,7 @@ namespace fixie
     {
     }
 
-    color::color(float red, float green, float blue, float alpha)
+    color::color(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
         : r(red)
         , g(green)
         , b(blue)
@@ -18,7 +18,7 @@ namespace fixie
     {
     }
 
-    color::color(const float data[4])
+    color::color(const GLfloat data[4])
         : r(data[0])
         , g(data[1])
         , b(data[2])
