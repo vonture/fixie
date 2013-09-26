@@ -1,8 +1,10 @@
 #ifndef _DEBUG_HPP_
 #define _DEBUG_HPP_
 
+#include <assert.h>
+
 #ifdef BUILD_DEBUG
-#define UNIMPLEMENTED() ASSERT(FALSE)
+#define UNIMPLEMENTED() assert(false)
 #else
 #define UNIMPLEMENTED()
 #endif
