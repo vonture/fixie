@@ -63,6 +63,8 @@ namespace fixie
 
     material get_default_material()
     {
+        // From the ES 1.1.12 spec, table 2.8, pg 39
+
         material mat;
         mat.ambient() = color(0.2f, 0.2f, 0.2f, 1.0f);
         mat.diffuse() = color(0.8f, 0.8f, 0.8f, 1.0f);
