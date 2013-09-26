@@ -1,5 +1,7 @@
 #include "exceptions.hpp"
 
+#include "fixie_gl_es.h"
+
 namespace fixie
 {
     context_error::context_error(const std::string& msg)

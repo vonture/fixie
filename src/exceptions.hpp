@@ -5,7 +5,6 @@
 #include <string>
 
 #include "fixie_gl_types.h"
-#include "fixie_gl_es.h"
 
 namespace fixie
 {
