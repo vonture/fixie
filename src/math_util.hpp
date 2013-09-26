@@ -6,8 +6,8 @@ namespace fixie
     template <typename T>
     T clamp(const T& val, const T& min, const T& max)
     {
-        return (val < min) ? min : (val > max) ? max : val;
+        return (val < min) ? min : ((val > max) ? max : val);
     }
 }
 
-#endif // MATH_UTIL
+#endif // _MATH_UTIL_HPP_
