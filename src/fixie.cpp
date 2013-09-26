@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <set>
+#include <memory>
 #include <algorithm>
 #include <functional>
 
@@ -15,19 +16,19 @@ namespace fixie
     std::shared_ptr<context> current_context;
     std::set< std::shared_ptr<context> > all_contexts;
 
-    std::shared_ptr<context> create_context()
+    static std::shared_ptr<context> create_context()
     {
         std::shared_ptr<context> ctx(new context());
         all_contexts.insert(ctx);
         return ctx;
     }
 
-    bool context_equals(context* a, std::shared_ptr<context> b)
+    static bool context_equals(context* a, std::shared_ptr<context> b)
     {
         return a == b.get();
     }
 
-    void destroy_context(context* ctx)
+    static void destroy_context(context* ctx)
     {
         if (ctx == current_context.get())
         {
@@ -41,7 +42,7 @@ namespace fixie
         }
     }
 
-    std::shared_ptr<context> get_current_context()
+    static std::shared_ptr<context> get_current_context()
     {
         if (!current_context && all_contexts.size() == 0)
         {
@@ -51,7 +52,7 @@ namespace fixie
         return current_context;
     }
 
-    void set_current_context(context* ctx)
+    static void set_current_context(context* ctx)
     {
         auto iter = std::find_if(all_contexts.begin(), all_contexts.end(), std::bind(context_equals, ctx, std::placeholders::_1));
         if (iter != all_contexts.end())
