@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <set>
+#include <vector>
 #include <memory>
 #include <algorithm>
 #include <functional>
@@ -10,6 +11,7 @@
 
 #include "debug.hpp"
 #include "context.hpp"
+#include "fixed_point.hpp"
 #include "exceptions.hpp"
 
 namespace fixie
@@ -64,6 +66,109 @@ namespace fixie
         if (iter != all_contexts.end())
         {
             current_context = *iter;
+        }
+        else
+        {
+            current_context = nullptr;
+        }
+    }
+
+    static void set_material_parameters(GLenum face, GLenum pname, const real_ptr& params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+            std::vector<fixie::material*> materials;
+            switch (face)
+            {
+            case GL_FRONT:          materials.push_back(&ctx->front_material());                                             break;
+            case GL_BACK:                                                        materials.push_back(&ctx->back_material()); break;
+            case GL_FRONT_AND_BACK: materials.push_back(&ctx->front_material()); materials.push_back(&ctx->back_material()); break;
+            default:                throw fixie::invalid_enum_error("unknown face name.");
+            }
+
+            switch (pname)
+            {
+            case GL_AMBIENT:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                }
+                for (auto mat = begin(materials); mat != end(materials); mat++)
+                {
+                    (*mat)->ambient() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                }
+                break;
+
+            case GL_DIFFUSE:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                }
+                for (auto mat = begin(materials); mat != end(materials); mat++)
+                {
+                    (*mat)->diffuse() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                }
+                break;
+
+            case GL_AMBIENT_AND_DIFFUSE:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                }
+                for (auto mat = begin(materials); mat != end(materials); mat++)
+                {
+                    (*mat)->ambient() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                    (*mat)->diffuse() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                }
+                break;
+
+            case GL_SPECULAR:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                }
+                for (auto mat = begin(materials); mat != end(materials); mat++)
+                {
+                    (*mat)->specular() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                }
+                break;
+
+            case GL_EMISSION:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                }
+                for (auto mat = begin(materials); mat != end(materials); mat++)
+                {
+                    (*mat)->emissive() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                }
+                break;
+
+            case GL_SHININESS:
+                if (params.as_float(0) < 0.0f || params.as_float(0) > 128.0f)
+                {
+                    throw fixie::invalid_value_error("shininess must be in the range [0, 128.0]");
+                }
+                for (auto mat = begin(materials); mat != end(materials); mat++)
+                {
+                    (*mat)->specular_exponent() = params.as_float(0);
+                }
+                break;
+
+            default:
+                throw fixie::invalid_enum_error("unknown parameter name.");
+            }
+        }
+        catch (fixie::gl_error e)
+        {
+        }
+        catch (fixie::context_error e)
+        {
+        }
+        catch (...)
+        {
         }
     }
 }
@@ -195,12 +300,12 @@ void FIXIE_APIENTRY glLoadMatrixf(const GLfloat *m)
 
 void FIXIE_APIENTRY glMaterialf(GLenum face, GLenum pname, GLfloat param)
 {
-    UNIMPLEMENTED();
+    fixie::set_material_parameters(face, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glMaterialfv(GLenum face, GLenum pname, const GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_material_parameters(face, pname, params, true);
 }
 
 void FIXIE_APIENTRY glMultMatrixf(const GLfloat *m)
@@ -620,12 +725,12 @@ void FIXIE_APIENTRY glLogicOp(GLenum opcode)
 
 void FIXIE_APIENTRY glMaterialx(GLenum face, GLenum pname, GLfixed param)
 {
-    UNIMPLEMENTED();
+    fixie::set_material_parameters(face, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glMaterialxv(GLenum face, GLenum pname, const GLfixed *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_material_parameters(face, pname, params, true);
 }
 
 void FIXIE_APIENTRY glMatrixMode(GLenum mode)
