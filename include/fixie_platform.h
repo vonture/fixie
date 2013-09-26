@@ -1,7 +1,6 @@
 #ifndef _FIXIE_PLATFORM_H_
 #define _FIXIE_PLATFORM_H_
 
-#include <stdint.h>
 
 #ifndef FIXIE_API
     #if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__)

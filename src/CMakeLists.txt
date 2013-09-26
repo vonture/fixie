@@ -12,6 +12,7 @@ set(FIXIE_INCLUDE
     ../include/fixie.h
     ../include/fixie_gl_es.h
     ../include/fixie_gl_es_ext.h
+    ../include/fixie_gl_types.h
     ../include/fixie_platform.h
 )
 

@@ -7,6 +7,7 @@
 /* $Revision: 10601 $ on $Date:: 2010-03-04 22:15:27 -0800 #$ */
 
 #include "fixie_platform.h"
+#include "fixie_gl_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,29 +17,6 @@ extern "C" {
  * This document is licensed under the SGI Free Software B License Version
  * 2.0. For details, see http://oss.sgi.com/projects/FreeB/ .
  */
-
-typedef void             GLvoid;
-typedef char             GLchar;
-typedef unsigned int     GLenum;
-typedef unsigned char    GLboolean;
-typedef unsigned int     GLbitfield;
-typedef int8_t           GLbyte;
-typedef short            GLshort;
-typedef int              GLint;
-typedef int              GLsizei;
-typedef uint8_t          GLubyte;
-typedef unsigned short   GLushort;
-typedef unsigned int     GLuint;
-typedef float            GLfloat;
-typedef float            GLclampf;
-typedef int32_t          GLfixed;
-typedef int32_t          GLclampx;
-
-typedef intptr_t         GLintptr;
-typedef signed long int  GLsizeiptr;
-
-
-/*************************************************************/
 
 /* OpenGL ES core versions */
 #define GL_VERSION_ES_CM_1_0          1
