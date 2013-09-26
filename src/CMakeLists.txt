@@ -7,6 +7,8 @@ set(FIXIE_SOURCE
     fixed_point.hpp
     fixed_point.cpp
     fixie.cpp
+    material.hpp
+    material.cpp
     math_util.hpp
 )
 
