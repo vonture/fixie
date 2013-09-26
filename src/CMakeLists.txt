@@ -11,6 +11,8 @@ set(FIXIE_SOURCE
     fixie.cpp
     function_loader.hpp
     function_loader.inl
+    light.hpp
+    light.cpp
     material.hpp
     material.cpp
     math_util.hpp
