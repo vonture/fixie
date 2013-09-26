@@ -4,6 +4,8 @@ set(FIXIE_SOURCE
     debug.hpp
     context.cpp
     context.hpp
+    fixed_point.hpp
+    fixed_point.cpp
     fixie.cpp
     math_util.hpp
 )
