@@ -16,15 +16,15 @@ namespace fixie
     {
         try
         {
-            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+            std::shared_ptr<context> ctx = get_current_context();
 
-            std::vector<fixie::material*> materials;
+            std::vector<material*> materials;
             switch (face)
             {
             case GL_FRONT:          materials.push_back(&ctx->front_material());                                             break;
             case GL_BACK:                                                        materials.push_back(&ctx->back_material()); break;
             case GL_FRONT_AND_BACK: materials.push_back(&ctx->front_material()); materials.push_back(&ctx->back_material()); break;
-            default:                throw fixie::invalid_enum_error("unknown face name.");
+            default:                throw invalid_enum_error("unknown face name.");
             }
 
             switch (pname)
@@ -32,7 +32,7 @@ namespace fixie
             case GL_AMBIENT:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_AMBIENT, passed to non-vector material function.");
                 }
                 for (auto mat = begin(materials); mat != end(materials); mat++)
                 {
@@ -43,7 +43,7 @@ namespace fixie
             case GL_DIFFUSE:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_DIFFUSE, passed to non-vector material function.");
                 }
                 for (auto mat = begin(materials); mat != end(materials); mat++)
                 {
@@ -54,7 +54,7 @@ namespace fixie
             case GL_AMBIENT_AND_DIFFUSE:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_AMBIENT_AND_DIFFUSE, passed to non-vector material function.");
                 }
                 for (auto mat = begin(materials); mat != end(materials); mat++)
                 {
@@ -66,7 +66,7 @@ namespace fixie
             case GL_SPECULAR:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_SPECULAR, passed to non-vector material function.");
                 }
                 for (auto mat = begin(materials); mat != end(materials); mat++)
                 {
@@ -77,7 +77,7 @@ namespace fixie
             case GL_EMISSION:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name passed to single-valued material function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_EMISSION, passed to non-vector material function.");
                 }
                 for (auto mat = begin(materials); mat != end(materials); mat++)
                 {
@@ -88,7 +88,7 @@ namespace fixie
             case GL_SHININESS:
                 if (params.as_float(0) < 0.0f || params.as_float(0) > 128.0f)
                 {
-                    throw fixie::invalid_value_error("shininess must be in the range [0, 128.0]");
+                    throw invalid_value_error("shininess must be in the range [0, 128.0].");
                 }
                 for (auto mat = begin(materials); mat != end(materials); mat++)
                 {
