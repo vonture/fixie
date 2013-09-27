@@ -16,6 +16,7 @@ FIXIE_API fixie_context FIXIE_APIENTRY fixie_create_context();
 FIXIE_API void FIXIE_APIENTRY fixie_destroy_context(fixie_context ctx);
 
 FIXIE_API void FIXIE_APIENTRY fixie_set_context(fixie_context ctx);
+FIXIE_API fixie_context FIXIE_APIENTRY fixie_get_context();
 
 #ifdef __cplusplus
 }

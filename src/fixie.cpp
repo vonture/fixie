@@ -1,9 +1,5 @@
 #include <stddef.h>
-#include <set>
 #include <vector>
-#include <memory>
-#include <algorithm>
-#include <functional>
 
 #include "fixie.h"
 #include "fixie_gl_es.h"
@@ -16,63 +12,6 @@
 
 namespace fixie
 {
-    std::shared_ptr<context> current_context;
-    std::set< std::shared_ptr<context> > all_contexts;
-
-    static std::shared_ptr<context> create_context()
-    {
-        std::shared_ptr<context> ctx(new context());
-        all_contexts.insert(ctx);
-        return ctx;
-    }
-
-    static bool context_equals(context* a, std::shared_ptr<context> b)
-    {
-        return a == b.get();
-    }
-
-    static void destroy_context(context* ctx)
-    {
-        if (ctx == current_context.get())
-        {
-            current_context = nullptr;
-        }
-
-        auto iter = std::find_if(all_contexts.begin(), all_contexts.end(), std::bind(context_equals, ctx, std::placeholders::_1));
-        if (iter != all_contexts.end())
-        {
-            all_contexts.erase(iter);
-        }
-    }
-
-    static std::shared_ptr<context> get_current_context()
-    {
-        if (!current_context && all_contexts.size() == 0)
-        {
-            current_context = create_context();
-        }
-
-        if (!current_context)
-        {
-            throw no_context_error();
-        }
-
-        return current_context;
-    }
-
-    static void set_current_context(context* ctx)
-    {
-        auto iter = std::find_if(all_contexts.begin(), all_contexts.end(), std::bind(context_equals, ctx, std::placeholders::_1));
-        if (iter != all_contexts.end())
-        {
-            current_context = *iter;
-        }
-        else
-        {
-            current_context = nullptr;
-        }
-    }
-
     static void set_material_parameters(GLenum face, GLenum pname, const real_ptr& params, bool vector_call)
     {
         try
@@ -163,12 +102,15 @@ namespace fixie
         }
         catch (fixie::gl_error e)
         {
+            log_gl_error(e);
         }
         catch (fixie::context_error e)
         {
+            log_context_erorr(e);
         }
         catch (...)
         {
+            UNREACHABLE();
         }
     }
 }
@@ -178,19 +120,64 @@ extern "C"
 
 fixie_context FIXIE_APIENTRY fixie_create_context()
 {
-    std::shared_ptr<fixie::context> ctx = fixie::create_context();
-    fixie::set_current_context(ctx.get());
-    return ctx.get();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::create_context();
+        fixie::set_current_context(ctx.get());
+        return ctx.get();
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_erorr(e);
+        return nullptr;
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+        return nullptr;
+    }
 }
 
 void FIXIE_APIENTRY fixie_destroy_context(fixie_context ctx)
 {
-    fixie::destroy_context(reinterpret_cast<fixie::context*>(ctx));
+    try
+    {
+        fixie::destroy_context(reinterpret_cast<fixie::context*>(ctx));
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY fixie_set_context(fixie_context ctx)
 {
-    fixie::set_current_context(reinterpret_cast<fixie::context*>(ctx));
+    try
+    {
+        fixie::set_current_context(reinterpret_cast<fixie::context*>(ctx));
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
+}
+
+fixie_context FIXIE_APIENTRY fixie_get_context()
+{
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        return ctx.get();
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_erorr(e);
+        return nullptr;
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glAlphaFunc(GLenum func, GLclampf ref)
