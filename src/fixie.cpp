@@ -225,6 +225,28 @@ namespace fixie
             UNREACHABLE();
         }
     }
+
+    static void set_light_model_parameters(GLenum pname, const real_ptr& params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+            UNIMPLEMENTED();
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
 }
 
 extern "C"
@@ -369,12 +391,12 @@ void FIXIE_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLfloat *pa
 
 void FIXIE_APIENTRY glLightModelf(GLenum pname, GLfloat param)
 {
-    UNIMPLEMENTED();
+    fixie::set_light_model_parameters(pname, &param, false);
 }
 
 void FIXIE_APIENTRY glLightModelfv(GLenum pname, const GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_light_model_parameters(pname, params, true);
 }
 
 void FIXIE_APIENTRY glLightf(GLenum light, GLenum pname, GLfloat param)
@@ -800,12 +822,12 @@ GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
 
 void FIXIE_APIENTRY glLightModelx(GLenum pname, GLfixed param)
 {
-    UNIMPLEMENTED();
+    fixie::set_light_model_parameters(pname, &param, false);
 }
 
 void FIXIE_APIENTRY glLightModelxv(GLenum pname, const GLfixed *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_light_model_parameters(pname, params, true);
 }
 
 void FIXIE_APIENTRY glLightx(GLenum light, GLenum pname, GLfixed param)
