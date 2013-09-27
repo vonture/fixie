@@ -97,16 +97,16 @@ namespace fixie
                 break;
 
             default:
-                throw fixie::invalid_enum_error("unknown parameter name.");
+                throw invalid_enum_error("unknown parameter name.");
             }
         }
-        catch (fixie::gl_error e)
+        catch (gl_error e)
         {
             log_gl_error(e);
         }
-        catch (fixie::context_error e)
+        catch (context_error e)
         {
-            log_context_erorr(e);
+            log_context_error(e);
         }
         catch (...)
         {
