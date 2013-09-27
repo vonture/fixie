@@ -113,6 +113,118 @@ namespace fixie
             UNREACHABLE();
         }
     }
+
+    static void set_light_parameters(GLenum lightEnum, GLenum pname, const real_ptr& params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+            if (lightEnum < GL_LIGHT0 || lightEnum > GL_LIGHT7)
+            {
+                throw invalid_enum_error("invalid light, must be between GL_LIGHT0 and GL_LIGHT7.");
+            }
+            light& light = ctx->lights(lightEnum - GL_LIGHT0);
+
+            switch (pname)
+            {
+            case GL_AMBIENT:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_AMBIENT, passed to non-vector light function.");
+                }
+                light.ambient() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                break;
+
+            case GL_DIFFUSE:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_DIFFUSE, passed to non-vector light function.");
+                }
+                light.diffuse() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                break;
+
+            case GL_SPECULAR:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_SPECULAR, passed to non-vector light function.");
+                }
+                light.specular() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                break;
+
+            case GL_POSITION:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_POSITION, passed to non-vector light function.");
+                }
+                light.position() = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                break;
+
+            case GL_SPOT_DIRECTION:
+                if (!vector_call)
+                {
+                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_SPOT_DIRECTION, passed to non-vector light function.");
+                }
+                light.spot_direction() = vector3(params.as_float(0), params.as_float(1), params.as_float(2));
+                break;
+
+            case GL_SPOT_EXPONENT:
+                if (params.as_float(0) < 0.0f || params.as_float(0) > 128.0f)
+                {
+                    throw invalid_value_error("spot light exponent must be in the range [0, 128.0].");
+                }
+                light.spot_exponent() = params.as_float(0);
+                break;
+
+            case GL_SPOT_CUTOFF:
+                if ((params.as_float(0) < 0.0f || params.as_float(0) > 128.0f) && params.as_float(0) != 180.0f)
+                {
+                    throw invalid_value_error("spot light cutoff angle must be in the range [0, 90.0] or 180.0.");
+                }
+                light.spot_cutoff() = params.as_float(0);
+                break;
+
+            case GL_CONSTANT_ATTENUATION:
+                if (params.as_float(0) < 0.0f)
+                {
+                    throw invalid_value_error("spot light constant attenuation must be at least 0.0.");
+                }
+                light.constant_attenuation() = params.as_float(0);
+                break;
+
+            case GL_LINEAR_ATTENUATION:
+                if (params.as_float(0) < 0.0f)
+                {
+                    throw invalid_value_error("spot light linear attenuation must be at least 0.0.");
+                }
+                light.linear_attenuation() = params.as_float(0);
+                break;
+
+            case GL_QUADRATIC_ATTENUATION:
+                if (params.as_float(0) < 0.0f)
+                {
+                    throw invalid_value_error("spot light quadratic attenuation must be at least 0.0.");
+                }
+                light.quadratic_attenuation() = params.as_float(0);
+                break;
+
+            default:
+                throw invalid_enum_error("unknown parameter name.");
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
 }
 
 extern "C"
@@ -267,12 +379,12 @@ void FIXIE_APIENTRY glLightModelfv(GLenum pname, const GLfloat *params)
 
 void FIXIE_APIENTRY glLightf(GLenum light, GLenum pname, GLfloat param)
 {
-    UNIMPLEMENTED();
+    fixie::set_light_parameters(light, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glLightfv(GLenum light, GLenum pname, const GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_light_parameters(light, pname, params, true);
 }
 
 void FIXIE_APIENTRY glLineWidth(GLfloat width)
@@ -698,12 +810,12 @@ void FIXIE_APIENTRY glLightModelxv(GLenum pname, const GLfixed *params)
 
 void FIXIE_APIENTRY glLightx(GLenum light, GLenum pname, GLfixed param)
 {
-    UNIMPLEMENTED();
+    fixie::set_light_parameters(light, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glLightxv(GLenum light, GLenum pname, const GLfixed *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_light_parameters(light, pname, params, true);
 }
 
 void FIXIE_APIENTRY glLineWidthx(GLfixed width)
