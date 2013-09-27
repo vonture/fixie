@@ -1,32 +1,5 @@
-set(FIXIE_SOURCE
-    color.hpp
-    color.cpp
-    debug.hpp
-    context.cpp
-    context.hpp
-    exceptions.hpp
-    exceptions.cpp
-    fixed_point.hpp
-    fixed_point.cpp
-    fixie.cpp
-    function_loader.hpp
-    function_loader.inl
-    light.hpp
-    light.cpp
-    material.hpp
-    material.cpp
-    math_util.hpp
-    vector.hpp
-    vector.cpp
-)
-
-set(FIXIE_INCLUDE
-    ../include/fixie.h
-    ../include/fixie_gl_es.h
-    ../include/fixie_gl_es_ext.h
-    ../include/fixie_gl_types.h
-    ../include/fixie_platform.h
-)
+FILE(GLOB FIXIE_SOURCE *.cpp *.hpp *.inl)
+FILE(GLOB FIXIE_INCLUDE ../include/*.h)
 
 add_library(fixie SHARED ${FIXIE_SOURCE} ${FIXIE_INCLUDE})
 
