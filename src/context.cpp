@@ -1,5 +1,6 @@
 #include "context.hpp"
 #include "exceptions.hpp"
+#include "fixie_gl_es.h"
 
 #include <set>
 #include <algorithm>
@@ -10,6 +11,7 @@ namespace fixie
     context::context()
         : _front_material(get_default_material())
         , _back_material(get_default_material())
+        , _error(GL_NO_ERROR)
     {
         for (size_t i = 0; i < _light_count; i++)
         {
@@ -52,25 +54,14 @@ namespace fixie
         return _light_count;
     }
 
-    void context::push_error(GLenum error)
+    GLenum& context::error()
     {
-        _errors.push_back(error);
+        return _error;
     }
 
-    GLenum context::pop_error()
+    const GLenum& context::error() const
     {
-        GLenum error = 0;
-        if (_errors.size() > 0)
-        {
-            error = _errors.back();
-            _errors.pop_back();
-        }
-        return error;
-    }
-
-    void context::clear_errors()
-    {
-        _errors.clear();
+        return _error;
     }
 
     std::shared_ptr<context> current_context;
@@ -134,13 +125,13 @@ namespace fixie
     {
         if (current_context)
         {
-            current_context->push_error(error.error_code());
+            current_context->error() = error.error_code();
         }
 
         // TODO: log error message
     }
 
-    void log_context_erorr(const context_error& error)
+    void log_context_error(const context_error& error)
     {
         // TODO: log error message
     }

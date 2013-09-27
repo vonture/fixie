@@ -128,7 +128,7 @@ fixie_context FIXIE_APIENTRY fixie_create_context()
     }
     catch (fixie::context_error e)
     {
-        fixie::log_context_erorr(e);
+        fixie::log_context_error(e);
         return nullptr;
     }
     catch (...)
@@ -171,7 +171,7 @@ fixie_context FIXIE_APIENTRY fixie_get_context()
     }
     catch (fixie::context_error e)
     {
-        fixie::log_context_erorr(e);
+        fixie::log_context_error(e);
         return nullptr;
     }
     catch (...)
@@ -592,8 +592,24 @@ void FIXIE_APIENTRY glGenTextures(GLsizei n, GLuint *textures)
 
 GLenum FIXIE_APIENTRY glGetError(void)
 {
-    UNIMPLEMENTED();
-    return GL_FALSE;
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        GLenum error = ctx->error();
+        ctx->error() = GL_NO_ERROR;
+        return error;
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+        return GL_NO_ERROR;
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+        return GL_NO_ERROR;
+    }
 }
 
 void FIXIE_APIENTRY glGetFixedv(GLenum pname, GLfixed *params)

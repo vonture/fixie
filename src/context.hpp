@@ -2,7 +2,6 @@
 #define _FIXIE_CONTEXT_HPP_
 
 #include <memory>
-#include <vector>
 
 #include "exceptions.hpp"
 #include "material.hpp"
@@ -25,9 +24,8 @@ namespace fixie
         const light& lights(size_t idx) const;
         size_t light_count() const;
 
-        void push_error(GLenum error);
-        GLenum pop_error();
-        void clear_errors();
+        GLenum& error();
+        const GLenum& error() const;
 
     private:
         material _front_material;
@@ -36,7 +34,7 @@ namespace fixie
         static const size_t _light_count = 8;
         light _lights[_light_count];
 
-        std::vector<GLenum> _errors;
+        GLenum _error;
     };
 
     std::shared_ptr<context> create_context();
@@ -46,7 +44,7 @@ namespace fixie
     void set_current_context(context* ctx);
 
     void log_gl_error(const gl_error& error);
-    void log_context_erorr(const context_error& error);
+    void log_context_error(const context_error& error);
 }
 
 #endif //_FIXIE_CONTEXT_HPP_
