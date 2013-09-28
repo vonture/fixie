@@ -54,6 +54,16 @@ namespace fixie
         return _light_count;
     }
 
+    light_model& context::light_model_properties()
+    {
+        return _light_model;
+    }
+
+    const light_model& context::light_model_properties() const
+    {
+        return _light_model;
+    }
+
     GLenum& context::error()
     {
         return _error;

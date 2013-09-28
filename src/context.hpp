@@ -6,6 +6,7 @@
 #include "exceptions.hpp"
 #include "material.hpp"
 #include "light.hpp"
+#include "light_model.hpp"
 
 namespace fixie
 {
@@ -24,6 +25,9 @@ namespace fixie
         const light& lights(size_t idx) const;
         size_t light_count() const;
 
+        light_model& light_model_properties();
+        const light_model& light_model_properties() const;
+
         GLenum& error();
         const GLenum& error() const;
 
@@ -33,6 +37,8 @@ namespace fixie
 
         static const size_t _light_count = 8;
         light _lights[_light_count];
+
+        light_model _light_model;
 
         GLenum _error;
     };
