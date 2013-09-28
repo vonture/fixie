@@ -17,3 +17,7 @@ target_link_libraries(fixie
 )
 
 add_definitions(-DFIXIE_EXPORT)
+
+if(COMPILER_MSVC)
+    add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
+endif()
