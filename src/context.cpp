@@ -64,6 +64,21 @@ namespace fixie
         return _light_model;
     }
 
+    vector4& context::clip_plane(size_t idx)
+    {
+        return _clip_planes[idx];
+    }
+
+    const vector4& context::clip_plane(size_t idx) const
+    {
+        return _clip_planes[idx];
+    }
+
+    size_t context::clip_plane_count() const
+    {
+        return _clip_plane_count;
+    }
+
     GLenum& context::error()
     {
         return _error;

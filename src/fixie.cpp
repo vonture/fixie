@@ -9,6 +9,7 @@
 #include "context.hpp"
 #include "fixed_point.hpp"
 #include "exceptions.hpp"
+#include "util.hpp"
 
 namespace fixie
 {
@@ -263,6 +264,34 @@ namespace fixie
             UNREACHABLE();
         }
     }
+
+    static void set_clip_plane(GLenum p, const real_ptr& params)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            size_t max_clip_planes = ctx->clip_plane_count();
+            if (p < GL_CLIP_PLANE0 || (p - GL_CLIP_PLANE0) > max_clip_planes)
+            {
+                throw invalid_enum_error(format("invalid clip plane, must be between GL_CLIP_PLANE0 and GL_CLIP_PLANE%u.", max_clip_planes - 1));
+            }
+
+            ctx->clip_plane(p - GL_CLIP_PLANE0) = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
 }
 
 extern "C"
@@ -347,7 +376,7 @@ void FIXIE_APIENTRY glClearDepthf(GLclampf depth)
 
 void FIXIE_APIENTRY glClipPlanef(GLenum plane, const GLfloat *equation)
 {
-    UNIMPLEMENTED();
+    fixie::set_clip_plane(plane, equation);
 }
 
 void FIXIE_APIENTRY glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
@@ -582,7 +611,7 @@ void FIXIE_APIENTRY glClientActiveTexture(GLenum texture)
 
 void FIXIE_APIENTRY glClipPlanex(GLenum plane, const GLfixed *equation)
 {
-    UNIMPLEMENTED();
+    fixie::set_clip_plane(plane, equation);
 }
 
 void FIXIE_APIENTRY glColor4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)

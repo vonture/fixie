@@ -28,6 +28,10 @@ namespace fixie
         light_model& light_model_properties();
         const light_model& light_model_properties() const;
 
+        vector4& clip_plane(size_t idx);
+        const vector4& clip_plane(size_t idx) const;
+        size_t clip_plane_count() const;
+
         GLenum& error();
         const GLenum& error() const;
 
@@ -39,6 +43,9 @@ namespace fixie
         light _lights[_light_count];
 
         light_model _light_model;
+
+        static const size_t _clip_plane_count = 6;
+        vector4 _clip_planes[_clip_plane_count];
 
         GLenum _error;
     };
