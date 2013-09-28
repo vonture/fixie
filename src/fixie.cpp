@@ -115,24 +115,25 @@ namespace fixie
         }
     }
 
-    static void set_light_parameters(GLenum lightEnum, GLenum pname, const real_ptr& params, bool vector_call)
+    static void set_light_parameters(GLenum l, GLenum pname, const real_ptr& params, bool vector_call)
     {
         try
         {
-            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+            std::shared_ptr<context> ctx = get_current_context();
 
-            if (lightEnum < GL_LIGHT0 || lightEnum > GL_LIGHT7)
+            size_t max_lights = ctx->light_count();
+            if (l < GL_LIGHT0 || (l - GL_LIGHT0) > max_lights)
             {
-                throw invalid_enum_error("invalid light, must be between GL_LIGHT0 and GL_LIGHT7.");
+                throw invalid_enum_error(format("invalid light, must be between GL_LIGHT0 and GL_LIGHT%u.", max_lights - 1));
             }
-            light& light = ctx->lights(lightEnum - GL_LIGHT0);
+            light& light = ctx->lights(l - GL_LIGHT0);
 
             switch (pname)
             {
             case GL_AMBIENT:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_AMBIENT, passed to non-vector light function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_AMBIENT, passed to non-vector light function.");
                 }
                 light.ambient() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
                 break;
@@ -140,7 +141,7 @@ namespace fixie
             case GL_DIFFUSE:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_DIFFUSE, passed to non-vector light function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_DIFFUSE, passed to non-vector light function.");
                 }
                 light.diffuse() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
                 break;
@@ -148,7 +149,7 @@ namespace fixie
             case GL_SPECULAR:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_SPECULAR, passed to non-vector light function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_SPECULAR, passed to non-vector light function.");
                 }
                 light.specular() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
                 break;
@@ -156,7 +157,7 @@ namespace fixie
             case GL_POSITION:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_POSITION, passed to non-vector light function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_POSITION, passed to non-vector light function.");
                 }
                 light.position() = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
                 break;
@@ -164,7 +165,7 @@ namespace fixie
             case GL_SPOT_DIRECTION:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_SPOT_DIRECTION, passed to non-vector light function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_SPOT_DIRECTION, passed to non-vector light function.");
                 }
                 light.spot_direction() = vector3(params.as_float(0), params.as_float(1), params.as_float(2));
                 break;
@@ -231,20 +232,20 @@ namespace fixie
     {
         try
         {
-            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+            std::shared_ptr<context> ctx = get_current_context();
 
             switch (pname)
             {
             case GL_LIGHT_MODEL_AMBIENT:
                 if (!vector_call)
                 {
-                    throw fixie::invalid_enum_error("multi-valued parameter name, GL_LIGHT_MODEL_AMBIENT, passed to non-vector light model function.");
+                    throw invalid_enum_error("multi-valued parameter name, GL_LIGHT_MODEL_AMBIENT, passed to non-vector light model function.");
                 }
                 ctx->light_model_properties().ambient_color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
                 break;
 
             case GL_LIGHT_MODEL_TWO_SIDE:
-                ctx->light_model_properties().two_sided_lighting() = (params.as_float(0) == 0.0f);
+                ctx->light_model_properties().two_sided_lighting() = (params.as_float(0) != 0.0f);
                 break;
 
             default:
