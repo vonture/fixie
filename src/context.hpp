@@ -7,6 +7,7 @@
 #include "material.hpp"
 #include "light.hpp"
 #include "light_model.hpp"
+#include "vector.hpp"
 
 namespace fixie
 {
