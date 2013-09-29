@@ -14,7 +14,7 @@ ExternalProject_Add(googletest
 )
 
 set_target_properties(googletest PROPERTIES
-    FOLDER test
+    FOLDER test/ext
 )
 
 # Specify include dir

@@ -43,6 +43,7 @@ set(FIXIE_STATIC_PROJECT_NAME ${PROJECT_NAME_STR}_static)
 add_subdirectory(${SRC_DIR})
 
 if (BUILD_SAMPLES)
+    add_subdirectory(${EXT_PROJECTS_DIR}/glfw)
     add_subdirectory(${SAMPLES_DIR})
 endif()
 
