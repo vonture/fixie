@@ -90,11 +90,6 @@ namespace fixie
         return inverted;
     }
 
-    void matrix4::invert(matrix4& mat)
-    {
-        mat = invert(static_cast<const matrix4&>(mat));
-    }
-
     matrix4 matrix4::transpose(const matrix4& mat)
     {
         return matrix4(mat.data[ 0], mat.data[ 1], mat.data[ 2], mat.data[ 3],
@@ -103,33 +98,11 @@ namespace fixie
                        mat.data[12], mat.data[13], mat.data[14], mat.data[15]);
     }
 
-    static inline void swap(GLfloat& a, GLfloat &b)
-    {
-        GLfloat temp = a;
-        a = b;
-        b = temp;
-    }
-
-    void matrix4::transpose(matrix4& mat)
-    {
-        swap(mat.data[ 1], mat.data[ 4]);
-        swap(mat.data[ 2], mat.data[ 8]);
-        swap(mat.data[ 3], mat.data[12]);
-        swap(mat.data[ 6], mat.data[ 9]);
-        swap(mat.data[ 7], mat.data[ 8]);
-        swap(mat.data[11], mat.data[14]);
-    }
-
     vector3 matrix4::transform(const matrix4& mat, const vector3& pt)
     {
         vector4 transformed = mat * vector4(pt.x, pt.y, pt.z, 1.0f);
         vector4::normalize(transformed);
         return vector3(transformed.x, transformed.y, transformed.z);
-    }
-
-    void matrix4::transform(const matrix4& mat, vector3& pt)
-    {
-        pt = transform(mat, static_cast<const vector3&>(pt));
     }
 
     matrix4 operator*(const matrix4& a, const matrix4& b)
@@ -183,5 +156,18 @@ namespace fixie
                        a.data[ 1] * b.data[ 0] + a.data[ 5] * b.data[ 1] + a.data[ 9] * b.data[ 2] + a.data[13] * b.data[ 3],
                        a.data[ 2] * b.data[ 0] + a.data[ 6] * b.data[ 1] + a.data[10] * b.data[ 2] + a.data[14] * b.data[ 3],
                        a.data[ 3] * b.data[ 0] + a.data[ 7] * b.data[ 1] + a.data[11] * b.data[ 2] + a.data[15] * b.data[ 3]);
+    }
+
+    bool operator==(const matrix4& a, const matrix4& b)
+    {
+        return a.data[ 0] == b.data[ 0] && a.data[ 1] == b.data[ 1] && a.data[ 2] == b.data[ 2] && a.data[ 3] == b.data[ 3] &&
+               a.data[ 4] == b.data[ 4] && a.data[ 5] == b.data[ 5] && a.data[ 6] == b.data[ 6] && a.data[ 7] == b.data[ 7] &&
+               a.data[ 8] == b.data[ 8] && a.data[ 9] == b.data[ 9] && a.data[10] == b.data[10] && a.data[11] == b.data[11] &&
+               a.data[12] == b.data[12] && a.data[13] == b.data[13] && a.data[14] == b.data[14] && a.data[15] == b.data[15];
+    }
+
+    bool operator!=(const matrix4& a, const matrix4& b)
+    {
+        return !(a == b);
     }
 }

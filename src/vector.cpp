@@ -62,18 +62,6 @@ namespace fixie
         return ret;
     }
 
-    void vector3::normalize(vector3& vec)
-    {
-        GLfloat len = length(vec);
-        if (len != 0.0f)
-        {
-            GLfloat inv_len = 1.0f / len;
-            vec.x *= inv_len;
-            vec.y *= inv_len;
-            vec.z *= inv_len;
-        }
-    }
-
     GLfloat vector3::dot(const vector3& a, const vector3& b)
     {
         return a.data[0] * b.data[0] +
@@ -147,18 +135,6 @@ namespace fixie
             ret.z = vec.z * inv_len;
         }
         return ret;
-    }
-
-    void vector4::normalize(vector4& vec)
-    {
-        if (vec.w != 0.0f)
-        {
-            GLfloat inv_len = 1.0f / vec.w;
-            vec.x *= inv_len;
-            vec.y *= inv_len;
-            vec.z *= inv_len;
-            vec.w = 1.0f;
-        }
     }
 
     GLfloat vector4::dot(const vector4& a, const vector4& b)

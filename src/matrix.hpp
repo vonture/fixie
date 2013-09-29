@@ -33,13 +33,8 @@ namespace fixie
         static matrix4 identity();
 
         static matrix4 invert(const matrix4& mat);
-        static void invert(matrix4& mat);
-
         static matrix4 transpose(const matrix4& mat);
-        static void transpose(matrix4& mat);
-
-        vector3 transform(const matrix4& mat, const vector3& pt);
-        void transform(const matrix4& mat, vector3& pt);
+        static vector3 transform(const matrix4& mat, const vector3& pt);
     };
 
     matrix4 operator*(const matrix4& a, const matrix4& b);
@@ -47,6 +42,9 @@ namespace fixie
     matrix4 operator*(const matrix4& a, GLfloat b);
     matrix4& operator*=(matrix4& a, GLfloat b);
     vector4 operator*(const matrix4& a, const vector4& b);
+
+    bool operator==(const matrix4& a, const matrix4& b);
+    bool operator!=(const matrix4& a, const matrix4& b);
 }
 
 #endif // _MATRIX_HPP_

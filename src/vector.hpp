@@ -27,7 +27,6 @@ namespace fixie
         static GLfloat length_squared(const vector3& vec);
 
         static vector3 normalize(const vector3& vec);
-        static void normalize(vector3& vec);
 
         static GLfloat dot(const vector3& a, const vector3& b);
         static vector3 cross(const vector3& a, const vector3& b);
@@ -55,7 +54,6 @@ namespace fixie
         static GLfloat length_squared(const vector4& vec);
 
         static vector4 normalize(const vector4& vec);
-        static void normalize(vector4& vec);
 
         static GLfloat dot(const vector4& a, const vector4& b);
     };
