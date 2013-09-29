@@ -1,5 +1,7 @@
 #include "matrix.hpp"
 
+#include <math.h>
+
 namespace fixie
 {
     matrix4::matrix4()
@@ -55,6 +57,50 @@ namespace fixie
                        0.0f, 1.0f, 0.0f, 0.0f,
                        0.0f, 0.0f, 1.0f, 0.0f,
                        0.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    matrix4 matrix4::rotate(GLfloat t, const vector3& p)
+    {
+        vector3 u = vector3::normalize(p);
+        GLfloat cos_t = cos(t);
+        GLfloat sin_t = cos(t);
+
+        return matrix4(        cos_t + (u.x * u.x * (1.0f - cos_t)), (u.x * u.y * (1.0f - cos_t)) - (u.z * sin_t), (u.x * u.z * (1.0f - cos_t)) + (u.y * sin_t), 0.0f,
+                       (u.y * u.x * (1.0f - cos_t)) + (u.z * sin_t),          cos_t + (u.y * u.y * (1.0 - cos_t)), (u.y * u.z * (1.0f - cos_t)) - (u.x * sin_t), 0.0f,
+                       (u.z * u.x * (1.0f - cos_t)) - (u.y * sin_t), (u.z * u.y * (1.0f - cos_t)) + (u.x * sin_t),         cos_t + (u.z * u.z * (1.0f - cos_t)), 0.0f,
+                                                               0.0f,                                         0.0f,                                         0.0f, 1.0f);
+    }
+
+    matrix4 matrix4::translate(const vector3& t)
+    {
+        return matrix4(1.0f, 0.0f, 0.0f, t.x,
+                       0.0f, 1.0f, 0.0f, t.y,
+                       0.0f, 0.0f, 1.0f, t.z,
+                       0.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    matrix4 matrix4::scale(const vector3& s)
+    {
+        return matrix4( s.x, 0.0f, 0.0f, 0.0f,
+                       0.0f,  s.y, 0.0f, 0.0f,
+                       0.0f, 0.0f,  s.z, 0.0f,
+                       0.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    matrix4 matrix4::frustum(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLfloat f)
+    {
+        return matrix4((2.0f * n) / (r - l),                 0.0f,  (r + l) / (r - l),                      0.0f,
+                                       0.0f, (2.0f * n) / (t - b),  (t + b) / (t - b),                      0.0f,
+                                       0.0f,                 0.0f, -(f + n) / (f - n), -(2.0f * f * n) / (f - n),
+                                       0.0f,                 0.0f,              -1.0f,                      0.0f);
+    }
+
+    matrix4 matrix4::ortho(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLfloat f)
+    {
+        return matrix4(2.0f / (r - l),           0.0f,            0.0f, -(r + l) / (r - l),
+                                 0.0f, 2.0f / (t - b),            0.0f, -(t + b) / (t - b),
+                                 0.0f,           0.0f, -2.0f / (f - n), -(f + n) / (f - n),
+                                 0.0f,           0.0f,            0.0f,               1.0f);
     }
 
     matrix4 matrix4::invert(const matrix4& mat)
