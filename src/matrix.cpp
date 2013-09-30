@@ -63,7 +63,7 @@ namespace fixie
     {
         vector3 u = vector3::normalize(p);
         GLfloat cos_t = cos(t);
-        GLfloat sin_t = cos(t);
+        GLfloat sin_t = sin(t);
 
         return matrix4(        cos_t + (u.x * u.x * (1.0f - cos_t)), (u.x * u.y * (1.0f - cos_t)) - (u.z * sin_t), (u.x * u.z * (1.0f - cos_t)) + (u.y * sin_t), 0.0f,
                        (u.y * u.x * (1.0f - cos_t)) + (u.z * sin_t),          cos_t + (u.y * u.y * (1.0 - cos_t)), (u.y * u.z * (1.0f - cos_t)) - (u.x * sin_t), 0.0f,

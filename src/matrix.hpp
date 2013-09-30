@@ -22,7 +22,7 @@ namespace fixie
                 GLfloat m10, GLfloat m11, GLfloat m12, GLfloat m13,
                 GLfloat m20, GLfloat m21, GLfloat m22, GLfloat m23,
                 GLfloat m30, GLfloat m31, GLfloat m32, GLfloat m33);
-        matrix4(const GLfloat arr[16]);
+        explicit matrix4(const GLfloat arr[16]);
 
         const vector4& operator()(size_t col) const;
         vector4& operator()(size_t col);

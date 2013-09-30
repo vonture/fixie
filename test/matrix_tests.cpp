@@ -98,4 +98,12 @@ namespace fixie
         matrix4 double_transposed(matrix4::transpose(matrix4::transpose(mat)));
         EXPECT_LT(max_matrix_diff(mat, double_transposed), epsilon);
     }
+
+    TEST(matrix_tests, transform)
+    {
+    }
+
+    TEST(matrix_tests, multiply)
+    {
+    }
 }
