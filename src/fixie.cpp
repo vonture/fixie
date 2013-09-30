@@ -442,7 +442,38 @@ void FIXIE_APIENTRY glFogfv(GLenum pname, const GLfloat *params)
 
 void FIXIE_APIENTRY glFrustumf(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
 {
-    fixie::set_matrix(fixie::matrix4::frustum(left, right, bottom, top, zNear, zFar), false);
+    try
+    {
+        if (zNear <= 0.0f || zFar < 0.0f)
+        {
+            throw fixie::invalid_value_error(fixie::format("zNear (%g provided) and zFar (%g provided) must be greater than 0.0.", zNear, zFar));
+        }
+
+        if (left == right)
+        {
+            throw fixie::invalid_value_error(fixie::format("left (%g provided) and right (%g provided) cannot be equal.", left, right));
+        }
+
+        if (bottom == top)
+        {
+            throw fixie::invalid_value_error(fixie::format("bottom (%g provided) and top (%g provided) cannot be equal.", bottom, top));
+        }
+
+        if (zNear == zFar)
+        {
+            throw fixie::invalid_value_error(fixie::format("zNear (%g provided) and zFar (%g provided) cannot be equal.", zNear, zFar));
+        }
+
+        fixie::set_matrix(fixie::matrix4::frustum(left, right, bottom, top, zNear, zFar), true);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glGetClipPlanef(GLenum pname, GLfloat eqn[4])
@@ -532,7 +563,33 @@ void FIXIE_APIENTRY glNormal3f(GLfloat nx, GLfloat ny, GLfloat nz)
 
 void FIXIE_APIENTRY glOrthof(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
 {
-    fixie::set_matrix(fixie::matrix4::ortho(left, right, bottom, top, zNear, zFar), false);
+    try
+    {
+        if (left == right)
+        {
+            throw fixie::invalid_value_error(fixie::format("left (%g provided) and right (%g provided) cannot be equal.", left, right));
+        }
+
+        if (bottom == top)
+        {
+            throw fixie::invalid_value_error(fixie::format("bottom (%g provided) and top (%g provided) cannot be equal.", bottom, top));
+        }
+
+        if (zNear == zFar)
+        {
+            throw fixie::invalid_value_error(fixie::format("zNear (%g provided) and zFar (%g provided) cannot be equal.", zNear, zFar));
+        }
+
+        fixie::set_matrix(fixie::matrix4::ortho(left, right, bottom, top, zNear, zFar), true);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glPointParameterf(GLenum pname, GLfloat param)
@@ -557,12 +614,12 @@ void FIXIE_APIENTRY glPolygonOffset(GLfloat factor, GLfloat units)
 
 void FIXIE_APIENTRY glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::rotate(angle, fixie::vector3(x, y, z)), true);
 }
 
 void FIXIE_APIENTRY glScalef(GLfloat x, GLfloat y, GLfloat z)
 {
-    fixie::set_matrix(fixie::matrix4::scale(fixie::vector3(x, y, z)), false);
+    fixie::set_matrix(fixie::matrix4::scale(fixie::vector3(x, y, z)), true);
 }
 
 void FIXIE_APIENTRY glTexEnvf(GLenum target, GLenum pname, GLfloat param)
@@ -587,7 +644,7 @@ void FIXIE_APIENTRY glTexParameterfv(GLenum target, GLenum pname, const GLfloat 
 
 void FIXIE_APIENTRY glTranslatef(GLfloat x, GLfloat y, GLfloat z)
 {
-    fixie::set_matrix(fixie::matrix4::translate(fixie::vector3(x, y, z)), false);
+    fixie::set_matrix(fixie::matrix4::translate(fixie::vector3(x, y, z)), true);
 }
 
 void FIXIE_APIENTRY glActiveTexture(GLenum texture)
@@ -782,9 +839,44 @@ void FIXIE_APIENTRY glFrontFace(GLenum mode)
 
 void FIXIE_APIENTRY glFrustumx(GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
 {
-    fixie::set_matrix(fixie::matrix4::frustum(fixie::fixed_to_float(left), fixie::fixed_to_float(right), fixie::fixed_to_float(bottom), fixie::fixed_to_float(top),
-                                              fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
-                      false);
+    try
+    {
+        if (fixie::fixed_to_float(zNear) <= 0.0f || fixie::fixed_to_float(zFar) < 0.0f)
+        {
+            throw fixie::invalid_value_error(fixie::format("zNear (%g provided) and zFar (%g provided) must be greater than 0.0.",
+                                                           fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)));
+        }
+
+        if (fixie::fixed_to_float(left) == fixie::fixed_to_float(right))
+        {
+            throw fixie::invalid_value_error(fixie::format("left (%g provided) and right (%g provided) cannot be equal.",
+                                                           fixie::fixed_to_float(left), fixie::fixed_to_float(right)));
+        }
+
+        if (fixie::fixed_to_float(bottom) == fixie::fixed_to_float(top))
+        {
+            throw fixie::invalid_value_error(fixie::format("bottom (%g provided) and top (%g provided) cannot be equal.",
+                                                           fixie::fixed_to_float(bottom), fixie::fixed_to_float(top)));
+        }
+
+        if (fixie::fixed_to_float(zNear) == fixie::fixed_to_float(zFar))
+        {
+            throw fixie::invalid_value_error(fixie::format("zNear (%g provided) and zFar (%g provided) cannot be equal.",
+                                                           fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)));
+        }
+
+        fixie::set_matrix(fixie::matrix4::frustum(fixie::fixed_to_float(left), fixie::fixed_to_float(right), fixie::fixed_to_float(bottom), fixie::fixed_to_float(top),
+                                                  fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
+                          true);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glGetBooleanv(GLenum pname, GLboolean *params)
@@ -1013,9 +1105,38 @@ void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *p
 
 void FIXIE_APIENTRY glOrthox(GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
 {
-    fixie::set_matrix(fixie::matrix4::ortho(fixie::fixed_to_float(left), fixie::fixed_to_float(right), fixie::fixed_to_float(bottom), fixie::fixed_to_float(top),
+    try
+    {
+        if (fixie::fixed_to_float(left) == fixie::fixed_to_float(right))
+        {
+            throw fixie::invalid_value_error(fixie::format("left (%g provided) and right (%g provided) cannot be equal.",
+                                                           fixie::fixed_to_float(left), fixie::fixed_to_float(right)));
+        }
+
+        if (fixie::fixed_to_float(bottom) == fixie::fixed_to_float(top))
+        {
+            throw fixie::invalid_value_error(fixie::format("bottom (%g provided) and top (%g provided) cannot be equal.",
+                                                           fixie::fixed_to_float(bottom), fixie::fixed_to_float(top)));
+        }
+
+        if (fixie::fixed_to_float(zNear) == fixie::fixed_to_float(zFar))
+        {
+            throw fixie::invalid_value_error(fixie::format("zNear (%g provided) and zFar (%g provided) cannot be equal.",
+                                                           fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)));
+        }
+
+        fixie::set_matrix(fixie::matrix4::ortho(fixie::fixed_to_float(left), fixie::fixed_to_float(right), fixie::fixed_to_float(bottom), fixie::fixed_to_float(top),
                                             fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
-                      false);
+                          true);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glPixelStorei(GLenum pname, GLint param)
@@ -1100,7 +1221,9 @@ void FIXIE_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height
 
 void FIXIE_APIENTRY glRotatex(GLfixed angle, GLfixed x, GLfixed y, GLfixed z)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::rotate(fixie::fixed_to_float(angle),
+                                             fixie::vector3(fixie::fixed_to_float(x), fixie::fixed_to_float(y), fixie::fixed_to_float(z))),
+                      true);
 }
 
 void FIXIE_APIENTRY glSampleCoverage(GLclampf value, GLboolean invert)
@@ -1115,7 +1238,7 @@ void FIXIE_APIENTRY glSampleCoveragex(GLclampx value, GLboolean invert)
 
 void FIXIE_APIENTRY glScalex(GLfixed x, GLfixed y, GLfixed z)
 {
-    fixie::set_matrix(fixie::matrix4::scale(fixie::vector3(fixie::fixed_to_float(x), fixie::fixed_to_float(y), fixie::fixed_to_float(z))), false);
+    fixie::set_matrix(fixie::matrix4::scale(fixie::vector3(fixie::fixed_to_float(x), fixie::fixed_to_float(y), fixie::fixed_to_float(z))), true);
 }
 
 void FIXIE_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
@@ -1200,7 +1323,7 @@ void FIXIE_APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, G
 
 void FIXIE_APIENTRY glTranslatex(GLfixed x, GLfixed y, GLfixed z)
 {
-    fixie::set_matrix(fixie::matrix4::translate(fixie::vector3(fixie::fixed_to_float(x), fixie::fixed_to_float(y), fixie::fixed_to_float(z))), false);
+    fixie::set_matrix(fixie::matrix4::translate(fixie::vector3(fixie::fixed_to_float(x), fixie::fixed_to_float(y), fixie::fixed_to_float(z))), true);
 }
 
 void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
