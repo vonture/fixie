@@ -4,6 +4,8 @@ include_directories(${GTEST_INCLUDE_DIRS} ${PUBLIC_INCLUDES} ${SRC_DIR})
 
 file(GLOB TEST_SOURCE ${TESTS_DIR}/*.cpp)
 add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCE})
+source_group(src FILES ${TEST_SOURCE})
+
 add_dependencies(${TEST_PROJECT_NAME} googletest)
 
 target_link_libraries(${TEST_PROJECT_NAME}
