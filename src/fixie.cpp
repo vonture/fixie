@@ -293,6 +293,46 @@ namespace fixie
             UNREACHABLE();
         }
     }
+
+    static void set_matrix(const matrix4& matrix, bool multiply)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            matrix_stack& stack = ctx->active_matrix_stack();
+
+            if (multiply)
+            {
+                stack.top() *= matrix;
+            }
+            else
+            {
+                stack.top() = matrix;
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
+    static void set_matrix(const real_ptr& m, bool multiply)
+    {
+        fixie::matrix4 mat(m.as_float( 0), m.as_float( 4), m.as_float( 8), m.as_float(12),
+                           m.as_float( 1), m.as_float( 5), m.as_float( 9), m.as_float(13),
+                           m.as_float( 2), m.as_float( 6), m.as_float(10), m.as_float(14),
+                           m.as_float( 3), m.as_float( 7), m.as_float(11), m.as_float(15));
+        set_matrix(mat, multiply);
+    }
 }
 
 extern "C"
@@ -402,7 +442,7 @@ void FIXIE_APIENTRY glFogfv(GLenum pname, const GLfloat *params)
 
 void FIXIE_APIENTRY glFrustumf(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::frustum(left, right, bottom, top, zNear, zFar), false);
 }
 
 void FIXIE_APIENTRY glGetClipPlanef(GLenum pname, GLfloat eqn[4])
@@ -462,7 +502,7 @@ void FIXIE_APIENTRY glLineWidth(GLfloat width)
 
 void FIXIE_APIENTRY glLoadMatrixf(const GLfloat *m)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(m, false);
 }
 
 void FIXIE_APIENTRY glMaterialf(GLenum face, GLenum pname, GLfloat param)
@@ -477,7 +517,7 @@ void FIXIE_APIENTRY glMaterialfv(GLenum face, GLenum pname, const GLfloat *param
 
 void FIXIE_APIENTRY glMultMatrixf(const GLfloat *m)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(m, true);
 }
 
 void FIXIE_APIENTRY glMultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q)
@@ -492,7 +532,7 @@ void FIXIE_APIENTRY glNormal3f(GLfloat nx, GLfloat ny, GLfloat nz)
 
 void FIXIE_APIENTRY glOrthof(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::ortho(left, right, bottom, top, zNear, zFar), false);
 }
 
 void FIXIE_APIENTRY glPointParameterf(GLenum pname, GLfloat param)
@@ -522,7 +562,7 @@ void FIXIE_APIENTRY glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 
 void FIXIE_APIENTRY glScalef(GLfloat x, GLfloat y, GLfloat z)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::scale(fixie::vector3(x, y, z)), false);
 }
 
 void FIXIE_APIENTRY glTexEnvf(GLenum target, GLenum pname, GLfloat param)
@@ -547,7 +587,7 @@ void FIXIE_APIENTRY glTexParameterfv(GLenum target, GLenum pname, const GLfloat 
 
 void FIXIE_APIENTRY glTranslatef(GLfloat x, GLfloat y, GLfloat z)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::translate(fixie::vector3(x, y, z)), false);
 }
 
 void FIXIE_APIENTRY glActiveTexture(GLenum texture)
@@ -742,7 +782,9 @@ void FIXIE_APIENTRY glFrontFace(GLenum mode)
 
 void FIXIE_APIENTRY glFrustumx(GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::frustum(fixie::fixed_to_float(left), fixie::fixed_to_float(right), fixie::fixed_to_float(bottom), fixie::fixed_to_float(top),
+                                              fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
+                      false);
 }
 
 void FIXIE_APIENTRY glGetBooleanv(GLenum pname, GLboolean *params)
@@ -893,12 +935,12 @@ void FIXIE_APIENTRY glLineWidthx(GLfixed width)
 
 void FIXIE_APIENTRY glLoadIdentity(void)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::identity(), false);
 }
 
 void FIXIE_APIENTRY glLoadMatrixx(const GLfixed *m)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(m, false);
 }
 
 void FIXIE_APIENTRY glLogicOp(GLenum opcode)
@@ -918,12 +960,40 @@ void FIXIE_APIENTRY glMaterialxv(GLenum face, GLenum pname, const GLfixed *param
 
 void FIXIE_APIENTRY glMatrixMode(GLenum mode)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (mode)
+        {
+        case GL_TEXTURE:
+        case GL_MODELVIEW:
+        case GL_PROJECTION:
+            break;
+
+        default:
+            throw fixie::invalid_enum_error("unknown matrix mode.");
+        }
+
+        ctx->matrix_mode() = mode;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glMultMatrixx(const GLfixed *m)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(m, true);
 }
 
 void FIXIE_APIENTRY glMultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfixed r, GLfixed q)
@@ -943,7 +1013,9 @@ void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *p
 
 void FIXIE_APIENTRY glOrthox(GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::ortho(fixie::fixed_to_float(left), fixie::fixed_to_float(right), fixie::fixed_to_float(bottom), fixie::fixed_to_float(top),
+                                            fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
+                      false);
 }
 
 void FIXIE_APIENTRY glPixelStorei(GLenum pname, GLint param)
@@ -973,12 +1045,52 @@ void FIXIE_APIENTRY glPolygonOffsetx(GLfixed factor, GLfixed units)
 
 void FIXIE_APIENTRY glPopMatrix(void)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        fixie::matrix_stack& active_stack = ctx->active_matrix_stack();
+        if (active_stack.size() <= 1)
+        {
+            throw fixie::stack_overflow_error(fixie::format("active matrix stack has only %u matrices.", active_stack.size()));
+        }
+        active_stack.pop();
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glPushMatrix(void)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        fixie::matrix_stack& active_stack = ctx->active_matrix_stack();
+        active_stack.push();
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels)
@@ -1003,7 +1115,7 @@ void FIXIE_APIENTRY glSampleCoveragex(GLclampx value, GLboolean invert)
 
 void FIXIE_APIENTRY glScalex(GLfixed x, GLfixed y, GLfixed z)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::scale(fixie::vector3(fixie::fixed_to_float(x), fixie::fixed_to_float(y), fixie::fixed_to_float(z))), false);
 }
 
 void FIXIE_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
@@ -1088,7 +1200,7 @@ void FIXIE_APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, G
 
 void FIXIE_APIENTRY glTranslatex(GLfixed x, GLfixed y, GLfixed z)
 {
-    UNIMPLEMENTED();
+    fixie::set_matrix(fixie::matrix4::translate(fixie::vector3(fixie::fixed_to_float(x), fixie::fixed_to_float(y), fixie::fixed_to_float(z))), false);
 }
 
 void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)

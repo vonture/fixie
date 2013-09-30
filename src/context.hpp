@@ -8,6 +8,8 @@
 #include "light.hpp"
 #include "light_model.hpp"
 #include "vector.hpp"
+#include "matrix.hpp"
+#include "matrix_stack.hpp"
 
 namespace fixie
 {
@@ -33,6 +35,24 @@ namespace fixie
         const vector4& clip_plane(size_t idx) const;
         size_t clip_plane_count() const;
 
+        size_t& active_texture_unit();
+        const size_t& active_texture_unit() const;
+
+        GLenum& matrix_mode();
+        const GLenum& matrix_mode() const;
+
+        matrix_stack& texture_matrix_stack(size_t idx);
+        const matrix_stack& texture_matrix_stack(size_t idx) const;
+
+        matrix_stack& model_view_matrix_stack();
+        const matrix_stack& model_view_matrix_stack() const;
+
+        matrix_stack& projection_matrix_stack();
+        const matrix_stack& projection_matrix_stack() const;
+
+        matrix_stack& active_matrix_stack();
+        const matrix_stack& active_matrix_stack() const;
+
         GLenum& error();
         const GLenum& error() const;
 
@@ -47,6 +67,15 @@ namespace fixie
 
         static const size_t _clip_plane_count = 6;
         vector4 _clip_planes[_clip_plane_count];
+
+        static const size_t _texture_unit_count = 32;
+        size_t _active_texture_unit;
+
+        GLenum _matrix_mode;
+
+        matrix_stack _texture_matrix_stacks[_texture_unit_count];
+        matrix_stack _model_view_matrix_stack;
+        matrix_stack _projection_matrix_stack;
 
         GLenum _error;
     };

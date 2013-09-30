@@ -1,6 +1,7 @@
 #include "context.hpp"
 #include "exceptions.hpp"
 #include "fixie_gl_es.h"
+#include "debug.hpp"
 
 #include <set>
 #include <algorithm>
@@ -11,6 +12,8 @@ namespace fixie
     context::context()
         : _front_material(get_default_material())
         , _back_material(get_default_material())
+        , _active_texture_unit(0)
+        , _matrix_mode(GL_MODELVIEW)
         , _error(GL_NO_ERROR)
     {
         for (size_t i = 0; i < _light_count; i++)
@@ -77,6 +80,80 @@ namespace fixie
     size_t context::clip_plane_count() const
     {
         return _clip_plane_count;
+    }
+
+    size_t& context::active_texture_unit()
+    {
+        return _active_texture_unit;
+    }
+
+    const size_t& context::active_texture_unit() const
+    {
+        return _active_texture_unit;
+    }
+
+    GLenum& context::matrix_mode()
+    {
+        return _matrix_mode;
+    }
+
+    const GLenum& context::matrix_mode() const
+    {
+        return _matrix_mode;
+    }
+
+    matrix_stack& context::texture_matrix_stack(size_t idx)
+    {
+        return _texture_matrix_stacks[idx];
+    }
+
+    const matrix_stack& context::texture_matrix_stack(size_t idx) const
+    {
+        return _texture_matrix_stacks[idx];
+    }
+
+    matrix_stack& context::model_view_matrix_stack()
+    {
+        return _model_view_matrix_stack;
+    }
+
+    const matrix_stack& context::model_view_matrix_stack() const
+    {
+        return _model_view_matrix_stack;
+    }
+
+    matrix_stack& context::projection_matrix_stack()
+    {
+        return _projection_matrix_stack;
+    }
+
+    const matrix_stack& context::projection_matrix_stack() const
+    {
+        return _projection_matrix_stack;
+    }
+
+    matrix_stack& context::active_matrix_stack()
+    {
+        switch (_matrix_mode)
+        {
+        case GL_TEXTURE:
+            return _texture_matrix_stacks[_active_texture_unit];
+
+        case GL_MODELVIEW:
+            return _model_view_matrix_stack;
+
+        case GL_PROJECTION:
+            return _projection_matrix_stack;
+
+        default:
+            UNREACHABLE();
+            throw context_error("unknown matrix mode.");
+        }
+    }
+
+    const matrix_stack& context::active_matrix_stack() const
+    {
+        return const_cast<context*>(this)->active_matrix_stack();
     }
 
     GLenum& context::error()
