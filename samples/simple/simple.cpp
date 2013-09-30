@@ -67,6 +67,8 @@ int main(int argc, char** argv)
         glfwPollEvents();
     }
 
+    glDeleteBuffers(1, &vbo);
+
     glfwDestroyWindow(window);
 
     glfwTerminate();
