@@ -59,14 +59,15 @@ namespace fixie
                        0.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    matrix4 matrix4::rotate(GLfloat t, const vector3& p)
+    matrix4 matrix4::rotate(GLfloat angle, const vector3& p)
     {
         vector3 u = vector3::normalize(p);
-        GLfloat cos_t = cos(t);
-        GLfloat sin_t = sin(t);
+        GLfloat theta = angle * 0.0174532925f;
+        GLfloat cos_t = cosf(theta);
+        GLfloat sin_t = sinf(theta);
 
         return matrix4(        cos_t + (u.x * u.x * (1.0f - cos_t)), (u.x * u.y * (1.0f - cos_t)) - (u.z * sin_t), (u.x * u.z * (1.0f - cos_t)) + (u.y * sin_t), 0.0f,
-                       (u.y * u.x * (1.0f - cos_t)) + (u.z * sin_t),          cos_t + (u.y * u.y * (1.0 - cos_t)), (u.y * u.z * (1.0f - cos_t)) - (u.x * sin_t), 0.0f,
+                       (u.y * u.x * (1.0f - cos_t)) + (u.z * sin_t),         cos_t + (u.y * u.y * (1.0f - cos_t)), (u.y * u.z * (1.0f - cos_t)) - (u.x * sin_t), 0.0f,
                        (u.z * u.x * (1.0f - cos_t)) - (u.y * sin_t), (u.z * u.y * (1.0f - cos_t)) + (u.x * sin_t),         cos_t + (u.z * u.z * (1.0f - cos_t)), 0.0f,
                                                                0.0f,                                         0.0f,                                         0.0f, 1.0f);
     }

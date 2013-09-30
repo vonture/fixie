@@ -31,7 +31,7 @@ namespace fixie
         GLfloat& operator()(size_t row, size_t col);
 
         static matrix4 identity();
-        static matrix4 rotate(GLfloat t, const vector3& p);
+        static matrix4 rotate(GLfloat angle, const vector3& p);
         static matrix4 translate(const vector3& t);
         static matrix4 scale(const vector3& s);
         static matrix4 frustum(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLfloat f);
