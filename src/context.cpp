@@ -2,6 +2,7 @@
 #include "exceptions.hpp"
 #include "fixie_gl_es.h"
 #include "debug.hpp"
+#include "util.hpp"
 
 #include <set>
 #include <algorithm>
@@ -156,6 +157,16 @@ namespace fixie
         return const_cast<context*>(this)->active_matrix_stack();
     }
 
+    log& context::logger()
+    {
+        return _log;
+    }
+
+    const log& context::logger() const
+    {
+        return _log;
+    }
+
     GLenum& context::error()
     {
         return _error;
@@ -225,16 +236,39 @@ namespace fixie
 
     void log_gl_error(const gl_error& error)
     {
-        if (current_context)
+        if (current_context && current_context->error() == GL_NO_ERROR)
         {
             current_context->error() = error.error_code();
         }
 
-        // TODO: log error message
+        log_message(GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_ERROR_ARB, error.error_code(), GL_DEBUG_SEVERITY_HIGH_ARB,
+                    format("%s: %s", error.error_code_description().c_str(), error.error_msg().c_str()));
     }
 
     void log_context_error(const context_error& error)
     {
-        // TODO: log error message
+        log_message(GL_DEBUG_SOURCE_THIRD_PARTY_ARB, GL_DEBUG_TYPE_ERROR_ARB, GL_DEBUG_SEVERITY_HIGH_ARB, 0, error.error_msg());
+    }
+
+    void log_message(GLenum source, GLenum type, GLuint id, GLenum severity, const std::string& msg)
+    {
+        debug_msg_callback msg_callback = nullptr;
+        GLvoid* user_param = nullptr;
+
+        if (current_context)
+        {
+            msg_callback = current_context->logger().callback();
+            user_param = current_context->logger().user_param();
+        }
+        else
+        {
+            msg_callback = get_default_debug_msg_callback();
+            user_param = nullptr;
+        }
+
+        if (msg_callback)
+        {
+            msg_callback(source, type, id, severity, msg.length(), msg.c_str(), user_param);
+        }
     }
 }

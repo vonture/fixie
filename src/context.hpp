@@ -10,6 +10,7 @@
 #include "vector.hpp"
 #include "matrix.hpp"
 #include "matrix_stack.hpp"
+#include "log.hpp"
 
 namespace fixie
 {
@@ -53,6 +54,9 @@ namespace fixie
         matrix_stack& active_matrix_stack();
         const matrix_stack& active_matrix_stack() const;
 
+        log& logger();
+        const log& logger() const;
+
         GLenum& error();
         const GLenum& error() const;
 
@@ -77,6 +81,8 @@ namespace fixie
         matrix_stack _model_view_matrix_stack;
         matrix_stack _projection_matrix_stack;
 
+        log _log;
+
         GLenum _error;
     };
 
@@ -88,6 +94,7 @@ namespace fixie
 
     void log_gl_error(const gl_error& error);
     void log_context_error(const context_error& error);
+    void log_message(GLenum source, GLenum type, GLuint id, GLenum severity, const std::string& msg);
 }
 
 #endif //_FIXIE_CONTEXT_HPP_
