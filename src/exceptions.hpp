@@ -8,7 +8,18 @@
 
 namespace fixie
 {
-    class context_error : public std::runtime_error
+    class fixie_error : public std::runtime_error
+    {
+    public:
+        fixie_error(const std::string& msg);
+
+        const std::string& error_msg() const;
+
+    private:
+        std::string _error_msg;
+    };
+
+    class context_error : public fixie_error
     {
     public:
         context_error(const std::string& msg);
@@ -20,15 +31,17 @@ namespace fixie
         no_context_error();
     };
 
-    class gl_error : public std::runtime_error
+    class gl_error : public fixie_error
     {
     public:
-        gl_error(GLenum error_code, const std::string& msg);
+        gl_error(GLenum error_code, const std::string& error_code_desc, const std::string& msg);
 
         GLenum error_code() const;
+        const std::string& error_code_description() const;
 
     private:
         GLenum _error_code;
+        std::string _error_code_description;
     };
 
     class invalid_enum_error : public gl_error
