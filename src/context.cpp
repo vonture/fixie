@@ -253,7 +253,7 @@ namespace fixie
     {
         if (!current_context_impl)
         {
-            current_context_impl = nullptr;
+            current_context_impl = std::make_shared<null_impl::context>();
         }
 
         std::shared_ptr<context> ctx = std::make_shared<context>(current_context_impl);

@@ -5,7 +5,7 @@ project(${PROJECT_NAME_STR})
 
 option(USE_SOLUTION_FOLDERS "Enable solution folders in Visual Studio. Disable for Express versions." ON)
 if (USE_SOLUTION_FOLDERS)
-  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
 option(BUILD_SAMPLES "Build sample projects." ON)
