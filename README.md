@@ -1,4 +1,4 @@
 fixie
 =====
 
-A fixed function OpenGL (1.X/ES 1.1) implementation on top of modern OpenGL.
+A fixed function OpenGL ES 1.1 implementation on top of modern OpenGL
