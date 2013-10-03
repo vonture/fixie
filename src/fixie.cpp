@@ -759,12 +759,62 @@ void FIXIE_APIENTRY glCullFace(GLenum mode)
 
 void FIXIE_APIENTRY glDeleteBuffers(GLsizei n, const GLuint *buffers)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        if (n < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("invalid number of buffers given (%i), at least 0 required.", n));
+        }
+
+        for (GLsizei i = 0; i < n; ++i)
+        {
+            ctx->delete_buffer(buffers[i]);
+        }
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDeleteTextures(GLsizei n, const GLuint *textures)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        if (n < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("invalid number of textures given (%i), at least 0 required.", n));
+        }
+
+        for (GLsizei i = 0; i < n; ++i)
+        {
+            ctx->delete_texture(textures[i]);
+        }
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDepthFunc(GLenum func)
@@ -896,12 +946,116 @@ void FIXIE_APIENTRY glGetClipPlanex(GLenum pname, GLfixed eqn[4])
 
 void FIXIE_APIENTRY glGenBuffers(GLsizei n, GLuint *buffers)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        if (n < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("invalid number of buffers given (%i), at least 0 required.", n));
+        }
+
+        for (GLsizei i = 0; i < n; ++i)
+        {
+            buffers[i] = 0;
+        }
+
+        try
+        {
+            for (GLsizei i = 0; i < n; ++i)
+            {
+                buffers[i] = ctx->create_buffer();
+            }
+        }
+        catch (...)
+        {
+            try
+            {
+                for (GLsizei i = 0; i < n; ++i)
+                {
+                    if (buffers[i])
+                    {
+                        ctx->delete_buffer(buffers[i]);
+                    }
+                }
+            }
+            catch (...)
+            {
+                // error while deleting a buffer, ignore it
+            }
+
+            throw;
+        }
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glGenTextures(GLsizei n, GLuint *textures)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        if (n < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("invalid number of textures given (%i), at least 0 required.", n));
+        }
+
+        for (GLsizei i = 0; i < n; ++i)
+        {
+            textures[i] = 0;
+        }
+
+        try
+        {
+            for (GLsizei i = 0; i < n; ++i)
+            {
+                textures[i] = ctx->create_texture();
+            }
+        }
+        catch (...)
+        {
+            try
+            {
+                for (GLsizei i = 0; i < n; ++i)
+                {
+                    if (textures[i])
+                    {
+                        ctx->delete_texture(textures[i]);
+                    }
+                }
+            }
+            catch (...)
+            {
+                // error while deleting a texture, ignore it
+            }
+
+            throw;
+        }
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 GLenum FIXIE_APIENTRY glGetError(void)
@@ -984,8 +1138,29 @@ void FIXIE_APIENTRY glHint(GLenum target, GLenum mode)
 
 GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
 {
-    UNIMPLEMENTED();
-    return GL_FALSE;
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        std::shared_ptr<fixie::buffer> buf = ctx->buffer(buffer);
+
+        return (buf != nullptr) ? GL_TRUE : GL_FALSE;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+        return GL_FALSE;
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+        return GL_FALSE;
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+        return GL_FALSE;
+    }
 }
 
 GLboolean FIXIE_APIENTRY glIsEnabled(GLenum cap)
@@ -996,8 +1171,29 @@ GLboolean FIXIE_APIENTRY glIsEnabled(GLenum cap)
 
 GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
 {
-    UNIMPLEMENTED();
-    return GL_FALSE;
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        std::shared_ptr<fixie::texture> tex = ctx->texture(texture);
+
+        return (tex != nullptr) ? GL_TRUE : GL_FALSE;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+        return GL_FALSE;
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+        return GL_FALSE;
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+        return GL_FALSE;
+    }
 }
 
 void FIXIE_APIENTRY glLightModelx(GLenum pname, GLfixed param)
