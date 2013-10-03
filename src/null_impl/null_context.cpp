@@ -15,5 +15,17 @@ namespace fixie
         {
             return std::make_shared<buffer>();
         }
+
+        void context::draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count)
+        {
+        }
+
+        void context::draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, GLvoid* indices)
+        {
+        }
+
+        void context::clear(const state& state, GLbitfield mask)
+        {
+        }
     }
 }

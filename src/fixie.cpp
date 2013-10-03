@@ -22,9 +22,9 @@ namespace fixie
             std::vector<material*> materials;
             switch (face)
             {
-            case GL_FRONT:          materials.push_back(&ctx->front_material());                                             break;
-            case GL_BACK:                                                        materials.push_back(&ctx->back_material()); break;
-            case GL_FRONT_AND_BACK: materials.push_back(&ctx->front_material()); materials.push_back(&ctx->back_material()); break;
+            case GL_FRONT:          materials.push_back(&ctx->state().front_material());                                                     break;
+            case GL_BACK:                                                                materials.push_back(&ctx->state().back_material()); break;
+            case GL_FRONT_AND_BACK: materials.push_back(&ctx->state().front_material()); materials.push_back(&ctx->state().back_material()); break;
             default:                throw invalid_enum_error("unknown face name.");
             }
 
@@ -121,12 +121,12 @@ namespace fixie
         {
             std::shared_ptr<context> ctx = get_current_context();
 
-            size_t max_lights = ctx->light_count();
+            size_t max_lights = ctx->state().light_count();
             if (l < GL_LIGHT0 || (l - GL_LIGHT0) > max_lights)
             {
                 throw invalid_enum_error(format("invalid light, must be between GL_LIGHT0 and GL_LIGHT%u.", max_lights - 1));
             }
-            light& light = ctx->lights(l - GL_LIGHT0);
+            light& light = ctx->state().lights(l - GL_LIGHT0);
 
             switch (pname)
             {
@@ -241,11 +241,11 @@ namespace fixie
                 {
                     throw invalid_enum_error("multi-valued parameter name, GL_LIGHT_MODEL_AMBIENT, passed to non-vector light model function.");
                 }
-                ctx->light_model().ambient_color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                ctx->state().light_model().ambient_color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
                 break;
 
             case GL_LIGHT_MODEL_TWO_SIDE:
-                ctx->light_model().two_sided_lighting() = (params.as_float(0) != 0.0f);
+                ctx->state().light_model().two_sided_lighting() = (params.as_float(0) != 0.0f);
                 break;
 
             default:
@@ -272,13 +272,13 @@ namespace fixie
         {
             std::shared_ptr<context> ctx = get_current_context();
 
-            size_t max_clip_planes = ctx->clip_plane_count();
+            size_t max_clip_planes = ctx->state().clip_plane_count();
             if (p < GL_CLIP_PLANE0 || (p - GL_CLIP_PLANE0) > max_clip_planes)
             {
                 throw invalid_enum_error(format("invalid clip plane, must be between GL_CLIP_PLANE0 and GL_CLIP_PLANE%u.", max_clip_planes - 1));
             }
 
-            ctx->clip_plane(p - GL_CLIP_PLANE0) = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+            ctx->state().clip_plane(p - GL_CLIP_PLANE0) = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
         }
         catch (gl_error e)
         {
@@ -300,7 +300,7 @@ namespace fixie
         {
             std::shared_ptr<context> ctx = get_current_context();
 
-            matrix_stack& stack = ctx->active_matrix_stack();
+            matrix_stack& stack = ctx->state().active_matrix_stack();
 
             if (multiply)
             {
@@ -770,7 +770,7 @@ void FIXIE_APIENTRY glDeleteBuffers(GLsizei n, const GLuint *buffers)
 
         for (GLsizei i = 0; i < n; ++i)
         {
-            ctx->delete_buffer(buffers[i]);
+            ctx->state().delete_buffer(buffers[i]);
         }
     }
     catch (fixie::gl_error e)
@@ -800,7 +800,7 @@ void FIXIE_APIENTRY glDeleteTextures(GLsizei n, const GLuint *textures)
 
         for (GLsizei i = 0; i < n; ++i)
         {
-            ctx->delete_texture(textures[i]);
+            ctx->state().delete_texture(textures[i]);
         }
     }
     catch (fixie::gl_error e)
@@ -975,7 +975,7 @@ void FIXIE_APIENTRY glGenBuffers(GLsizei n, GLuint *buffers)
                 {
                     if (buffers[i])
                     {
-                        ctx->delete_buffer(buffers[i]);
+                        ctx->state().delete_buffer(buffers[i]);
                     }
                 }
             }
@@ -1032,7 +1032,7 @@ void FIXIE_APIENTRY glGenTextures(GLsizei n, GLuint *textures)
                 {
                     if (textures[i])
                     {
-                        ctx->delete_texture(textures[i]);
+                        ctx->state().delete_texture(textures[i]);
                     }
                 }
             }
@@ -1064,8 +1064,8 @@ GLenum FIXIE_APIENTRY glGetError(void)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        GLenum error = ctx->error();
-        ctx->error() = GL_NO_ERROR;
+        GLenum error = ctx->state().error();
+        ctx->state().error() = GL_NO_ERROR;
         return error;
     }
     catch (fixie::context_error e)
@@ -1142,7 +1142,7 @@ GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        std::shared_ptr<fixie::buffer> buf = ctx->buffer(buffer);
+        std::shared_ptr<fixie::buffer> buf = ctx->state().buffer(buffer);
 
         return (buf != nullptr) ? GL_TRUE : GL_FALSE;
     }
@@ -1175,7 +1175,7 @@ GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        std::shared_ptr<fixie::texture> tex = ctx->texture(texture);
+        std::shared_ptr<fixie::texture> tex = ctx->state().texture(texture);
 
         return (tex != nullptr) ? GL_TRUE : GL_FALSE;
     }
@@ -1263,7 +1263,7 @@ void FIXIE_APIENTRY glMatrixMode(GLenum mode)
             throw fixie::invalid_enum_error("unknown matrix mode.");
         }
 
-        ctx->matrix_mode() = mode;
+        ctx->state().matrix_mode() = mode;
     }
     catch (fixie::gl_error e)
     {
@@ -1366,7 +1366,7 @@ void FIXIE_APIENTRY glPopMatrix(void)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::matrix_stack& active_stack = ctx->active_matrix_stack();
+        fixie::matrix_stack& active_stack = ctx->state().active_matrix_stack();
         if (active_stack.size() <= 1)
         {
             throw fixie::stack_overflow_error(fixie::format("active matrix stack has only %u matrices.", active_stack.size()));
@@ -1393,7 +1393,7 @@ void FIXIE_APIENTRY glPushMatrix(void)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::matrix_stack& active_stack = ctx->active_matrix_stack();
+        fixie::matrix_stack& active_stack = ctx->state().active_matrix_stack();
         active_stack.push();
     }
     catch (fixie::gl_error e)

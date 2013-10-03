@@ -31,6 +31,12 @@ namespace fixie
         no_context_error();
     };
 
+    class state_error : public context_error
+    {
+    public:
+        state_error(const std::string& msg);
+    };
+
     class gl_error : public fixie_error
     {
     public:

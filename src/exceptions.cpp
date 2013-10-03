@@ -25,6 +25,11 @@ namespace fixie
     {
     }
 
+    state_error::state_error(const std::string& msg)
+        : context_error(msg)
+    {
+    }
+
     gl_error::gl_error(GLenum error_code, const std::string& error_code_desc, const std::string& msg)
         : fixie_error(msg)
         , _error_code(error_code)

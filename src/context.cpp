@@ -12,232 +12,57 @@ namespace fixie
 {
     context::context(std::shared_ptr<context_impl> impl)
         : _impl(impl)
-        , _front_material(get_default_material())
-        , _back_material(get_default_material())
-        , _active_texture_unit(0)
-        , _matrix_mode(GL_MODELVIEW)
-        , _next_texture_id(1)
-        , _next_buffer_id(1)
-        , _error(GL_NO_ERROR)
+        , _state()
     {
-        for (size_t i = 0; i < _light_count; i++)
-        {
-            _lights[i] = get_default_light(i);
-        }
-    }
-
-    material& context::front_material()
-    {
-        return _front_material;
-    }
-
-    const material& context::front_material() const
-    {
-        return _front_material;
-    }
-
-    material& context::back_material()
-    {
-        return _back_material;
-    }
-
-    const material& context::back_material() const
-    {
-        return _back_material;
-    }
-
-    light& context::lights(size_t idx)
-    {
-        return _lights[idx];
-    }
-
-    const light& context::lights(size_t idx) const
-    {
-        return _lights[idx];
-    }
-
-    size_t context::light_count() const
-    {
-        return _light_count;
-    }
-
-    fixie::light_model& context::light_model()
-    {
-        return _light_model;
-    }
-
-    const fixie::light_model& context::light_model() const
-    {
-        return _light_model;
-    }
-
-    vector4& context::clip_plane(size_t idx)
-    {
-        return _clip_planes[idx];
-    }
-
-    const vector4& context::clip_plane(size_t idx) const
-    {
-        return _clip_planes[idx];
-    }
-
-    size_t context::clip_plane_count() const
-    {
-        return _clip_plane_count;
-    }
-
-    size_t& context::active_texture_unit()
-    {
-        return _active_texture_unit;
-    }
-
-    const size_t& context::active_texture_unit() const
-    {
-        return _active_texture_unit;
-    }
-
-    GLenum& context::matrix_mode()
-    {
-        return _matrix_mode;
-    }
-
-    const GLenum& context::matrix_mode() const
-    {
-        return _matrix_mode;
-    }
-
-    matrix_stack& context::texture_matrix_stack(size_t idx)
-    {
-        return _texture_matrix_stacks[idx];
-    }
-
-    const matrix_stack& context::texture_matrix_stack(size_t idx) const
-    {
-        return _texture_matrix_stacks[idx];
-    }
-
-    matrix_stack& context::model_view_matrix_stack()
-    {
-        return _model_view_matrix_stack;
-    }
-
-    const matrix_stack& context::model_view_matrix_stack() const
-    {
-        return _model_view_matrix_stack;
-    }
-
-    matrix_stack& context::projection_matrix_stack()
-    {
-        return _projection_matrix_stack;
-    }
-
-    const matrix_stack& context::projection_matrix_stack() const
-    {
-        return _projection_matrix_stack;
-    }
-
-    matrix_stack& context::active_matrix_stack()
-    {
-        switch (_matrix_mode)
-        {
-        case GL_TEXTURE:
-            return _texture_matrix_stacks[_active_texture_unit];
-
-        case GL_MODELVIEW:
-            return _model_view_matrix_stack;
-
-        case GL_PROJECTION:
-            return _projection_matrix_stack;
-
-        default:
-            UNREACHABLE();
-            throw context_error("unknown matrix mode.");
-        }
-    }
-
-    const matrix_stack& context::active_matrix_stack() const
-    {
-        return const_cast<context*>(this)->active_matrix_stack();
-    }
-
-    log& context::logger()
-    {
-        return _log;
-    }
-
-    const log& context::logger() const
-    {
-        return _log;
-    }
-
-    GLenum& context::error()
-    {
-        return _error;
-    }
-
-    const GLenum& context::error() const
-    {
-        return _error;
     }
 
     GLuint context::create_texture()
     {
         std::shared_ptr<texture_impl> impl = _impl->create_texture();
-
-        GLuint id = _next_texture_id++;
-        _textures[id] = std::make_shared<fixie::texture>(impl);
-        return id;
-    }
-
-    void context::delete_texture(GLuint id)
-    {
-        auto iter = _textures.find(id);
-        if (iter != end(_textures))
-        {
-            _textures.erase(iter);
-        }
-    }
-
-    std::shared_ptr<fixie::texture> context::texture(GLuint id)
-    {
-        auto iter = _textures.find(id);
-        return (iter != end(_textures)) ? iter->second : nullptr;
-    }
-
-    std::shared_ptr<const fixie::texture> context::texture(GLuint id) const
-    {
-        auto iter = _textures.find(id);
-        return (iter != end(_textures)) ? iter->second : nullptr;
+        std::shared_ptr<fixie::texture> texture = std::make_shared<fixie::texture>(impl);
+        return _state.insert_texture(texture);
     }
 
     GLuint context::create_buffer()
     {
         std::shared_ptr<buffer_impl> impl = _impl->create_buffer();
-
-        GLuint id = _next_buffer_id++;
-        _buffers[id] = std::make_shared<fixie::buffer>(impl);
-        return id;
+        std::shared_ptr<fixie::buffer> buffer = std::make_shared<fixie::buffer>(impl);
+        return _state.insert_buffer(buffer);
     }
 
-    void context::delete_buffer(GLuint id)
+    fixie::state& context::state()
     {
-        auto iter = _buffers.find(id);
-        if (iter != end(_buffers))
-        {
-            _buffers.erase(iter);
-        }
+        return _state;
     }
 
-    std::shared_ptr<fixie::buffer> context::buffer(GLuint id)
+    const fixie::state& context::state() const
     {
-        auto iter = _buffers.find(id);
-        return (iter != end(_buffers)) ? iter->second : nullptr;
+        return _state;
     }
 
-    std::shared_ptr<const fixie::buffer> context::buffer(GLuint id) const
+    fixie::log& context::log()
     {
-        auto iter = _buffers.find(id);
-        return (iter != end(_buffers)) ? iter->second : nullptr;
+        return _log;
+    }
+
+    const fixie::log& context::log() const
+    {
+        return _log;
+    }
+
+    void context::draw_arrays(GLenum mode, GLint first, GLsizei count)
+    {
+        _impl->draw_arrays(_state, mode, first, count);
+    }
+
+    void context::draw_elements(GLenum mode, GLsizei count, GLenum type, GLvoid* indices)
+    {
+        _impl->draw_elements(_state, mode, count, type, indices);
+    }
+
+    void context::clear(GLbitfield mask)
+    {
+        _impl->clear(_state, mask);
     }
 }
 
@@ -310,9 +135,9 @@ namespace fixie
 
     void log_gl_error(const gl_error& error)
     {
-        if (current_context && current_context->error() == GL_NO_ERROR)
+        if (current_context && current_context->state().error() == GL_NO_ERROR)
         {
-            current_context->error() = error.error_code();
+            current_context->state().error() = error.error_code();
         }
 
         log_message(GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_ERROR_ARB, error.error_code(), GL_DEBUG_SEVERITY_HIGH_ARB,
@@ -331,8 +156,8 @@ namespace fixie
 
         if (current_context)
         {
-            msg_callback = current_context->logger().callback();
-            user_param = current_context->logger().user_param();
+            msg_callback = current_context->log().callback();
+            user_param = current_context->log().user_param();
         }
         else
         {
