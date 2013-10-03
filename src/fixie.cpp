@@ -649,7 +649,30 @@ void FIXIE_APIENTRY glTranslatef(GLfloat x, GLfloat y, GLfloat z)
 
 void FIXIE_APIENTRY glActiveTexture(GLenum texture)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        size_t max_texture_units = ctx->state().texture_unit_count();
+        if (texture < GL_TEXTURE0 || (texture - GL_TEXTURE0) > max_texture_units)
+        {
+            throw fixie::invalid_enum_error(fixie::format("invalid texture unit, must be between GL_TEXTURE0 and GL_TEXTURE%u.", max_texture_units - 1));
+        }
+
+        ctx->state().active_texture_unit() = (texture - GL_TEXTURE0);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glAlphaFuncx(GLenum func, GLclampx ref)
@@ -659,12 +682,70 @@ void FIXIE_APIENTRY glAlphaFuncx(GLenum func, GLclampx ref)
 
 void FIXIE_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        std::shared_ptr<fixie::buffer> buf = ctx->state().buffer(buffer);
+
+        switch (target)
+        {
+        case GL_ARRAY_BUFFER:
+            ctx->state().bound_array_buffer() = buf;
+            break;
+
+        case GL_ELEMENT_ARRAY_BUFFER:
+            ctx->state().bound_element_array_buffer() = buf;
+            break;
+
+        default:
+            throw fixie::invalid_enum_error("unknown buffer binding target.");
+        }
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glBindTexture(GLenum target, GLuint texture)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        std::shared_ptr<fixie::texture> tex = ctx->state().texture(texture);
+
+        switch (target)
+        {
+        case GL_TEXTURE_2D:
+            ctx->state().bound_texture(ctx->state().active_texture_unit()) = tex;
+            break;
+
+        default:
+            throw fixie::invalid_enum_error("unknown texture binding target.");
+        }
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glBlendFunc(GLenum sfactor, GLenum dfactor)
@@ -674,12 +755,102 @@ void FIXIE_APIENTRY glBlendFunc(GLenum sfactor, GLenum dfactor)
 
 void FIXIE_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+         std::shared_ptr<fixie::buffer> buffer;
+         switch (target)
+         {
+         case GL_ARRAY_BUFFER:
+             buffer = ctx->state().bound_array_buffer();
+             break;
+
+         case GL_ELEMENT_ARRAY_BUFFER:
+             buffer = ctx->state().bound_element_array_buffer();
+             break;
+
+         default:
+             throw fixie::invalid_enum_error("unknown buffer target.");
+         }
+
+         switch (usage)
+         {
+         case GL_STATIC_DRAW:
+         case GL_DYNAMIC_DRAW:
+             break;
+
+         default:
+             throw fixie::invalid_enum_error("unknown buffer usage.");
+         }
+
+         if (size < 0)
+         {
+             throw fixie::invalid_value_error(fixie::format("size must be at least 0, %i provided.", size));
+         }
+
+         buffer->set_data(size, data, usage);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        std::shared_ptr<fixie::buffer> buffer;
+        switch (target)
+        {
+        case GL_ARRAY_BUFFER:
+            buffer = ctx->state().bound_array_buffer();
+            break;
+
+        case GL_ELEMENT_ARRAY_BUFFER:
+            buffer = ctx->state().bound_element_array_buffer();
+            break;
+
+        default:
+            throw fixie::invalid_enum_error("unknown buffer target.");
+        }
+
+        if (size < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("size must be at least 0, %i provided.", size));
+        }
+
+        if (offset + size > buffer->size())
+        {
+            throw fixie::invalid_value_error(fixie::format("offset (%i) + size (%i) must be at less than the buffer size (%i).",
+                                                           offset, size, buffer->size()));
+        }
+
+        buffer->set_sub_data(offset, size, data);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glClear(GLbitfield mask)
