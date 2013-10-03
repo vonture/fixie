@@ -10,11 +10,14 @@
 
 namespace fixie
 {
-    context::context()
-        : _front_material(get_default_material())
+    context::context(std::shared_ptr<context_impl> impl)
+        : _impl(impl)
+        , _front_material(get_default_material())
         , _back_material(get_default_material())
         , _active_texture_unit(0)
         , _matrix_mode(GL_MODELVIEW)
+        , _next_texture_id(1)
+        , _next_buffer_id(1)
         , _error(GL_NO_ERROR)
     {
         for (size_t i = 0; i < _light_count; i++)
@@ -58,12 +61,12 @@ namespace fixie
         return _light_count;
     }
 
-    light_model& context::light_model_properties()
+    fixie::light_model& context::light_model()
     {
         return _light_model;
     }
 
-    const light_model& context::light_model_properties() const
+    const fixie::light_model& context::light_model() const
     {
         return _light_model;
     }
@@ -177,12 +180,83 @@ namespace fixie
         return _error;
     }
 
+    GLuint context::create_texture()
+    {
+        std::shared_ptr<texture_impl> impl = _impl->create_texture();
+
+        GLuint id = _next_texture_id++;
+        _textures[id] = std::make_shared<fixie::texture>(impl);
+        return id;
+    }
+
+    void context::delete_texture(GLuint id)
+    {
+        auto iter = _textures.find(id);
+        if (iter != end(_textures))
+        {
+            _textures.erase(iter);
+        }
+    }
+
+    std::shared_ptr<fixie::texture> context::texture(GLuint id)
+    {
+        auto iter = _textures.find(id);
+        return (iter != end(_textures)) ? iter->second : nullptr;
+    }
+
+    std::shared_ptr<const fixie::texture> context::texture(GLuint id) const
+    {
+        auto iter = _textures.find(id);
+        return (iter != end(_textures)) ? iter->second : nullptr;
+    }
+
+    GLuint context::create_buffer()
+    {
+        std::shared_ptr<buffer_impl> impl = _impl->create_buffer();
+
+        GLuint id = _next_buffer_id++;
+        _buffers[id] = std::make_shared<fixie::buffer>(impl);
+        return id;
+    }
+
+    void context::delete_buffer(GLuint id)
+    {
+        auto iter = _buffers.find(id);
+        if (iter != end(_buffers))
+        {
+            _buffers.erase(iter);
+        }
+    }
+
+    std::shared_ptr<fixie::buffer> context::buffer(GLuint id)
+    {
+        auto iter = _buffers.find(id);
+        return (iter != end(_buffers)) ? iter->second : nullptr;
+    }
+
+    std::shared_ptr<const fixie::buffer> context::buffer(GLuint id) const
+    {
+        auto iter = _buffers.find(id);
+        return (iter != end(_buffers)) ? iter->second : nullptr;
+    }
+}
+
+#include "null_impl/null_context.hpp"
+
+namespace fixie
+{
+    std::shared_ptr<context_impl> current_context_impl;
     std::shared_ptr<context> current_context;
     std::set< std::shared_ptr<context> > all_contexts;
 
     std::shared_ptr<context> create_context()
     {
-        std::shared_ptr<context> ctx(new context());
+        if (!current_context_impl)
+        {
+            current_context_impl = nullptr;
+        }
+
+        std::shared_ptr<context> ctx = std::make_shared<context>(current_context_impl);
         all_contexts.insert(ctx);
         return ctx;
     }
@@ -199,8 +273,8 @@ namespace fixie
             current_context = nullptr;
         }
 
-        auto iter = std::find_if(all_contexts.begin(), all_contexts.end(), std::bind(context_equals, ctx, std::placeholders::_1));
-        if (iter != all_contexts.end())
+        auto iter = std::find_if(begin(all_contexts), end(all_contexts), std::bind(context_equals, ctx, std::placeholders::_1));
+        if (iter != end(all_contexts))
         {
             all_contexts.erase(iter);
         }
@@ -223,8 +297,8 @@ namespace fixie
 
     void set_current_context(context* ctx)
     {
-        auto iter = std::find_if(all_contexts.begin(), all_contexts.end(), std::bind(context_equals, ctx, std::placeholders::_1));
-        if (iter != all_contexts.end())
+        auto iter = std::find_if(begin(all_contexts), end(all_contexts), std::bind(context_equals, ctx, std::placeholders::_1));
+        if (iter != end(all_contexts))
         {
             current_context = *iter;
         }

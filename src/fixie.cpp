@@ -241,11 +241,11 @@ namespace fixie
                 {
                     throw invalid_enum_error("multi-valued parameter name, GL_LIGHT_MODEL_AMBIENT, passed to non-vector light model function.");
                 }
-                ctx->light_model_properties().ambient_color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                ctx->light_model().ambient_color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
                 break;
 
             case GL_LIGHT_MODEL_TWO_SIDE:
-                ctx->light_model_properties().two_sided_lighting() = (params.as_float(0) != 0.0f);
+                ctx->light_model().two_sided_lighting() = (params.as_float(0) != 0.0f);
                 break;
 
             default:
