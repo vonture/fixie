@@ -25,4 +25,17 @@ namespace fixie
         , a(data[3])
     {
     }
+
+    bool operator==(const color& a, const color& b)
+    {
+        return a.r == b.r &&
+               a.g == b.g &&
+               a.b == b.b &&
+               a.a == b.a;
+    }
+
+    bool operator!=(const color& a, const color& b)
+    {
+        return !(a == b);
+    }
 }

@@ -13,6 +13,9 @@ namespace fixie
         color(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
         color(const GLfloat data[4]);
     };
+
+    bool operator==(const color& a, const color& b);
+    bool operator!=(const color& a, const color& b);
 }
 
 #endif // _COLOR_HPP_
