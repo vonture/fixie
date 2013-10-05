@@ -351,6 +351,16 @@ namespace fixie
                            m.as_float( 3), m.as_float( 7), m.as_float(11), m.as_float(15));
         set_matrix(mat, multiply);
     }
+
+    static GLboolean& get_property(std::shared_ptr<context> ctx, GLenum target)
+    {
+        switch (target)
+        {
+        case GL_SCISSOR_TEST: return ctx->state().scissor_test();
+        case GL_DEPTH_TEST:   return ctx->state().depth_test();
+        default: throw invalid_enum_error("unknown target.");
+        }
+    }
 }
 
 extern "C"
@@ -1159,7 +1169,24 @@ void FIXIE_APIENTRY glDepthRangex(GLclampx zNear, GLclampx zFar)
 
 void FIXIE_APIENTRY glDisable(GLenum cap)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        GLboolean& property = fixie::get_property(ctx, cap);
+        property = GL_FALSE;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDisableClientState(GLenum array)
@@ -1179,7 +1206,24 @@ void FIXIE_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, cons
 
 void FIXIE_APIENTRY glEnable(GLenum cap)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        GLboolean& property = fixie::get_property(ctx, cap);
+        property = GL_TRUE;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glEnableClientState(GLenum array)
@@ -1490,8 +1534,27 @@ GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
 
 GLboolean FIXIE_APIENTRY glIsEnabled(GLenum cap)
 {
-    UNIMPLEMENTED();
-    return GL_FALSE;
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        GLboolean& property = fixie::get_property(ctx, cap);
+        return property;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+        return GL_FALSE;
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+        return GL_FALSE;
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+        return GL_FALSE;
+    }
 }
 
 GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
