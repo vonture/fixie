@@ -6,16 +6,27 @@
 
 namespace fixie
 {
-    state::state()
-        : _front_material(get_default_material())
+    state::state(const caps& caps)
+        : _clear_color(0.0f, 0.0f, 0.0f, 0.0f)
+        , _clear_depth(1.0f)
+        , _clear_stencil(0)
+        , _depth_range(0.0f, 1.0f)
+        , _front_material(get_default_material())
         , _back_material(get_default_material())
+        , _lights(caps.max_lights())
+        , _clip_planes(caps.max_clip_planes())
+        , _viewport(0, 0, 1, 1)
+        , _scissor_test(false)
+        , _scissor(0, 0, 1, 1)
         , _active_texture_unit(0)
         , _matrix_mode(GL_MODELVIEW)
+        , _texture_matrix_stacks(caps.max_texture_units())
         , _next_texture_id(1)
+        , _bound_textures(caps.max_texture_units())
         , _next_buffer_id(1)
         , _error(GL_NO_ERROR)
     {
-        for (size_t i = 0; i < _light_count; i++)
+        for (size_t i = 0; i < _lights.size(); i++)
         {
             _lights[i] = get_default_light(i);
         }
@@ -51,6 +62,46 @@ namespace fixie
         return _clear_stencil;
     }
 
+    range& state::depth_range()
+    {
+        return _depth_range;
+    }
+
+    const range& state::depth_range() const
+    {
+        return _depth_range;
+    }
+
+    rectangle& state::viewport()
+    {
+        return _viewport;
+    }
+
+    const rectangle& state::viewport() const
+    {
+        return _viewport;
+    }
+
+    GLboolean& state::scissor_test()
+    {
+        return _scissor_test;
+    }
+
+    const GLboolean& state::scissor_test() const
+    {
+        return _scissor_test;
+    }
+
+    rectangle& state::scissor()
+    {
+        return _scissor;
+    }
+
+    const rectangle& state::scissor() const
+    {
+        return _scissor;
+    }
+
     material& state::front_material()
     {
         return _front_material;
@@ -81,11 +132,6 @@ namespace fixie
         return _lights[idx];
     }
 
-    size_t state::light_count() const
-    {
-        return _light_count;
-    }
-
     fixie::light_model& state::light_model()
     {
         return _light_model;
@@ -104,11 +150,6 @@ namespace fixie
     const vector4& state::clip_plane(size_t idx) const
     {
         return _clip_planes[idx];
-    }
-
-    size_t state::clip_plane_count() const
-    {
-        return _clip_plane_count;
     }
 
     GLenum& state::matrix_mode()
@@ -221,11 +262,6 @@ namespace fixie
     const size_t& state::active_texture_unit() const
     {
         return _active_texture_unit;
-    }
-
-    size_t state::texture_unit_count() const
-    {
-        return _texture_unit_count;
     }
 
     std::shared_ptr<fixie::texture>& state::bound_texture(size_t unit)

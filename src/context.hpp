@@ -5,6 +5,7 @@
 
 #include "exceptions.hpp"
 #include "state.hpp"
+#include "caps.hpp"
 #include "log.hpp"
 
 namespace fixie
@@ -12,6 +13,8 @@ namespace fixie
     class context_impl
     {
     public:
+        virtual const fixie::caps& caps() = 0;
+
         virtual std::shared_ptr<texture_impl> create_texture() = 0;
         virtual std::shared_ptr<buffer_impl> create_buffer() = 0;
 
@@ -31,6 +34,8 @@ namespace fixie
 
         fixie::state& state();
         const fixie::state& state() const;
+
+        const fixie::caps& caps() const;
 
         void draw_arrays(GLenum mode, GLint first, GLsizei count);
         void draw_elements(GLenum mode, GLsizei count, GLenum type, GLvoid* indices);

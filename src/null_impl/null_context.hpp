@@ -10,6 +10,8 @@ namespace fixie
         class context : public fixie::context_impl
         {
         public:
+            virtual const fixie::caps& caps() override;
+
             virtual std::shared_ptr<texture_impl> create_texture() override;
             virtual std::shared_ptr<buffer_impl> create_buffer() override;
 
@@ -17,6 +19,9 @@ namespace fixie
             virtual void draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, GLvoid* indices) override;
 
             virtual void clear(const state& state, GLbitfield mask) override;
+
+        private:
+            fixie::caps _caps;
         };
     }
 }

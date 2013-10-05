@@ -12,7 +12,7 @@ namespace fixie
 {
     context::context(std::shared_ptr<context_impl> impl)
         : _impl(impl)
-        , _state()
+        , _state(impl->caps())
     {
     }
 
@@ -38,6 +38,11 @@ namespace fixie
     const fixie::state& context::state() const
     {
         return _state;
+    }
+
+    const fixie::caps& context::caps() const
+    {
+        return _impl->caps();
     }
 
     fixie::log& context::log()

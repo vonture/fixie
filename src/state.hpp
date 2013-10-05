@@ -3,8 +3,11 @@
 
 #include <memory>
 #include <unordered_map>
-#include <array>
+#include <vector>
 
+#include "caps.hpp"
+#include "rectangle.hpp"
+#include "range.hpp"
 #include "material.hpp"
 #include "light.hpp"
 #include "light_model.hpp"
@@ -19,7 +22,7 @@ namespace fixie
     class state
     {
     public:
-        state();
+        state(const caps& caps);
 
         color& clear_color();
         const color& clear_color() const;
@@ -30,6 +33,18 @@ namespace fixie
         GLint& clear_stencil();
         const GLint& clear_stencil() const;
 
+        range& depth_range();
+        const range& depth_range() const;
+
+        rectangle& viewport();
+        const rectangle& viewport() const;
+
+        GLboolean& scissor_test();
+        const GLboolean& scissor_test() const;
+
+        rectangle& scissor();
+        const rectangle& scissor() const;
+
         material& front_material();
         const material& front_material() const;
 
@@ -38,14 +53,12 @@ namespace fixie
 
         light& lights(size_t idx);
         const light& lights(size_t idx) const;
-        size_t light_count() const;
 
         fixie::light_model& light_model();
         const fixie::light_model& light_model() const;
 
         vector4& clip_plane(size_t idx);
         const vector4& clip_plane(size_t idx) const;
-        size_t clip_plane_count() const;
 
         GLenum& matrix_mode();
         const GLenum& matrix_mode() const;
@@ -69,7 +82,6 @@ namespace fixie
 
         size_t& active_texture_unit();
         const size_t& active_texture_unit() const;
-        size_t texture_unit_count() const;
 
         std::shared_ptr<fixie::texture>& bound_texture(size_t unit);
         std::shared_ptr<const fixie::texture> bound_texture(size_t unit) const;
@@ -93,29 +105,33 @@ namespace fixie
         GLclampf _clear_depth;
         GLint _clear_stencil;
 
+        range _depth_range;
+
+        rectangle _viewport;
+
+        GLboolean _scissor_test;
+        rectangle _scissor;
+
         material _front_material;
         material _back_material;
 
-        static const size_t _light_count = 8;
-        std::array<light, _light_count> _lights;
+        std::vector<light> _lights;
 
         fixie::light_model _light_model;
 
-        static const size_t _clip_plane_count = 6;
-        std::array<vector4, _clip_plane_count> _clip_planes;
+        std::vector<vector4> _clip_planes;
 
-        static const size_t _texture_unit_count = 32;
         size_t _active_texture_unit;
 
         GLenum _matrix_mode;
 
-        std::array<matrix_stack, _texture_unit_count> _texture_matrix_stacks;
+        std::vector<matrix_stack> _texture_matrix_stacks;
         matrix_stack _model_view_matrix_stack;
         matrix_stack _projection_matrix_stack;
 
         GLuint _next_texture_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::texture> > _textures;
-        std::array<std::shared_ptr<fixie::texture>, _texture_unit_count> _bound_textures;
+        std::vector< std::shared_ptr<fixie::texture> > _bound_textures;
 
         GLuint _next_buffer_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::buffer> > _buffers;

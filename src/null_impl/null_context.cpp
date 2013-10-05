@@ -6,6 +6,11 @@ namespace fixie
 {
     namespace null_impl
     {
+        const fixie::caps& context::caps()
+        {
+            return _caps;
+        }
+
         std::shared_ptr<texture_impl> context::create_texture()
         {
             return std::make_shared<texture>();

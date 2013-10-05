@@ -121,10 +121,10 @@ namespace fixie
         {
             std::shared_ptr<context> ctx = get_current_context();
 
-            size_t max_lights = ctx->state().light_count();
-            if (l < GL_LIGHT0 || (l - GL_LIGHT0) > max_lights)
+            GLsizei max_lights = ctx->caps().max_lights();
+            if (l < GL_LIGHT0 || static_cast<GLsizei>(l - GL_LIGHT0) > max_lights)
             {
-                throw invalid_enum_error(format("invalid light, must be between GL_LIGHT0 and GL_LIGHT%u.", max_lights - 1));
+                throw invalid_enum_error(format("invalid light, must be between GL_LIGHT0 and GL_LIGHT%i.", max_lights - 1));
             }
             light& light = ctx->state().lights(l - GL_LIGHT0);
 
@@ -272,10 +272,10 @@ namespace fixie
         {
             std::shared_ptr<context> ctx = get_current_context();
 
-            size_t max_clip_planes = ctx->state().clip_plane_count();
-            if (p < GL_CLIP_PLANE0 || (p - GL_CLIP_PLANE0) > max_clip_planes)
+            GLsizei max_clip_planes = ctx->caps().max_clip_planes();
+            if (p < GL_CLIP_PLANE0 || static_cast<GLsizei>(p - GL_CLIP_PLANE0) > max_clip_planes)
             {
-                throw invalid_enum_error(format("invalid clip plane, must be between GL_CLIP_PLANE0 and GL_CLIP_PLANE%u.", max_clip_planes - 1));
+                throw invalid_enum_error(format("invalid clip plane, must be between GL_CLIP_PLANE0 and GL_CLIP_PLANE%i.", max_clip_planes - 1));
             }
 
             ctx->state().clip_plane(p - GL_CLIP_PLANE0) = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
@@ -653,10 +653,10 @@ void FIXIE_APIENTRY glActiveTexture(GLenum texture)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        size_t max_texture_units = ctx->state().texture_unit_count();
-        if (texture < GL_TEXTURE0 || (texture - GL_TEXTURE0) > max_texture_units)
+        GLsizei max_texture_units = ctx->caps().max_texture_units();
+        if (texture < GL_TEXTURE0 || static_cast<GLsizei>(texture - GL_TEXTURE0) > max_texture_units)
         {
-            throw fixie::invalid_enum_error(fixie::format("invalid texture unit, must be between GL_TEXTURE0 and GL_TEXTURE%u.", max_texture_units - 1));
+            throw fixie::invalid_enum_error(fixie::format("invalid texture unit, must be between GL_TEXTURE0 and GL_TEXTURE%i.", max_texture_units - 1));
         }
 
         ctx->state().active_texture_unit() = (texture - GL_TEXTURE0);
