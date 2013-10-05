@@ -72,6 +72,7 @@ namespace fixie
 }
 
 #include "null_impl/null_context.hpp"
+#include "desktop_gl_impl/desktop_gl_context.hpp"
 
 namespace fixie
 {
@@ -83,7 +84,7 @@ namespace fixie
     {
         if (!current_context_impl)
         {
-            current_context_impl = std::make_shared<null_impl::context>();
+            current_context_impl = std::make_shared<desktop_gl_impl::context>();
         }
 
         std::shared_ptr<context> ctx = std::make_shared<context>(current_context_impl);
