@@ -407,12 +407,44 @@ void FIXIE_APIENTRY glAlphaFunc(GLenum func, GLclampf ref)
 
 void FIXIE_APIENTRY glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().clear_color() = fixie::color(red, green, blue, alpha);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glClearDepthf(GLclampf depth)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().clear_depth() = depth;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glClipPlanef(GLenum plane, const GLfloat *equation)
@@ -427,7 +459,23 @@ void FIXIE_APIENTRY glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat 
 
 void FIXIE_APIENTRY glDepthRangef(GLclampf zNear, GLclampf zFar)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().depth_range() = fixie::range(zNear, zFar);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glFogf(GLenum pname, GLfloat param)
@@ -855,22 +903,94 @@ void FIXIE_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr s
 
 void FIXIE_APIENTRY glClear(GLbitfield mask)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        if ((mask & ~(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)) != 0)
+        {
+            throw fixie::invalid_value_error("clear mask must be a combination of GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT "
+                                             "and GL_STENCIL_BUFFER_BIT values.");
+        }
+
+        ctx->clear(mask);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glClearColorx(GLclampx red, GLclampx green, GLclampx blue, GLclampx alpha)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().clear_color() = fixie::color(fixie::fixed_to_float(red), fixie::fixed_to_float(green), fixie::fixed_to_float(blue),
+                                                  fixie::fixed_to_float(alpha));
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glClearDepthx(GLclampx depth)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().clear_depth() = fixie::fixed_to_float(depth);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glClearStencil(GLint s)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().clear_stencil() = s;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glClientActiveTexture(GLenum texture)
@@ -1000,7 +1120,23 @@ void FIXIE_APIENTRY glDepthMask(GLboolean flag)
 
 void FIXIE_APIENTRY glDepthRangex(GLclampx zNear, GLclampx zFar)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().depth_range() = fixie::range(fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar));
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDisable(GLenum cap)
@@ -1610,7 +1746,29 @@ void FIXIE_APIENTRY glScalex(GLfixed x, GLfixed y, GLfixed z)
 
 void FIXIE_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        if (width < 0 || height < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("scissor width and hight cannot be negative, %i and %i provided.", width, height));
+        }
+
+        ctx->state().scissor() = fixie::rectangle(x, y, width, height);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glShadeModel(GLenum mode)
@@ -1700,7 +1858,29 @@ void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, con
 
 void FIXIE_APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        if (width < 0 || height < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("viewport width and hight cannot be negative, %i and %i provided.", width, height));
+        }
+
+        ctx->state().viewport() = fixie::rectangle(x, y, width, height);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 }
