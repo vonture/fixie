@@ -33,8 +33,14 @@ namespace fixie
         GLint& clear_stencil();
         const GLint& clear_stencil() const;
 
+        GLboolean& depth_test();
+        const GLboolean& depth_test() const;
+
         range& depth_range();
         const range& depth_range() const;
+
+        GLenum& depth_func();
+        const GLenum& depth_func() const;
 
         rectangle& viewport();
         const rectangle& viewport() const;
@@ -102,7 +108,9 @@ namespace fixie
         GLclampf _clear_depth;
         GLint _clear_stencil;
 
+        GLboolean _depth_test;
         range _depth_range;
+        GLenum _depth_func;
 
         rectangle _viewport;
 

@@ -62,6 +62,16 @@ namespace fixie
         return _clear_stencil;
     }
 
+    const GLboolean& state::depth_test() const
+    {
+        return _depth_test;
+    }
+
+    GLboolean& state::depth_test()
+    {
+        return _depth_test;
+    }
+
     range& state::depth_range()
     {
         return _depth_range;
@@ -70,6 +80,16 @@ namespace fixie
     const range& state::depth_range() const
     {
         return _depth_range;
+    }
+
+    GLenum& state::depth_func()
+    {
+        return _depth_func;
+    }
+
+    const GLenum& state::depth_func() const
+    {
+        return _depth_func;
     }
 
     rectangle& state::viewport()
