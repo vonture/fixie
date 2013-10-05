@@ -32,8 +32,12 @@ namespace fixie
             color _cur_clear_color;
             GLclampf _cur_clear_depth;
             GLint _cur_clear_stencil;
+            void sync_clear_state(const state& state);
 
-            void sync_clear_values(const state& state);
+            GLboolean _cur_scissor_test;
+            rectangle _cur_scissor;
+            rectangle _cur_viewport;
+            void sync_rasterizer_state(const state& state);
 
             static void initialize_caps(const gl_functions& functions, fixie::caps& caps);
         };

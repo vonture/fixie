@@ -52,11 +52,12 @@ namespace fixie
 
         void context::clear(const state& state, GLbitfield mask)
         {
-            sync_clear_values(state);
+            sync_clear_state(state);
+            sync_rasterizer_state(state);
             _functions.gl_clear()(mask);
         }
 
-        void context::sync_clear_values(const state& state)
+        void context::sync_clear_state(const state& state)
         {
             if (_cur_clear_color != state.clear_color())
             {
@@ -74,6 +75,34 @@ namespace fixie
             {
                 _functions.gl_clear_stencil()(state.clear_stencil());
                 _cur_clear_stencil = state.clear_stencil();
+            }
+        }
+
+        void context::sync_rasterizer_state(const state& state)
+        {
+            if (_cur_scissor_test != state.scissor_test())
+            {
+                if (state.scissor_test())
+                {
+                    _functions.gl_enable()(GL_SCISSOR_TEST);
+                }
+                else
+                {
+                    _functions.gl_disable()(GL_SCISSOR_TEST);
+                }
+                _cur_scissor_test = state.scissor_test();
+            }
+
+            if (_cur_scissor != state.scissor())
+            {
+                _functions.gl_scissor()(state.scissor().x, state.scissor().y, state.scissor().width, state.scissor().height);
+                _cur_scissor = state.scissor();
+            }
+
+            if (_cur_viewport != state.viewport())
+            {
+                _functions.gl_viewport()(state.viewport().x, state.viewport().y, state.viewport().width, state.viewport().height);
+                _cur_viewport = state.viewport();
             }
         }
 
