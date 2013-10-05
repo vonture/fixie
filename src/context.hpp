@@ -15,6 +15,8 @@ namespace fixie
     public:
         virtual const fixie::caps& caps() = 0;
 
+        virtual void initialize_state(fixie::state& state) = 0;
+
         virtual std::shared_ptr<texture_impl> create_texture() = 0;
         virtual std::shared_ptr<buffer_impl> create_buffer() = 0;
 

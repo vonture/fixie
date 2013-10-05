@@ -21,6 +21,17 @@ namespace fixie
             return _caps;
         }
 
+        void context::initialize_state(fixie::state& state)
+        {
+            GLint viewport_values[4];
+            _functions.gl_get_integerv()(GL_VIEWPORT, viewport_values);
+            state.viewport() = rectangle(viewport_values[0], viewport_values[1], viewport_values[2], viewport_values[3]);
+
+            GLint scissor_values[4];
+            _functions.gl_get_integerv()(GL_SCISSOR_BOX, scissor_values);
+            state.scissor() = rectangle(scissor_values[0], scissor_values[1], scissor_values[2], scissor_values[3]);
+        }
+
         std::shared_ptr<texture_impl> context::create_texture()
         {
             return std::make_shared<texture>();

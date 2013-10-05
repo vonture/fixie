@@ -11,6 +11,10 @@ namespace fixie
             return _caps;
         }
 
+        void context::initialize_state(fixie::state& state)
+        {
+        }
+
         std::shared_ptr<texture_impl> context::create_texture()
         {
             return std::make_shared<texture>();

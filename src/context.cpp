@@ -14,6 +14,7 @@ namespace fixie
         : _impl(impl)
         , _state(impl->caps())
     {
+        _impl->initialize_state(_state);
     }
 
     GLuint context::create_texture()

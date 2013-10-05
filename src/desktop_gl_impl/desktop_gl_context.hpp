@@ -15,6 +15,8 @@ namespace fixie
 
             virtual const fixie::caps& caps() override;
 
+            virtual void initialize_state(fixie::state& state) override;
+
             virtual std::shared_ptr<texture_impl> create_texture() override;
             virtual std::shared_ptr<buffer_impl> create_buffer() override;
 
