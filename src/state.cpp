@@ -192,30 +192,6 @@ namespace fixie
         return _projection_matrix_stack;
     }
 
-    matrix_stack& state::active_matrix_stack()
-    {
-        switch (_matrix_mode)
-        {
-        case GL_TEXTURE:
-            return _texture_matrix_stacks[_active_texture_unit];
-
-        case GL_MODELVIEW:
-            return _model_view_matrix_stack;
-
-        case GL_PROJECTION:
-            return _projection_matrix_stack;
-
-        default:
-            UNREACHABLE();
-            throw state_error("unknown matrix mode.");
-        }
-    }
-
-    const matrix_stack& state::active_matrix_stack() const
-    {
-        return const_cast<state*>(this)->active_matrix_stack();
-    }
-
     GLenum& state::error()
     {
         return _error;

@@ -300,15 +300,33 @@ namespace fixie
         {
             std::shared_ptr<context> ctx = get_current_context();
 
-            matrix_stack& stack = ctx->state().active_matrix_stack();
+            matrix_stack* stack = nullptr;
+            switch (ctx->state().matrix_mode())
+            {
+            case GL_TEXTURE:
+                stack = &ctx->state().texture_matrix_stack(ctx->state().active_texture_unit());
+                break;
+
+            case GL_MODELVIEW:
+                stack = &ctx->state().model_view_matrix_stack();
+                break;
+
+            case GL_PROJECTION:
+                stack = &ctx->state().projection_matrix_stack();
+                break;
+
+            default:
+                UNREACHABLE();
+                throw state_error("unknown matrix mode.");
+            }
 
             if (multiply)
             {
-                stack.top() *= matrix;
+                stack->top() *= matrix;
             }
             else
             {
-                stack.top() = matrix;
+                stack->top() = matrix;
             }
         }
         catch (gl_error e)
@@ -1673,12 +1691,31 @@ void FIXIE_APIENTRY glPopMatrix(void)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::matrix_stack& active_stack = ctx->state().active_matrix_stack();
-        if (active_stack.size() <= 1)
+        fixie::matrix_stack* stack = nullptr;
+        switch (ctx->state().matrix_mode())
         {
-            throw fixie::stack_overflow_error(fixie::format("active matrix stack has only %u matrices.", active_stack.size()));
+        case GL_TEXTURE:
+            stack = &ctx->state().texture_matrix_stack(ctx->state().active_texture_unit());
+            break;
+
+        case GL_MODELVIEW:
+            stack = &ctx->state().model_view_matrix_stack();
+            break;
+
+        case GL_PROJECTION:
+            stack = &ctx->state().projection_matrix_stack();
+            break;
+
+        default:
+            UNREACHABLE();
+            throw fixie::state_error("unknown matrix mode.");
         }
-        active_stack.pop();
+
+        if (stack->size() <= 1)
+        {
+            throw fixie::stack_overflow_error(fixie::format("active matrix stack has only %u matrices.", stack->size()));
+        }
+        stack->pop();
     }
     catch (fixie::gl_error e)
     {
@@ -1700,8 +1737,36 @@ void FIXIE_APIENTRY glPushMatrix(void)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::matrix_stack& active_stack = ctx->state().active_matrix_stack();
-        active_stack.push();
+        fixie::matrix_stack* stack = nullptr;
+        GLsizei max_stack_depth = 0;
+        switch (ctx->state().matrix_mode())
+        {
+        case GL_TEXTURE:
+            stack = &ctx->state().texture_matrix_stack(ctx->state().active_texture_unit());
+            max_stack_depth = ctx->caps().max_texture_stack_depth();
+            break;
+
+        case GL_MODELVIEW:
+            stack = &ctx->state().model_view_matrix_stack();
+            max_stack_depth = ctx->caps().max_model_view_stack_depth();
+            break;
+
+        case GL_PROJECTION:
+            stack = &ctx->state().projection_matrix_stack();
+            max_stack_depth = ctx->caps().max_projection_stack_depth();
+            break;
+
+        default:
+            UNREACHABLE();
+            throw fixie::state_error("unknown matrix mode.");
+        }
+
+        if (stack->size() >= static_cast<size_t>(max_stack_depth))
+        {
+            throw fixie::stack_overflow_error(fixie::format("the current matrix stack is at the maximum stack size (%i).", max_stack_depth));
+        }
+
+        stack->push();
     }
     catch (fixie::gl_error e)
     {

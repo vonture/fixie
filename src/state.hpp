@@ -72,9 +72,6 @@ namespace fixie
         matrix_stack& projection_matrix_stack();
         const matrix_stack& projection_matrix_stack() const;
 
-        matrix_stack& active_matrix_stack();
-        const matrix_stack& active_matrix_stack() const;
-
         GLuint insert_texture(std::shared_ptr<fixie::texture> texture);
         void delete_texture(GLuint id);
         std::shared_ptr<fixie::texture> texture(GLuint id);
