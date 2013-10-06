@@ -15,7 +15,7 @@ namespace fixie
         , _state(impl->caps())
     {
         _impl->initialize_state(_state);
-        _version_string = format("OpenGL ES-%s %u.%u", "CL", 1, 1);
+        _version_string = format("OpenGL ES-%s %u.%u", "CM", 1, 1);
         _renderer_string = format("fixie (%s)", _impl->renderer_desc().c_str());
         _vendor_string = format("vonture");
         _extension_string = format("");
