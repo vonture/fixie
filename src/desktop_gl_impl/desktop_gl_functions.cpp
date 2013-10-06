@@ -16,6 +16,8 @@ namespace fixie
             _gl_viewport = load_gl_function<gl_viewport_func>("glViewport");
             _gl_get_integerv = load_gl_function<gl_get_integerv_func>("glGetIntegerv");
             _gl_get_floatv = load_gl_function<gl_get_floatv_func>("glGetFloatv");
+            _gl_get_string = load_gl_function<gl_get_string_func>("glGetString");
+            _gl_get_stringi = load_gl_function<gl_get_stringi_func>("glGetStringi");
         }
 
         std::function<gl_enable_func> gl_functions::gl_enable() const
@@ -66,6 +68,16 @@ namespace fixie
         std::function<gl_get_floatv_func> gl_functions::gl_get_floatv() const
         {
             return _gl_get_floatv;
+        }
+
+        std::function<gl_get_string_func> gl_functions::gl_get_string() const
+        {
+            return _gl_get_string;
+        }
+
+        std::function<gl_get_stringi_func> gl_functions::gl_get_stringi() const
+        {
+            return _gl_get_stringi;
         }
     }
 }

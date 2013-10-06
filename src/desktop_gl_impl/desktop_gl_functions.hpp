@@ -21,6 +21,8 @@ namespace fixie
 
         typedef void (GL_APIENTRY gl_get_integerv_func)(GLenum pname, GLint *params);
         typedef void (GL_APIENTRY gl_get_floatv_func)(GLenum pname, GLfloat *params);
+        typedef GLubyte* (GL_APIENTRY gl_get_string_func)(GLenum name);
+        typedef GLubyte* (GL_APIENTRY gl_get_stringi_func)(GLenum name, GLuint index);
 
         class gl_functions
         {
@@ -40,8 +42,11 @@ namespace fixie
 
             std::function<gl_get_integerv_func> gl_get_integerv() const;
             std::function<gl_get_floatv_func> gl_get_floatv() const;
+            std::function<gl_get_string_func> gl_get_string() const;
+            std::function<gl_get_stringi_func> gl_get_stringi() const;
 
         private:
+
             std::function<gl_enable_func> _gl_enable;
             std::function<gl_enable_func> _gl_disable;
 
@@ -55,6 +60,8 @@ namespace fixie
 
             std::function<gl_get_integerv_func> _gl_get_integerv;
             std::function<gl_get_floatv_func> _gl_get_floatv;
+            std::function<gl_get_string_func> _gl_get_string;
+            std::function<gl_get_stringi_func> _gl_get_stringi;
         };
     }
 }

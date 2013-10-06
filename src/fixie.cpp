@@ -1476,8 +1476,33 @@ void FIXIE_APIENTRY glGetPointerv(GLenum pname, GLvoid **params)
 
 const GLubyte * FIXIE_APIENTRY glGetString(GLenum name)
 {
-    UNIMPLEMENTED();
-    return NULL;
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (name)
+        {
+        case GL_VENDOR:     return reinterpret_cast<const GLubyte*>(fixie::make_static(ctx->vendor_string()));
+        case GL_RENDERER:   return reinterpret_cast<const GLubyte*>(fixie::make_static(ctx->renderer_string()));
+        case GL_VERSION:    return reinterpret_cast<const GLubyte*>(fixie::make_static(ctx->version_string()));
+        case GL_EXTENSIONS: return reinterpret_cast<const GLubyte*>(fixie::make_static(ctx->extension_string()));
+        default:            throw fixie::invalid_enum_error("unknown string name.");
+        }
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+        return nullptr;
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+        return nullptr;
+    }
 }
 
 void FIXIE_APIENTRY glGetTexEnviv(GLenum env, GLenum pname, GLint *params)

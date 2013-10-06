@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <vector>
+#include <set>
 
 namespace fixie
 {
@@ -22,5 +23,19 @@ namespace fixie
         buf[buf.size() - 1] = '\0';
 
         return std::string(buf.data());
+    }
+
+    const char* make_static(const std::string& str)
+    {
+        static std::set<std::string> static_strings;
+        auto iter = static_strings.find(str);
+        if (iter != static_strings.end())
+        {
+            return iter->c_str();
+        }
+        else
+        {
+            return static_strings.insert(str).first->c_str();
+        }
     }
 }

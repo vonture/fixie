@@ -1,6 +1,8 @@
 #ifndef _DESKTOP_GL_CONTEXT_HPP_
 #define _DESKTOP_GL_CONTEXT_HPP_
 
+#include <unordered_set>
+
 #include "context.hpp"
 #include "desktop_gl_functions.hpp"
 
@@ -14,6 +16,7 @@ namespace fixie
             context();
 
             virtual const fixie::caps& caps() override;
+            virtual const std::string& renderer_desc() override;
 
             virtual void initialize_state(fixie::state& state) override;
 
@@ -28,6 +31,12 @@ namespace fixie
         private:
             fixie::caps _caps;
             gl_functions _functions;
+
+            std::string _renderer_string;
+
+            GLuint _major_version;
+            GLuint _minor_version;
+            std::unordered_set<std::string> _extensions;
 
             color _cur_clear_color;
             GLclampf _cur_clear_depth;

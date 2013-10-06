@@ -8,7 +8,14 @@ namespace fixie
     {
         const fixie::caps& context::caps()
         {
-            return _caps;
+            static const fixie::caps caps;
+            return caps;
+        }
+
+        const std::string& context::renderer_desc()
+        {
+            static const std::string renderer_string("null");
+            return renderer_string;
         }
 
         void context::initialize_state(fixie::state& state)

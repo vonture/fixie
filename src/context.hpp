@@ -14,6 +14,7 @@ namespace fixie
     {
     public:
         virtual const fixie::caps& caps() = 0;
+        virtual const std::string& renderer_desc() = 0;
 
         virtual void initialize_state(fixie::state& state) = 0;
 
@@ -39,6 +40,11 @@ namespace fixie
 
         const fixie::caps& caps() const;
 
+        const std::string& version_string() const;
+        const std::string& renderer_string() const;
+        const std::string& vendor_string() const;
+        const std::string& extension_string() const;
+
         void draw_arrays(GLenum mode, GLint first, GLsizei count);
         void draw_elements(GLenum mode, GLsizei count, GLenum type, GLvoid* indices);
 
@@ -50,6 +56,11 @@ namespace fixie
     private:
         std::shared_ptr<context_impl> _impl;
         fixie::state _state;
+
+        std::string _version_string;
+        std::string _renderer_string;
+        std::string _vendor_string;
+        std::string _extension_string;
 
         fixie::log _log;
     };

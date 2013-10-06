@@ -11,6 +11,7 @@ namespace fixie
         {
         public:
             virtual const fixie::caps& caps() override;
+            virtual const std::string& renderer_desc() override;
 
             virtual void initialize_state(fixie::state& state) override;
 
@@ -21,9 +22,6 @@ namespace fixie
             virtual void draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, GLvoid* indices) override;
 
             virtual void clear(const state& state, GLbitfield mask) override;
-
-        private:
-            fixie::caps _caps;
         };
     }
 }

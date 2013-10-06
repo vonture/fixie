@@ -6,6 +6,12 @@
 namespace fixie
 {
     std::string format(const char* fmt, ...);
+    const char* make_static(const std::string& str);
+
+    template <typename output_iterator>
+    void split(const std::string& input, char delim, output_iterator output);
 }
+
+#include "util.inl"
 
 #endif // _UTIL_HPP_

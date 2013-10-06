@@ -4,6 +4,8 @@
 
 #include "fixie_gl_es.h"
 
+#include "util.hpp"
+
 namespace fixie
 {
     namespace desktop_gl_impl
@@ -14,11 +16,28 @@ namespace fixie
             , _cur_clear_stencil(0)
         {
             initialize_caps(_functions, _caps);
+
+            std::string gl_version_string(reinterpret_cast<const char*>(_functions.gl_get_string()(GL_VERSION)));
+            _major_version = gl_version_string[0] - '0';
+            _minor_version = gl_version_string[2] - '0';
+
+            std::string gl_renderer_string(reinterpret_cast<const char*>(_functions.gl_get_string()(GL_RENDERER)));
+            std::string gl_vendor_string(reinterpret_cast<const char*>(_functions.gl_get_string()(GL_VENDOR)));
+
+            std::string gl_extension_string(reinterpret_cast<const char*>(_functions.gl_get_string()(GL_EXTENSIONS)));
+            split(gl_extension_string, ' ', std::inserter(_extensions, _extensions.end()));
+
+            _renderer_string = format("%s OpenGL %s", gl_renderer_string.c_str(), gl_version_string.c_str());
         }
 
         const fixie::caps& context::caps()
         {
             return _caps;
+        }
+
+        const std::string& context::renderer_desc()
+        {
+            return _renderer_string;
         }
 
         void context::initialize_state(fixie::state& state)
