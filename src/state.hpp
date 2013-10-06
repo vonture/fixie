@@ -16,6 +16,7 @@
 #include "matrix_stack.hpp"
 #include "texture.hpp"
 #include "buffer.hpp"
+#include "vertex_attribute.hpp"
 
 namespace fixie
 {
@@ -100,6 +101,21 @@ namespace fixie
         std::shared_ptr<fixie::buffer>& bound_element_array_buffer();
         std::shared_ptr<const fixie::buffer> bound_element_array_buffer() const;
 
+        fixie::vertex_attribute& vertex_attribute();
+        const fixie::vertex_attribute& vertex_attribute() const;
+
+        fixie::vertex_attribute& normal_attribute();
+        const fixie::vertex_attribute& normal_attribute() const;
+
+        fixie::vertex_attribute& color_attribute();
+        const fixie::vertex_attribute& color_attribute() const;
+
+        size_t& active_client_texture();
+        const size_t& active_client_texture() const;
+
+        fixie::vertex_attribute& texcoord_attribute(size_t unit);
+        const fixie::vertex_attribute& texcoord_attribute(size_t unit) const;
+
         GLenum& error();
         const GLenum& error() const;
 
@@ -142,6 +158,12 @@ namespace fixie
         std::unordered_map< GLuint, std::shared_ptr<fixie::buffer> > _buffers;
         std::shared_ptr<fixie::buffer> _bound_array_buffer;
         std::shared_ptr<fixie::buffer> _bound_element_array_buffer;
+
+        fixie::vertex_attribute _vertex_attribute;
+        fixie::vertex_attribute _normal_attribute;
+        fixie::vertex_attribute _color_attribute;
+        size_t _active_client_texture;
+        std::vector<fixie::vertex_attribute> _texcoord_attributes;
 
         GLenum _error;
     };

@@ -24,6 +24,8 @@ namespace fixie
         , _next_texture_id(1)
         , _bound_textures(caps.max_texture_units())
         , _next_buffer_id(1)
+        , _active_client_texture(0)
+        , _texcoord_attributes(caps.max_texture_units())
         , _error(GL_NO_ERROR)
     {
         for (size_t i = 0; i < _lights.size(); i++)
@@ -212,16 +214,6 @@ namespace fixie
         return _projection_matrix_stack;
     }
 
-    GLenum& state::error()
-    {
-        return _error;
-    }
-
-    const GLenum& state::error() const
-    {
-        return _error;
-    }
-
     GLuint state::insert_texture(std::shared_ptr<fixie::texture> texture)
     {
         GLuint id = _next_texture_id++;
@@ -316,5 +308,65 @@ namespace fixie
     std::shared_ptr<const fixie::buffer> state::bound_element_array_buffer() const
     {
         return _bound_element_array_buffer;
+    }
+
+    fixie::vertex_attribute& state::vertex_attribute()
+    {
+        return _vertex_attribute;
+    }
+
+    const fixie::vertex_attribute& state::vertex_attribute() const
+    {
+        return _vertex_attribute;
+    }
+
+    fixie::vertex_attribute& state::normal_attribute()
+    {
+        return _normal_attribute;
+    }
+
+    const fixie::vertex_attribute& state::normal_attribute() const
+    {
+        return _normal_attribute;
+    }
+
+    fixie::vertex_attribute& state::color_attribute()
+    {
+        return _color_attribute;
+    }
+
+    const fixie::vertex_attribute& state::color_attribute() const
+    {
+        return _color_attribute;
+    }
+
+    size_t& state::active_client_texture()
+    {
+        return _active_client_texture;
+    }
+
+    const size_t& state::active_client_texture() const
+    {
+        return _active_client_texture;
+    }
+
+    fixie::vertex_attribute& state::texcoord_attribute(size_t unit)
+    {
+        return _texcoord_attributes[unit];
+    }
+
+    const fixie::vertex_attribute& state::texcoord_attribute(size_t unit) const
+    {
+        return _texcoord_attributes[unit];
+    }
+
+    GLenum& state::error()
+    {
+        return _error;
+    }
+
+    const GLenum& state::error() const
+    {
+        return _error;
     }
 }
