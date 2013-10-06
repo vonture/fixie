@@ -1,9 +1,9 @@
 #if defined(__APPLE__)
 #include <mach-o/dyld.h>
 
-static void* GetGLProcAddress(const std::string &name)
+static void* get_gl_proc_address(const std::string &name)
 {
-    static const struct mach_header* image = NULL;
+    static const struct mach_header* image = nullptr;
     if (!image)
     {
         image = NSAddImage("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", NSADDIMAGE_OPTION_RETURN_ON_ERROR);
@@ -14,9 +14,9 @@ static void* GetGLProcAddress(const std::string &name)
 
     NSSymbol symbol = image ? NSLookupSymbolInImage(image, symbol_name.c_str(),
                                                     NSLOOKUPSYMBOLINIMAGE_OPTION_BIND | NSLOOKUPSYMBOLINIMAGE_OPTION_RETURN_ON_ERROR)
-                            : NULL;
+                            : nullptr;
 
-    return symbol ? NSAddressOfSymbol(symbol) : NULL;
+    return symbol ? NSAddressOfSymbol(symbol) : nullptr;
 }
 #endif /* __APPLE__ */
 
@@ -24,17 +24,17 @@ static void* GetGLProcAddress(const std::string &name)
 #include <dlfcn.h>
 #include <stdio.h>
 
-static void* GetGLProcAddress(const std::string &name)
+static void* get_gl_proc_address(const std::string &name)
 {
-    static void* h = NULL;
-    static void* gpa = NULL;
+    static void* h = nullptr;
+    static void* gpa = nullptr;
 
     if (!h)
     {
-        h = dlopen(NULL, RTLD_LAZY | RTLD_LOCAL);
+        h = dlopen(nullptr, RTLD_LAZY | RTLD_LOCAL);
         if (!h)
         {
-            return NULL;
+            return nullptr;
         }
         gpa = dlsym(h, "glXGetProcAddress");
     }
@@ -74,27 +74,16 @@ namespace fixie
 {
     namespace priv
     {
-        static int TestPointer(const PROC pTest)
-        {
-            if(!pTest)
-            {
-                return 0;
-            }
-
-            ptrdiff_t iTest = (ptrdiff_t)pTest;
-            return (iTest == 1 || iTest == 2 || iTest == 3 || iTest == -1) ? 0 : 1;
-        }
-
-        static PROC GetGLProcAddress(const std::string &name)
+        static PROC get_gl_proc_address(const std::string &name)
         {
             PROC func_ptr = wglGetProcAddress(name.c_str());
-            if(TestPointer(func_ptr))
+            if(func_ptr)
             {
                 return func_ptr;
             }
 
             HMODULE gl_module = GetModuleHandleA("OpenGL32.dll");
-            return (PROC)GetProcAddress(gl_module, name.c_str());
+            return reinterpret_cast<PROC>(GetProcAddress(gl_module, name.c_str()));
         }
     }
 }
@@ -104,6 +93,6 @@ namespace fixie
 {
     template<typename T> std::function<T> load_gl_function(const std::string &name)
     {
-        return (T*)(priv::GetGLProcAddress(name));
+        return (T*)(priv::get_gl_proc_address(name));
     }
 }
