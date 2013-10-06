@@ -1492,6 +1492,7 @@ const GLubyte * FIXIE_APIENTRY glGetString(GLenum name)
     catch (fixie::gl_error e)
     {
         fixie::log_gl_error(e);
+        return nullptr;
     }
     catch (fixie::context_error e)
     {
