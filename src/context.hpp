@@ -22,7 +22,7 @@ namespace fixie
         virtual std::shared_ptr<buffer_impl> create_buffer() = 0;
 
         virtual void draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count) = 0;
-        virtual void draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, GLvoid* indices) = 0;
+        virtual void draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices) = 0;
 
         virtual void clear(const state& state, GLbitfield mask) = 0;
     };
@@ -46,7 +46,7 @@ namespace fixie
         const std::string& extension_string() const;
 
         void draw_arrays(GLenum mode, GLint first, GLsizei count);
-        void draw_elements(GLenum mode, GLsizei count, GLenum type, GLvoid* indices);
+        void draw_elements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices);
 
         void clear(GLbitfield mask);
 

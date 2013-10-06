@@ -36,7 +36,7 @@ namespace fixie
         {
         }
 
-        void context::draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, GLvoid* indices)
+        void context::draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices)
         {
         }
 

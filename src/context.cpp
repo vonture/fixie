@@ -85,7 +85,7 @@ namespace fixie
         _impl->draw_arrays(_state, mode, first, count);
     }
 
-    void context::draw_elements(GLenum mode, GLsizei count, GLenum type, GLvoid* indices)
+    void context::draw_elements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices)
     {
         _impl->draw_elements(_state, mode, count, type, indices);
     }
