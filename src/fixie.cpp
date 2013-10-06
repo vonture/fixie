@@ -361,6 +361,38 @@ namespace fixie
         default: throw invalid_enum_error("unknown target.");
         }
     }
+
+    static void set_client_state(GLenum array, bool enabled)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            vertex_attribute* attribute = nullptr;
+            switch (array)
+            {
+            case GL_VERTEX_ARRAY:        attribute = &ctx->state().vertex_attribute();                                       break;
+            case GL_NORMAL_ARRAY:        attribute = &ctx->state().normal_attribute();                                       break;
+            case GL_COLOR_ARRAY:         attribute = &ctx->state().color_attribute();                                        break;
+            case GL_TEXTURE_COORD_ARRAY: attribute = &ctx->state().texcoord_attribute(ctx->state().active_client_texture()); break;
+            default: throw invalid_enum_error("unknown array.");
+            }
+
+            attribute->enabled() = enabled ? GL_TRUE : GL_FALSE;
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
 }
 
 extern "C"
@@ -1023,7 +1055,30 @@ void FIXIE_APIENTRY glClearStencil(GLint s)
 
 void FIXIE_APIENTRY glClientActiveTexture(GLenum texture)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        GLsizei max_texture_units = ctx->caps().max_texture_units();
+        if (texture < GL_TEXTURE0 || static_cast<GLsizei>(texture - GL_TEXTURE0) > max_texture_units)
+        {
+            throw fixie::invalid_enum_error(fixie::format("invalid texture unit, must be between GL_TEXTURE0 and GL_TEXTURE%i.", max_texture_units - 1));
+        }
+
+        ctx->state().active_client_texture() = texture - GL_TEXTURE0;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glClipPlanex(GLenum plane, const GLfixed *equation)
@@ -1048,7 +1103,51 @@ void FIXIE_APIENTRY glColorMask(GLboolean red, GLboolean green, GLboolean blue, 
 
 void FIXIE_APIENTRY glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (size)
+        {
+        case 4:
+            break;
+        default:
+            throw fixie::invalid_value_error(fixie::format("color pointer size must be 4, %i provided.", size));
+        }
+
+        switch (type)
+        {
+        case GL_UNSIGNED_BYTE:
+        case GL_FIXED:
+        case GL_FLOAT:
+            break;
+        default:
+            throw fixie::invalid_enum_error("unknown color pointer type.");
+        }
+
+        if (stride < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("color stride cannot be negative, %i provided.", stride));
+        }
+
+        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        attribute.size() = size;
+        attribute.type() = type;
+        attribute.stride() = stride;
+        attribute.pointer() = pointer;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data)
@@ -1191,7 +1290,7 @@ void FIXIE_APIENTRY glDisable(GLenum cap)
 
 void FIXIE_APIENTRY glDisableClientState(GLenum array)
 {
-    UNIMPLEMENTED();
+    fixie::set_client_state(array, false);
 }
 
 void FIXIE_APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
@@ -1228,7 +1327,7 @@ void FIXIE_APIENTRY glEnable(GLenum cap)
 
 void FIXIE_APIENTRY glEnableClientState(GLenum array)
 {
-    UNIMPLEMENTED();
+    fixie::set_client_state(array, true);
 }
 
 void FIXIE_APIENTRY glFinish(void)
@@ -1710,7 +1809,44 @@ void FIXIE_APIENTRY glNormal3x(GLfixed nx, GLfixed ny, GLfixed nz)
 
 void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (type)
+        {
+        case GL_BYTE:
+        case GL_SHORT:
+        case GL_FIXED:
+        case GL_FLOAT:
+            break;
+        default:
+            throw fixie::invalid_enum_error("unknown normal pointer type.");
+        }
+
+        if (stride < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("normal stride cannot be negative, %i provided.", stride));
+        }
+
+        fixie::vertex_attribute& attribute = ctx->state().normal_attribute();
+        attribute.size() = 3;
+        attribute.type() = type;
+        attribute.stride() = stride;
+        attribute.pointer() = pointer;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glOrthox(GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
@@ -1947,7 +2083,54 @@ void FIXIE_APIENTRY glStencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 
 void FIXIE_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (size)
+        {
+        case 2:
+        case 3:
+        case 4:
+            break;
+        default:
+            throw fixie::invalid_value_error(fixie::format("texcoord pointer size must be 2, 3 or 4, %i provided.", size));
+        }
+
+        switch (type)
+        {
+        case GL_BYTE:
+        case GL_SHORT:
+        case GL_FIXED:
+        case GL_FLOAT:
+            break;
+        default:
+            throw fixie::invalid_enum_error("unknown texcoord pointer type.");
+        }
+
+        if (stride < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("texcoord stride cannot be negative, %i provided.", stride));
+        }
+
+        fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(ctx->state().active_client_texture());
+        attribute.size() = size;
+        attribute.type() = type;
+        attribute.stride() = stride;
+        attribute.pointer() = pointer;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
@@ -2007,7 +2190,54 @@ void FIXIE_APIENTRY glTranslatex(GLfixed x, GLfixed y, GLfixed z)
 
 void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (size)
+        {
+        case 2:
+        case 3:
+        case 4:
+            break;
+        default:
+            throw fixie::invalid_value_error(fixie::format("vertex pointer size must be 2, 3 or 4, %i provided.", size));
+        }
+
+        switch (type)
+        {
+        case GL_BYTE:
+        case GL_SHORT:
+        case GL_FIXED:
+        case GL_FLOAT:
+            break;
+        default:
+            throw fixie::invalid_enum_error("unknown vertex pointer type.");
+        }
+
+        if (stride < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("vertex stride cannot be negative, %i provided.", stride));
+        }
+
+        fixie::vertex_attribute& attribute = ctx->state().vertex_attribute();
+        attribute.size() = size;
+        attribute.type() = type;
+        attribute.stride() = stride;
+        attribute.pointer() = pointer;
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
