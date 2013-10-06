@@ -11,7 +11,7 @@ namespace fixie
         va_list s;
 
         va_start(s, fmt);
-        int len = vsnprintf(NULL, 0, fmt, s);
+        int len = vsnprintf(nullptr, 0, fmt, s);
         va_end(s);
 
         std::vector<char> buf(len + 1);
