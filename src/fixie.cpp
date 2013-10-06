@@ -1295,12 +1295,98 @@ void FIXIE_APIENTRY glDisableClientState(GLenum array)
 
 void FIXIE_APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (mode)
+        {
+        case GL_POINTS:
+        case GL_LINE_STRIP:
+        case GL_LINE_LOOP:
+        case GL_LINES:
+        case GL_TRIANGLE_STRIP:
+        case GL_TRIANGLE_FAN:
+        case GL_TRIANGLES:
+            break;
+        default:
+            throw fixie::invalid_enum_error("unknown draw mode.");
+        }
+
+        if (first < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("first cannot be negative (undefined behaviour), %i provided.", first));
+        }
+
+        if (count < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("draw count cannot be negative, %i provided.", count));
+        }
+
+        ctx->draw_arrays(mode, first, count);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (mode)
+        {
+        case GL_POINTS:
+        case GL_LINE_STRIP:
+        case GL_LINE_LOOP:
+        case GL_LINES:
+        case GL_TRIANGLE_STRIP:
+        case GL_TRIANGLE_FAN:
+        case GL_TRIANGLES:
+            break;
+        default:
+            throw fixie::invalid_enum_error("unknown draw mode.");
+        }
+
+        if (count < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("draw count cannot be negative, %i provided.", count));
+        }
+
+        switch (type)
+        {
+        case GL_UNSIGNED_BYTE:
+        case GL_UNSIGNED_SHORT:
+            break;
+        default:
+            throw fixie::invalid_enum_error("unknown index type.");
+        }
+
+        ctx->draw_elements(mode, count, type, indices);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glEnable(GLenum cap)
