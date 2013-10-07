@@ -19,6 +19,12 @@ namespace fixie
         typedef void (GL_APIENTRY gl_scissor_func)(GLint x, GLint y, GLsizei width, GLsizei height);
         typedef void (GL_APIENTRY gl_viewport_func)(GLint x, GLint y, GLsizei width, GLsizei height);
 
+        typedef void (GL_APIENTRY gl_gen_buffers_func)(GLsizei n, GLuint* buffers);
+        typedef void (GL_APIENTRY gl_delete_buffers_func)(GLsizei n, const GLuint* buffers);
+        typedef void (GL_APIENTRY gl_bind_buffer_func)(GLenum target, GLuint buffers);
+        typedef void (GL_APIENTRY gl_buffer_data_func)(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
+        typedef void (GL_APIENTRY gl_buffer_sub_data_func)(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data);
+
         typedef void (GL_APIENTRY gl_get_integerv_func)(GLenum pname, GLint *params);
         typedef void (GL_APIENTRY gl_get_floatv_func)(GLenum pname, GLfloat *params);
         typedef GLubyte* (GL_APIENTRY gl_get_string_func)(GLenum name);
@@ -40,6 +46,12 @@ namespace fixie
             std::function<gl_scissor_func> gl_scissor() const;
             std::function<gl_viewport_func> gl_viewport() const;
 
+            std::function<gl_gen_buffers_func> gl_gen_buffers() const;
+            std::function<gl_delete_buffers_func> gl_delete_buffers() const;
+            std::function<gl_bind_buffer_func> gl_bind_buffer() const;
+            std::function<gl_buffer_data_func> gl_buffer_data() const;
+            std::function<gl_buffer_sub_data_func> gl_buffer_sub_data() const;
+
             std::function<gl_get_integerv_func> gl_get_integerv() const;
             std::function<gl_get_floatv_func> gl_get_floatv() const;
             std::function<gl_get_string_func> gl_get_string() const;
@@ -57,6 +69,12 @@ namespace fixie
 
             std::function<gl_scissor_func> _gl_scissor;
             std::function<gl_viewport_func> _gl_viewport;
+
+            std::function<gl_gen_buffers_func> _gl_gen_buffers;
+            std::function<gl_delete_buffers_func> _gl_delete_buffers;
+            std::function<gl_bind_buffer_func> _gl_bind_buffer;
+            std::function<gl_buffer_data_func> _gl_buffer_data;
+            std::function<gl_buffer_sub_data_func> _gl_buffer_sub_data;
 
             std::function<gl_get_integerv_func> _gl_get_integerv;
             std::function<gl_get_floatv_func> _gl_get_floatv;
