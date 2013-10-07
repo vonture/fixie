@@ -30,7 +30,7 @@ namespace fixie
 
         private:
             fixie::caps _caps;
-            gl_functions _functions;
+            std::shared_ptr<gl_functions> _functions;
 
             std::string _renderer_string;
 
@@ -48,7 +48,7 @@ namespace fixie
             rectangle _cur_viewport;
             void sync_rasterizer_state(const state& state);
 
-            static void initialize_caps(const gl_functions& functions, fixie::caps& caps);
+            static void initialize_caps(std::shared_ptr<gl_functions> functions, fixie::caps& caps);
         };
     }
 }
