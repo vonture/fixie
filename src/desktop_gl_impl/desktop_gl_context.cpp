@@ -54,7 +54,7 @@ namespace fixie
 
         std::shared_ptr<texture_impl> context::create_texture()
         {
-            return std::make_shared<texture>();
+            return std::make_shared<texture>(_functions);
         }
 
         std::shared_ptr<buffer_impl> context::create_buffer()
