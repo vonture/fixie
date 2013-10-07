@@ -799,11 +799,11 @@ void FIXIE_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
         switch (target)
         {
         case GL_ARRAY_BUFFER:
-            ctx->state().bound_array_buffer() = buf;
+            ctx->state().bind_array_buffer(buf);
             break;
 
         case GL_ELEMENT_ARRAY_BUFFER:
-            ctx->state().bound_element_array_buffer() = buf;
+            ctx->state().bind_element_array_buffer(buf);
             break;
 
         default:

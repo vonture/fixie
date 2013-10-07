@@ -4,6 +4,10 @@ namespace fixie
 {
     namespace desktop_gl_impl
     {
+        void buffer::set_type(GLenum type)
+        {
+        }
+
         void buffer::set_data(GLsizeiptr size, const GLvoid* data, GLenum usage)
         {
         }

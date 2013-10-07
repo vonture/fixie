@@ -5,10 +5,16 @@
 namespace fixie
 {
     buffer::buffer(std::shared_ptr<buffer_impl> impl)
-        : _size(0)
+        : _type(0)
+        , _size(0)
         , _usage(GL_STATIC_DRAW)
         , _impl(impl)
     {
+    }
+
+    GLenum buffer::type() const
+    {
+        return _type;
     }
 
     GLsizei buffer::size() const
@@ -29,6 +35,15 @@ namespace fixie
     std::shared_ptr<const buffer_impl> buffer::impl() const
     {
         return _impl;
+    }
+
+    void buffer::bind(GLenum type)
+    {
+        if (_type != type)
+        {
+            _type = type;
+            _impl->set_type(type);
+        }
     }
 
     void buffer::set_data(GLsizeiptr size, const GLvoid* data, GLenum usage)

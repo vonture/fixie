@@ -276,6 +276,14 @@ namespace fixie
         {
             _buffers.erase(iter);
         }
+        if (_bound_array_buffer == iter->second)
+        {
+            _bound_array_buffer = nullptr;
+        }
+        if (_bound_element_array_buffer == iter->second)
+        {
+            _bound_element_array_buffer = nullptr;
+        }
     }
 
     std::shared_ptr<fixie::buffer> state::buffer(GLuint id)
@@ -290,9 +298,17 @@ namespace fixie
         return (iter != end(_buffers)) ? iter->second : nullptr;
     }
 
-    std::shared_ptr<fixie::buffer>& state::bound_array_buffer()
+    void state::bind_array_buffer(std::shared_ptr<fixie::buffer> buf)
     {
-        return _bound_array_buffer;
+        _bound_array_buffer = buf;
+        if (buf)
+        {
+            buf->bind(GL_ARRAY_BUFFER);
+            if (_bound_element_array_buffer == buf)
+            {
+                _bound_element_array_buffer = nullptr;
+            }
+        }
     }
 
     std::shared_ptr<const fixie::buffer> state::bound_array_buffer() const
@@ -300,12 +316,30 @@ namespace fixie
         return _bound_array_buffer;
     }
 
-    std::shared_ptr<fixie::buffer>& state::bound_element_array_buffer()
+    std::shared_ptr<fixie::buffer> state::bound_array_buffer()
+    {
+        return _bound_array_buffer;
+    }
+
+    void state::bind_element_array_buffer(std::shared_ptr<fixie::buffer> buf)
+    {
+        _bound_element_array_buffer = buf;
+        if (buf)
+        {
+            buf->bind(GL_ELEMENT_ARRAY_BUFFER);
+            if (_bound_array_buffer == buf)
+            {
+                _bound_array_buffer = nullptr;
+            }
+        }
+    }
+
+    std::shared_ptr<const fixie::buffer> state::bound_element_array_buffer() const
     {
         return _bound_element_array_buffer;
     }
 
-    std::shared_ptr<const fixie::buffer> state::bound_element_array_buffer() const
+    std::shared_ptr<fixie::buffer> state::bound_element_array_buffer()
     {
         return _bound_element_array_buffer;
     }

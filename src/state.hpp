@@ -95,11 +95,13 @@ namespace fixie
         std::shared_ptr<fixie::buffer> buffer(GLuint id);
         std::shared_ptr<const fixie::buffer> buffer(GLuint id) const;
 
-        std::shared_ptr<fixie::buffer>& bound_array_buffer();
+        void bind_array_buffer(std::shared_ptr<fixie::buffer> buf);
         std::shared_ptr<const fixie::buffer> bound_array_buffer() const;
+        std::shared_ptr<fixie::buffer> bound_array_buffer();
 
-        std::shared_ptr<fixie::buffer>& bound_element_array_buffer();
+        void bind_element_array_buffer(std::shared_ptr<fixie::buffer> buf);
         std::shared_ptr<const fixie::buffer> bound_element_array_buffer() const;
+        std::shared_ptr<fixie::buffer> bound_element_array_buffer();
 
         fixie::vertex_attribute& vertex_attribute();
         const fixie::vertex_attribute& vertex_attribute() const;
