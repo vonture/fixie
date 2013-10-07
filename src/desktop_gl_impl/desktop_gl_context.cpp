@@ -59,7 +59,7 @@ namespace fixie
 
         std::shared_ptr<buffer_impl> context::create_buffer()
         {
-            return std::make_shared<buffer>();
+            return std::make_shared<buffer>(_functions);
         }
 
         void context::draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count)
