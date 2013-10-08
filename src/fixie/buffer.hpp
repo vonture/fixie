@@ -4,10 +4,11 @@
 #include <memory>
 
 #include "fixie/fixie_gl_types.h"
+#include "fixie/noncopyable.hpp"
 
 namespace fixie
 {
-    class buffer_impl
+    class buffer_impl : public noncopyable
     {
     public:
         virtual void set_type(GLenum type) = 0;
@@ -15,7 +16,7 @@ namespace fixie
         virtual void set_sub_data(GLintptr offset, GLsizeiptr size, const GLvoid* data) = 0;
     };
 
-    class buffer
+    class buffer : public noncopyable
     {
     public:
         explicit buffer(std::shared_ptr<buffer_impl> impl);

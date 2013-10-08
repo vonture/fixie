@@ -7,10 +7,11 @@
 #include "fixie/state.hpp"
 #include "fixie/caps.hpp"
 #include "fixie/log.hpp"
+#include "fixie/noncopyable.hpp"
 
 namespace fixie
 {
-    class context_impl
+    class context_impl : public noncopyable
     {
     public:
         virtual const fixie::caps& caps() = 0;
@@ -27,7 +28,7 @@ namespace fixie
         virtual void clear(const state& state, GLbitfield mask) = 0;
     };
 
-    class context
+    class context : public noncopyable
     {
     public:
         context(std::shared_ptr<context_impl> impl);

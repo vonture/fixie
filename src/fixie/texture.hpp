@@ -5,10 +5,11 @@
 #include <memory>
 
 #include "fixie/fixie_gl_types.h"
+#include "fixie/noncopyable.hpp"
 
 namespace fixie
 {
-    class texture_impl
+    class texture_impl : public noncopyable
     {
     public:
         virtual void set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels) = 0;
@@ -19,7 +20,7 @@ namespace fixie
         virtual void copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::shared_ptr<const texture_impl> source) = 0;
     };
 
-    class texture
+    class texture : public noncopyable
     {
     public:
         explicit texture(std::shared_ptr<texture_impl> impl);
