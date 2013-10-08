@@ -1,4 +1,4 @@
-#include "fixie/null_impl/null_buffer.hpp"
+#include "fixie/null_impl/buffer.hpp"
 
 namespace fixie
 {

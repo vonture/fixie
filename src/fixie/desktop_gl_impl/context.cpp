@@ -1,6 +1,6 @@
-#include "fixie/desktop_gl_impl/desktop_gl_context.hpp"
-#include "fixie/desktop_gl_impl/desktop_gl_texture.hpp"
-#include "fixie/desktop_gl_impl/desktop_gl_buffer.hpp"
+#include "fixie/desktop_gl_impl/context.hpp"
+#include "fixie/desktop_gl_impl/texture.hpp"
+#include "fixie/desktop_gl_impl/buffer.hpp"
 
 #include "fixie/fixie_gl_es.h"
 

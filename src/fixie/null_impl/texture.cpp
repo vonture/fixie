@@ -1,14 +1,9 @@
-#include "fixie/desktop_gl_impl/desktop_gl_texture.hpp"
+#include "fixie/null_impl/texture.hpp"
 
 namespace fixie
 {
-    namespace desktop_gl_impl
+    namespace null_impl
     {
-        texture::texture(std::shared_ptr<gl_functions> functions)
-            : _functions(functions)
-        {
-        }
-
         void texture::set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
         {
         }

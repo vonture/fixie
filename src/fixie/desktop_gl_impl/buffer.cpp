@@ -1,4 +1,4 @@
-#include "fixie/desktop_gl_impl/desktop_gl_buffer.hpp"
+#include "fixie/desktop_gl_impl/buffer.hpp"
 
 namespace fixie
 {

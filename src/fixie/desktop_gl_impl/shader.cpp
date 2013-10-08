@@ -1,4 +1,4 @@
-#include "fixie/desktop_gl_impl/desktop_gl_shader.hpp"
+#include "fixie/desktop_gl_impl/shader.hpp"
 
 namespace fixie
 {

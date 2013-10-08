@@ -96,8 +96,8 @@ namespace fixie
     }
 }
 
-#include "null_impl/null_context.hpp"
-#include "desktop_gl_impl/desktop_gl_context.hpp"
+#include "null_impl/context.hpp"
+#include "desktop_gl_impl/context.hpp"
 
 namespace fixie
 {

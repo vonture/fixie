@@ -3,8 +3,8 @@
 
 #include <memory>
 #include "fixie/state.hpp"
-#include "fixie/desktop_gl_impl/desktop_gl_functions.hpp"
-#include "fixie/desktop_gl_impl/desktop_gl_shader.hpp"
+#include "fixie/desktop_gl_impl/gl_functions.hpp"
+#include "fixie/desktop_gl_impl/shader.hpp"
 
 namespace fixie
 {

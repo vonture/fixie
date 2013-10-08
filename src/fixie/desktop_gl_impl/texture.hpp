@@ -2,7 +2,7 @@
 #define _DESKTOP_GL_TEXTURE_HPP_
 
 #include "fixie/texture.hpp"
-#include "fixie/desktop_gl_impl/desktop_gl_functions.hpp"
+#include "fixie/desktop_gl_impl/gl_functions.hpp"
 
 namespace fixie
 {
