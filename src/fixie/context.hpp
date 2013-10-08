@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "exceptions.hpp"
-#include "state.hpp"
-#include "caps.hpp"
-#include "log.hpp"
+#include "fixie/exceptions.hpp"
+#include "fixie/state.hpp"
+#include "fixie/caps.hpp"
+#include "fixie/log.hpp"
 
 namespace fixie
 {
