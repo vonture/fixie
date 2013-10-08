@@ -1,7 +1,7 @@
-FILE(GLOB FIXIE_SOURCE *.cpp *.hpp *.inl)
-FILE(GLOB FIXIE_NULL_IMPL_SOURCE null_impl/*.cpp null_impl/*.hpp null_impl/*.inl)
-FILE(GLOB FIXIE_DESKTOP_GL_IMPL_SOURCE desktop_gl_impl/*.cpp desktop_gl_impl/*.hpp desktop_gl_impl/*.inl)
-FILE(GLOB FIXIE_INCLUDE ${PUBLIC_INCLUDES}/*.h)
+FILE(GLOB FIXIE_SOURCE fixie/*.cpp fixie/*.hpp fixie/*.inl)
+FILE(GLOB FIXIE_NULL_IMPL_SOURCE fixie/null_impl/*.cpp fixie/null_impl/*.hpp fixie/null_impl/*.inl)
+FILE(GLOB FIXIE_DESKTOP_GL_IMPL_SOURCE fixie/desktop_gl_impl/*.cpp fixie/desktop_gl_impl/*.hpp fixie/desktop_gl_impl/*.inl)
+FILE(GLOB FIXIE_INCLUDE ${PUBLIC_INCLUDES}/fixie/*.h)
 
 add_library(${FIXIE_PROJECT_NAME} SHARED ${FIXIE_SOURCE} ${FIXIE_NULL_IMPL_SOURCE} ${FIXIE_DESKTOP_GL_IMPL_SOURCE} ${FIXIE_INCLUDE})
 

@@ -1,5 +1,5 @@
-#include "fixie.h"
-#include "fixie_gl_es.h"
+#include "fixie/fixie.h"
+#include "fixie/fixie_gl_es.h"
 
 #include "GLFW/glfw3.h"
 
