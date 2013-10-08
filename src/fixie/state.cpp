@@ -227,6 +227,13 @@ namespace fixie
         if (iter != end(_textures))
         {
             _textures.erase(iter);
+            for (auto bind = begin(_bound_textures); bind != end(_bound_textures); ++bind)
+            {
+                if (iter->second == *bind)
+                {
+                    *bind = nullptr;
+                }
+            }
         }
     }
 
@@ -275,14 +282,14 @@ namespace fixie
         if (iter != end(_buffers))
         {
             _buffers.erase(iter);
-        }
-        if (_bound_array_buffer == iter->second)
-        {
-            _bound_array_buffer = nullptr;
-        }
-        if (_bound_element_array_buffer == iter->second)
-        {
-            _bound_element_array_buffer = nullptr;
+            if (_bound_array_buffer == iter->second)
+            {
+                _bound_array_buffer = nullptr;
+            }
+            if (_bound_element_array_buffer == iter->second)
+            {
+                _bound_element_array_buffer = nullptr;
+            }
         }
     }
 
