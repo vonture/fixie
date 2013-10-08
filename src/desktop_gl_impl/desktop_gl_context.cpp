@@ -12,6 +12,7 @@ namespace fixie
     {
         context::context()
             : _functions(std::make_shared<gl_functions>())
+            , _shader_cache(_functions)
             , _cur_clear_color(0.0f, 0.0f, 0.0f, 0.0f)
             , _cur_clear_depth(1.0f)
             , _cur_clear_stencil(0)

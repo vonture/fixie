@@ -4,7 +4,8 @@
 #include <unordered_set>
 
 #include "context.hpp"
-#include "desktop_gl_functions.hpp"
+#include "desktop_gl_impl/desktop_gl_functions.hpp"
+#include "desktop_gl_impl/desktop_gl_shader_cache.hpp"
 
 namespace fixie
 {
@@ -31,6 +32,7 @@ namespace fixie
         private:
             fixie::caps _caps;
             std::shared_ptr<gl_functions> _functions;
+            shader_cache _shader_cache;
 
             std::string _renderer_string;
 
