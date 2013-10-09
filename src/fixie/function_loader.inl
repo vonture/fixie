@@ -1,7 +1,7 @@
 #if defined(__APPLE__)
 #include <mach-o/dyld.h>
 
-static void* get_gl_proc_address(const std::string &name)
+static void* get_gl_proc_address(const std::string& name)
 {
     static const struct mach_header* image = nullptr;
     if (!image)
@@ -24,7 +24,7 @@ static void* get_gl_proc_address(const std::string &name)
 #include <dlfcn.h>
 #include <stdio.h>
 
-static void* get_gl_proc_address(const std::string &name)
+static void* get_gl_proc_address(const std::string& name)
 {
     static void* h = nullptr;
     static void* gpa = nullptr;
@@ -74,7 +74,7 @@ namespace fixie
 {
     namespace priv
     {
-        static PROC get_gl_proc_address(const std::string &name)
+        static PROC get_gl_proc_address(const std::string& name)
         {
             PROC func_ptr = wglGetProcAddress(name.c_str());
             if(func_ptr)
@@ -84,6 +84,19 @@ namespace fixie
 
             HMODULE gl_module = GetModuleHandleA("OpenGL32.dll");
             return reinterpret_cast<PROC>(GetProcAddress(gl_module, name.c_str()));
+        }
+    }
+}
+#endif
+
+#if defined(__GNUC__)
+namespace fixie
+{
+    namespace priv
+    {
+        static void* get_gl_proc_address(const std::string& name)
+        {
+            return NULL;
         }
     }
 }

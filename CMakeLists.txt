@@ -26,7 +26,7 @@ set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_DEBUG BUILD_DEBUG=1)
 set_directory_properties(PROPERTIES COMPILE_DEFINITIONS_RELEASE BUILD_RELEASE=1)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions(-Wall -ansi -Wno-deprecated -pthread)
+    add_definitions(-Wall -ansi -std=c++11 -Wno-deprecated -pthread)
 endif()
 
 if(MSVC)

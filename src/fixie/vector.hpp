@@ -1,6 +1,7 @@
 #ifndef _VECTOR_HPP_
 #define _VECTOR_HPP_
 
+#include <cstddef>
 #include "fixie/fixie_gl_types.h"
 
 namespace fixie

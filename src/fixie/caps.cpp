@@ -1,5 +1,7 @@
 #include "fixie/caps.hpp"
 
+#include <algorithm>
+
 namespace fixie
 {
     caps::caps()

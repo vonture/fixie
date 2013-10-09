@@ -2,6 +2,7 @@
 #define _CAPS_HPP_
 
 #include <vector>
+#include <cstddef>
 
 #include "fixie/fixie_gl_types.h"
 #include "range.hpp"

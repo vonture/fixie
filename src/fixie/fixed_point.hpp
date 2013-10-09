@@ -1,6 +1,7 @@
 #ifndef _FIXED_POINT_HPP_
 #define _FIXED_POINT_HPP_
 
+#include <cstddef>
 #include "fixie/fixie_gl_types.h"
 
 namespace fixie

@@ -457,6 +457,7 @@ fixie_context FIXIE_APIENTRY fixie_get_context()
     catch (...)
     {
         UNREACHABLE();
+        return nullptr;
     }
 }
 
