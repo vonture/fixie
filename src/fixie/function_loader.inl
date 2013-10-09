@@ -91,7 +91,7 @@
         {
             static void* get_gl_proc_address(const std::string& name)
             {
-                return glXGetProcAddress(reinterpret_cast<const GLubyte*>(name.c_str()));
+                return reinterpret_cast<void*>(glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(name.c_str())));
             }
         }
     }
