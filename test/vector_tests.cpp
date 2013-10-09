@@ -1,8 +1,9 @@
 #include "gtest/gtest.h"
 
 #include <time.h>
+#include <cmath>
 
-#include "vector.hpp"
+#include "fixie/vector.hpp"
 
 
 namespace fixie

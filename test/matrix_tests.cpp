@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 
-#include "matrix.hpp"
+#include <cmath>
+
+#include "fixie/matrix.hpp"
 
 namespace fixie
 {
