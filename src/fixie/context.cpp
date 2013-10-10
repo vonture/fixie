@@ -198,7 +198,7 @@ namespace fixie
 
         if (msg_callback)
         {
-            msg_callback(source, type, id, severity, msg.length(), msg.c_str(), user_param);
+            msg_callback(source, type, id, severity, static_cast<GLsizei>(msg.length()), msg.c_str(), user_param);
         }
     }
 }
