@@ -11,6 +11,9 @@ namespace fixie
     public:
         light();
 
+        GLboolean& enabled();
+        const GLboolean& enabled() const;
+
         color& ambient();
         const color& ambient() const;
 
@@ -42,6 +45,7 @@ namespace fixie
         const GLfloat& quadratic_attenuation() const;
 
     private:
+        GLboolean _enabled;
         color _ambient;
         color _diffuse;
         color _specular;

@@ -1,9 +1,11 @@
 #include "fixie/light.hpp"
+#include "fixie/fixie_gl_es.h"
 
 namespace fixie
 {
     light::light()
-        : _ambient()
+        : _enabled(GL_FALSE)
+        , _ambient()
         , _diffuse()
         , _specular()
         , _position()
@@ -13,6 +15,16 @@ namespace fixie
         , _constant_attenuation(0.0f)
         , _quadratic_attenuation(0.0f)
     {
+    }
+
+    GLboolean& light::enabled()
+    {
+        return _enabled;
+    }
+
+    const GLboolean& light::enabled() const
+    {
+        return _enabled;
     }
 
     color& light::ambient()
@@ -120,6 +132,7 @@ namespace fixie
         // From the ES 1.1.12 spec, table 2.8, pg 39
 
         light light;
+        light.enabled() = GL_FALSE;
         light.ambient() = color(0.0f, 0.0f, 0.0f, 1.0f);
         light.diffuse() = (idx > 0) ? color(0.0f, 0.0f, 0.0f, 1.0f) : color(1.0f, 1.0f, 1.0f, 1.0f);
         light.specular() = (idx > 0) ? color(0.0f, 0.0f, 0.0f, 1.0f) : color(1.0f, 1.0f, 1.0f, 1.0f);
