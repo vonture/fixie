@@ -27,6 +27,7 @@ namespace fixie
         , _next_buffer_id(1)
         , _active_client_texture(0)
         , _texcoord_attributes(caps.max_texture_units())
+        , _shade_model(GL_SMOOTH)
         , _error(GL_NO_ERROR)
     {
         for (size_t i = 0; i < _lights.size(); i++)
@@ -400,6 +401,16 @@ namespace fixie
     const fixie::vertex_attribute& state::texcoord_attribute(size_t unit) const
     {
         return _texcoord_attributes[unit];
+    }
+
+    GLenum& state::shade_model()
+    {
+        return _shade_model;
+    }
+
+    const GLenum& state::shade_model() const
+    {
+        return _shade_model;
     }
 
     GLenum& state::error()

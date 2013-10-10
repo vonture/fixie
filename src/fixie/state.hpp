@@ -118,6 +118,9 @@ namespace fixie
         fixie::vertex_attribute& texcoord_attribute(size_t unit);
         const fixie::vertex_attribute& texcoord_attribute(size_t unit) const;
 
+        GLenum& shade_model();
+        const GLenum& shade_model() const;
+
         GLenum& error();
         const GLenum& error() const;
 
@@ -166,6 +169,8 @@ namespace fixie
         fixie::vertex_attribute _color_attribute;
         size_t _active_client_texture;
         std::vector<fixie::vertex_attribute> _texcoord_attributes;
+
+        GLenum _shade_model;
 
         GLenum _error;
     };
