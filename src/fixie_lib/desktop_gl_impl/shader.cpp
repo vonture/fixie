@@ -8,5 +8,9 @@ namespace fixie
             : _functions(functions)
         {
         }
+
+        void shader::sync_state(const state& state)
+        {
+        }
     }
 }
