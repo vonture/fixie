@@ -38,7 +38,7 @@ find_package(OpenGL REQUIRED)
 
 include_directories(${PUBLIC_INCLUDES})
 set(FIXIE_PROJECT_NAME ${PROJECT_NAME_STR})
-set(FIXIE_STATIC_PROJECT_NAME ${PROJECT_NAME_STR}_static)
+set(FIXIE_LIB_PROJECT_NAME ${PROJECT_NAME_STR}_lib)
 
 add_subdirectory(${SRC_DIR})
 

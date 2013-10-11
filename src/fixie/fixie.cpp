@@ -5,11 +5,11 @@
 #include "fixie/fixie_gl_es.h"
 #include "fixie/fixie_gl_es_ext.h"
 
-#include "fixie/debug.hpp"
-#include "fixie/context.hpp"
-#include "fixie/fixed_point.hpp"
-#include "fixie/exceptions.hpp"
-#include "fixie/util.hpp"
+#include "fixie_lib/debug.hpp"
+#include "fixie_lib/context.hpp"
+#include "fixie_lib/fixed_point.hpp"
+#include "fixie_lib/exceptions.hpp"
+#include "fixie_lib/util.hpp"
 
 namespace fixie
 {

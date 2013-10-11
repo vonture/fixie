@@ -9,7 +9,7 @@
         #elif defined(FIXIE_DLL_LIBRARY_IMPORT)
             #define FIXIE_API __declspec(dllimport)
         #else // statically linked
-            #define AS_API
+            #define FIXIE_API
         #endif
     #elif defined(__GNUC__)
         #if defined(FIXIE_EXPORT)
