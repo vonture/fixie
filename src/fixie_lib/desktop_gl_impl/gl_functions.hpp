@@ -8,79 +8,102 @@ namespace fixie
 {
     namespace desktop_gl_impl
     {
-        typedef void (GL_APIENTRY gl_enable_func)(GLenum cap);
-        typedef void (GL_APIENTRY gl_disable_func)(GLenum cap);
-
-        typedef void (GL_APIENTRY gl_clear_color_func)(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-        typedef void (GL_APIENTRY gl_clear_depthf_func)(GLclampf depth);
-        typedef void (GL_APIENTRY gl_clear_stencil_func)(GLint s);
-        typedef void (GL_APIENTRY gl_clear_func)(GLbitfield mask);
-
-        typedef void (GL_APIENTRY gl_scissor_func)(GLint x, GLint y, GLsizei width, GLsizei height);
-        typedef void (GL_APIENTRY gl_viewport_func)(GLint x, GLint y, GLsizei width, GLsizei height);
-
-        typedef void (GL_APIENTRY gl_gen_buffers_func)(GLsizei n, GLuint* buffers);
-        typedef void (GL_APIENTRY gl_delete_buffers_func)(GLsizei n, const GLuint* buffers);
-        typedef void (GL_APIENTRY gl_bind_buffer_func)(GLenum target, GLuint buffers);
-        typedef void (GL_APIENTRY gl_buffer_data_func)(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage);
-        typedef void (GL_APIENTRY gl_buffer_sub_data_func)(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid *data);
-
-        typedef void (GL_APIENTRY gl_get_integerv_func)(GLenum pname, GLint *params);
-        typedef void (GL_APIENTRY gl_get_floatv_func)(GLenum pname, GLfloat *params);
-        typedef GLubyte* (GL_APIENTRY gl_get_string_func)(GLenum name);
-        typedef GLubyte* (GL_APIENTRY gl_get_stringi_func)(GLenum name, GLuint index);
+        #define DECLARE_GL_FUNCTION(name, return_type, args, gl_name) \
+            public: \
+                std::function<return_type GL_APIENTRY ## args> name() const \
+                { \
+                    if (_##name == nullptr) \
+                    { \
+                        _##name = load_gl_function<return_type GL_APIENTRY ## args>(#gl_name); \
+                    } \
+                    return _##name; \
+                } \
+            private: \
+                mutable std::function<return_type GL_APIENTRY ## args> _##name
 
         class gl_functions
         {
-        public:
-            gl_functions();
+            DECLARE_GL_FUNCTION(gl_enable, void, (GLenum cap), glEnable);
 
-            std::function<gl_enable_func> gl_enable() const;
-            std::function<gl_disable_func> gl_disable() const;
+            DECLARE_GL_FUNCTION(gl_disable, void, (GLenum cap), glDisable);
 
-            std::function<gl_clear_color_func> gl_clear_color() const;
-            std::function<gl_clear_depthf_func> gl_clear_depthf() const;
-            std::function<gl_clear_stencil_func> gl_clear_stencil() const;
-            std::function<gl_clear_func> gl_clear() const;
+            DECLARE_GL_FUNCTION(gl_clear_color, void, (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha), glClearColor);
+            DECLARE_GL_FUNCTION(gl_clear_depthf, void, (GLclampf depth), glClearDepthf);
+            DECLARE_GL_FUNCTION(gl_clear_stencil, void, (GLint s), glClearStencil);
+            DECLARE_GL_FUNCTION(gl_clear, void, (GLbitfield mask), glClear);
 
-            std::function<gl_scissor_func> gl_scissor() const;
-            std::function<gl_viewport_func> gl_viewport() const;
+            DECLARE_GL_FUNCTION(gl_scissor, void, (GLint x, GLint y, GLsizei width, GLsizei height), glScissor);
+            DECLARE_GL_FUNCTION(gl_viewport, void, (GLint x, GLint y, GLsizei width, GLsizei height), glViewport);
 
-            std::function<gl_gen_buffers_func> gl_gen_buffers() const;
-            std::function<gl_delete_buffers_func> gl_delete_buffers() const;
-            std::function<gl_bind_buffer_func> gl_bind_buffer() const;
-            std::function<gl_buffer_data_func> gl_buffer_data() const;
-            std::function<gl_buffer_sub_data_func> gl_buffer_sub_data() const;
+            DECLARE_GL_FUNCTION(gl_gen_buffers, void, (GLsizei n, GLuint* buffers), glGenBuffers);
+            DECLARE_GL_FUNCTION(gl_delete_buffers, void, (GLsizei n, const GLuint* buffers), glDeleteBuffers);
+            DECLARE_GL_FUNCTION(gl_bind_buffer, void, (GLenum target, GLuint buffers), glBindBuffer);
+            DECLARE_GL_FUNCTION(gl_buffer_data, void, (GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage), glBufferData);
+            DECLARE_GL_FUNCTION(gl_buffer_sub_data, void, (GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid* data), glBufferSubData);
 
-            std::function<gl_get_integerv_func> gl_get_integerv() const;
-            std::function<gl_get_floatv_func> gl_get_floatv() const;
-            std::function<gl_get_string_func> gl_get_string() const;
-            std::function<gl_get_stringi_func> gl_get_stringi() const;
+            DECLARE_GL_FUNCTION(gl_get_integerv, void, (GLenum pname, GLint *params), glGetIntegerv);
+            DECLARE_GL_FUNCTION(gl_get_floatv, void, (GLenum pname, GLfloat *params), glGetFloatv);
+            DECLARE_GL_FUNCTION(gl_get_string, GLubyte*, (GLenum name), glGetString);
+            DECLARE_GL_FUNCTION(gl_get_stringi, GLubyte*, (GLenum name, GLuint index), glGetStringi);
 
-        private:
+            DECLARE_GL_FUNCTION(gl_create_shader, GLuint, (GLenum shader_type), glCreateShader);
+            DECLARE_GL_FUNCTION(gl_delete_shader, void, (GLuint shader), glDeleteShader);
+            DECLARE_GL_FUNCTION(gl_shader_source, void, (GLuint shader, GLsizei count, const GLchar** string, const GLint* length), glShaderSource);
+            DECLARE_GL_FUNCTION(gl_compile_shader, void, (GLuint shader), glCompileShader);
+            DECLARE_GL_FUNCTION(gl_get_shader_iv, void, (GLuint shader, GLenum pname, GLint* params), glGetShaderiv);
+            DECLARE_GL_FUNCTION(gl_get_shader_info_log, void, (GLuint shader, GLsizei max_length, GLsizei* length, GLchar* infoLog), glGetShaderInfoLog);
 
-            std::function<gl_enable_func> _gl_enable;
-            std::function<gl_enable_func> _gl_disable;
+            DECLARE_GL_FUNCTION(gl_create_program, GLuint, (), glCreateProgram);
+            DECLARE_GL_FUNCTION(gl_delete_program, void, (GLuint program), glDeleteProgram);
+            DECLARE_GL_FUNCTION(gl_use_program, void, (GLuint program), glUseProgram);
+            DECLARE_GL_FUNCTION(gl_attach_shader, void, (GLuint program, GLuint shader), glAttachShader);
+            DECLARE_GL_FUNCTION(gl_link_program, void, (GLuint program), glLinkProgram);
+            DECLARE_GL_FUNCTION(gl_get_program_iv, void, (GLuint program, GLenum pname, GLint* params), glGetProgramiv);
+            DECLARE_GL_FUNCTION(gl_get_program_info_log, void, (GLuint program, GLsizei max_length, GLsizei* length, GLchar* infoLog), glGetProgramInfoLog);
+            DECLARE_GL_FUNCTION(gl_bind_frag_data_location, void, (GLuint program, GLuint color_number, const GLchar* name), glBindFragDataLocation);
 
-            std::function<gl_clear_color_func> _gl_clear_color;
-            std::function<gl_clear_depthf_func> _gl_clear_depthf;
-            std::function<gl_clear_stencil_func> _gl_clear_stencil;
-            std::function<gl_clear_func> _gl_clear;
+            DECLARE_GL_FUNCTION(gl_get_uniform_location, GLint, (GLuint program, const GLchar* name), glGetUniformLocation);
+            DECLARE_GL_FUNCTION(gl_get_attrib_location, GLint, (GLuint program, const GLchar* name), glGetAttribLocation);
 
-            std::function<gl_scissor_func> _gl_scissor;
-            std::function<gl_viewport_func> _gl_viewport;
+            DECLARE_GL_FUNCTION(gl_uniform_1f, void, (GLint location, GLfloat v0), glUniform1f);
+            DECLARE_GL_FUNCTION(gl_uniform_2f, void, (GLint location, GLfloat v0, GLfloat v1), glUniform2f);
+            DECLARE_GL_FUNCTION(gl_uniform_3f, void, (GLint location, GLfloat v0, GLfloat v1, GLfloat v2), glUniform3f);
+            DECLARE_GL_FUNCTION(gl_uniform_4f, void, (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3), glUniform4f);
+            DECLARE_GL_FUNCTION(gl_uniform_1fv, void, (GLint location, GLsizei count, const GLfloat* value), glUniform1fv);
+            DECLARE_GL_FUNCTION(gl_uniform_2fv, void, (GLint location, GLsizei count, const GLfloat* value), glUniform2fv);
+            DECLARE_GL_FUNCTION(gl_uniform_3fv, void, (GLint location, GLsizei count, const GLfloat* value), glUniform3fv);
+            DECLARE_GL_FUNCTION(gl_uniform_4fv, void, (GLint location, GLsizei count, const GLfloat* value), glUniform4fv);
 
-            std::function<gl_gen_buffers_func> _gl_gen_buffers;
-            std::function<gl_delete_buffers_func> _gl_delete_buffers;
-            std::function<gl_bind_buffer_func> _gl_bind_buffer;
-            std::function<gl_buffer_data_func> _gl_buffer_data;
-            std::function<gl_buffer_sub_data_func> _gl_buffer_sub_data;
+            DECLARE_GL_FUNCTION(gl_uniform_1i, void, (GLint location, GLint v0), glUniform1i);
+            DECLARE_GL_FUNCTION(gl_uniform_2i, void, (GLint location, GLint v0, GLint v1), glUniform2i);
+            DECLARE_GL_FUNCTION(gl_uniform_3i, void, (GLint location, GLint v0, GLint v1, GLint v2), glUniform3i);
+            DECLARE_GL_FUNCTION(gl_uniform_4i, void, (GLint location, GLint v0, GLint v1, GLint v2, GLint v3), glUniform4i);
+            DECLARE_GL_FUNCTION(gl_uniform_1iv, void, (GLint location, GLsizei count, const GLint* value), glUniform1iv);
+            DECLARE_GL_FUNCTION(gl_uniform_2iv, void, (GLint location, GLsizei count, const GLint* value), glUniform2iv);
+            DECLARE_GL_FUNCTION(gl_uniform_3iv, void, (GLint location, GLsizei count, const GLint* value), glUniform3iv);
+            DECLARE_GL_FUNCTION(gl_uniform_4iv, void, (GLint location, GLsizei count, const GLint* value), glUniform4iv);
 
-            std::function<gl_get_integerv_func> _gl_get_integerv;
-            std::function<gl_get_floatv_func> _gl_get_floatv;
-            std::function<gl_get_string_func> _gl_get_string;
-            std::function<gl_get_stringi_func> _gl_get_stringi;
+            DECLARE_GL_FUNCTION(gl_uniform_1ui, void, (GLint location, GLuint v0), glUniform1ui);
+            DECLARE_GL_FUNCTION(gl_uniform_2ui, void, (GLint location, GLuint v0, GLuint v1), glUniform2ui);
+            DECLARE_GL_FUNCTION(gl_uniform_3ui, void, (GLint location, GLuint v0, GLuint v1, GLuint v2), glUniform3ui);
+            DECLARE_GL_FUNCTION(gl_uniform_4ui, void, (GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3), glUniform4ui);
+            DECLARE_GL_FUNCTION(gl_uniform_1uiv, void, (GLint location, GLsizei count, const GLuint* value), glUniform1uiv);
+            DECLARE_GL_FUNCTION(gl_uniform_2uiv, void, (GLint location, GLsizei count, const GLuint* value), glUniform2uiv);
+            DECLARE_GL_FUNCTION(gl_uniform_3uiv, void, (GLint location, GLsizei count, const GLuint* value), glUniform3uiv);
+            DECLARE_GL_FUNCTION(gl_uniform_4uiv, void, (GLint location, GLsizei count, const GLuint* value), glUniform4uiv);
+
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_2fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix2fv);
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_3fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix3fv);
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_4fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix4fv);
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_2x3fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix2x3fv);
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_3x2fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix3x2fv);
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_2x4fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix2x4fv);
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_4x2fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix4x2fv);
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_3x4fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix3x4fv);
+            DECLARE_GL_FUNCTION(gl_uniform_matrix_4x3fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix4x3fv);
         };
+
+        #undef DECLARE_GL_FUNCTION
     }
 }
 
