@@ -14,12 +14,12 @@ namespace fixie
         class shader
         {
         public:
-            shader(const shader_info& info, std::shared_ptr<gl_functions> functions);
+            shader(const shader_info& info, std::shared_ptr<const gl_functions> functions);
 
             void sync_state(const state& state);
 
         private:
-            std::shared_ptr<gl_functions> _functions;
+            std::shared_ptr<const gl_functions> _functions;
 
             GLuint _program;
 

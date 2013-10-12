@@ -11,7 +11,7 @@ namespace fixie
         class texture : public fixie::texture_impl
         {
         public:
-            texture(std::shared_ptr<gl_functions> functions);
+            texture(std::shared_ptr<const gl_functions> functions);
 
             virtual void set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels) override;
             virtual void set_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels) override;
@@ -21,7 +21,7 @@ namespace fixie
             virtual void copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::shared_ptr<const texture_impl> source) override;
 
         private:
-            std::shared_ptr<gl_functions> _functions;
+            std::shared_ptr<const gl_functions> _functions;
         };
     }
 }

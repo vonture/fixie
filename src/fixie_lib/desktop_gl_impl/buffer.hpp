@@ -11,7 +11,7 @@ namespace fixie
         class buffer : public fixie::buffer_impl
         {
         public:
-            buffer(std::shared_ptr<gl_functions> functions);
+            buffer(std::shared_ptr<const gl_functions> functions);
             ~buffer();
 
             virtual void set_type(GLenum type) override;
@@ -19,7 +19,7 @@ namespace fixie
             virtual void set_sub_data(GLintptr offset, GLsizeiptr size, const GLvoid* data) override;
 
         private:
-            std::shared_ptr<gl_functions> _functions;
+            std::shared_ptr<const gl_functions> _functions;
             GLuint _id;
             GLenum _type;
         };

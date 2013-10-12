@@ -4,7 +4,7 @@ namespace fixie
 {
     namespace desktop_gl_impl
     {
-        buffer::buffer(std::shared_ptr<gl_functions> functions)
+        buffer::buffer(std::shared_ptr<const gl_functions> functions)
             : _functions(functions)
             , _id(0)
             , _type(0)

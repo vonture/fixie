@@ -15,12 +15,12 @@ namespace fixie
         class shader_cache
         {
         public:
-            shader_cache(std::shared_ptr<gl_functions> functions);
+            shader_cache(std::shared_ptr<const gl_functions> functions);
 
             std::shared_ptr<shader> get_shader(const state& state, const caps& caps);
 
         private:
-            std::shared_ptr<gl_functions> _functions;
+            std::shared_ptr<const gl_functions> _functions;
             std::unordered_map< shader_info, std::shared_ptr<shader> > _shaders;
         };
     }

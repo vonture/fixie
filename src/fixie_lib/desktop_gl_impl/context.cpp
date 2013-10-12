@@ -127,7 +127,7 @@ namespace fixie
             }
         }
 
-        void context::initialize_caps(std::shared_ptr<gl_functions> functions, fixie::caps& caps)
+        void context::initialize_caps(std::shared_ptr<const gl_functions> functions, fixie::caps& caps)
         {
             caps.max_lights() = 8;
             caps.max_clip_planes() = 6;
