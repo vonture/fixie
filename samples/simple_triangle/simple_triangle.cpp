@@ -3,6 +3,8 @@
 
 #include "GLFW/glfw3.h"
 
+#include <algorithm>
+
 int main(int argc, char** argv)
 {
     if (!glfwInit())
@@ -10,7 +12,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "fixie testbed", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SAMPLE_WIDTH, SAMPLE_HEIGHT, SAMPLE_NAME, NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -48,11 +50,13 @@ int main(int argc, char** argv)
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrthof(-ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
+        glOrthof(width / -2.0f, width / 2.0f, height / 2.0f, height / -2.0f, 1.0f, -1.0f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glRotatef(time * 50.f, 0.0f, 0.0f, 1.0f);
+        float scale = std::min<float>(width, height) * 0.75f;
+        glScalef(scale, scale, scale);
+        glRotatef(time * 50.f, 1.0f, 1.0f, 1.0f);
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(3, GL_FLOAT, sizeof(float) * 7, 0);

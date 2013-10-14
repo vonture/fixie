@@ -1,3 +1,6 @@
+set(SAMPLE_WINDOW_WIDTH 640)
+set(SAMPLE_WINDOW_HEIGHT 480)
+
 macro(link_glfw PROJECT_NAME)
     if(NOT WIN32)
         target_link_libraries(${PROJECT_NAME} glfw3.a)
@@ -20,7 +23,7 @@ macro(add_sample PROJECT_NAME SOURCE)
 
     set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER samples)
 
-    add_definitions(-DFIXIE_DLL_LIBRARY_IMPORT)
+    add_definitions(-DFIXIE_DLL_LIBRARY_IMPORT -DSAMPLE_NAME=\"${PROJECT_NAME}\" -DSAMPLE_WIDTH=${SAMPLE_WINDOW_WIDTH} -DSAMPLE_HEIGHT=${SAMPLE_WINDOW_HEIGHT})
 endmacro()
 
-add_subdirectory(simple)
+add_subdirectory(simple_triangle)
