@@ -533,7 +533,25 @@ void FIXIE_APIENTRY glClipPlanef(GLenum plane, const GLfloat *equation)
 
 void FIXIE_APIENTRY glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        attribute.generic_values() = fixie::vector4(red, green, blue, alpha);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDepthRangef(GLclampf zNear, GLclampf zFar)
@@ -680,12 +698,54 @@ void FIXIE_APIENTRY glMultMatrixf(const GLfloat *m)
 
 void FIXIE_APIENTRY glMultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        GLsizei max_texture_units = ctx->caps().max_texture_units();
+        if (target < GL_TEXTURE0 || static_cast<GLsizei>(target - GL_TEXTURE0) > max_texture_units)
+        {
+            throw fixie::invalid_enum_error(fixie::format("invalid texture target, must be between GL_TEXTURE0 and GL_TEXTURE%i.", max_texture_units - 1));
+        }
+
+        fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(target - GL_TEXTURE0);
+        attribute.generic_values() = fixie::vector4(s, t, r, q);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glNormal3f(GLfloat nx, GLfloat ny, GLfloat nz)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        fixie::vertex_attribute& attribute = ctx->state().normal_attribute();
+        attribute.generic_values() = fixie::vector4(nx, ny, nz, 1.0f);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glOrthof(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
@@ -1107,12 +1167,50 @@ void FIXIE_APIENTRY glClipPlanex(GLenum plane, const GLfixed *equation)
 
 void FIXIE_APIENTRY glColor4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+
+        GLfloat divisor = static_cast<GLfloat>(std::numeric_limits<GLubyte>::max());
+        attribute.generic_values() = fixie::vector4(red / divisor, green / divisor, blue / divisor, alpha / divisor);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glColor4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(red), fixie::fixed_to_float(green), fixie::fixed_to_float(blue), fixie::fixed_to_float(alpha));
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
@@ -1905,12 +2003,54 @@ void FIXIE_APIENTRY glMultMatrixx(const GLfixed *m)
 
 void FIXIE_APIENTRY glMultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfixed r, GLfixed q)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        GLsizei max_texture_units = ctx->caps().max_texture_units();
+        if (target < GL_TEXTURE0 || static_cast<GLsizei>(target - GL_TEXTURE0) > max_texture_units)
+        {
+            throw fixie::invalid_enum_error(fixie::format("invalid texture target, must be between GL_TEXTURE0 and GL_TEXTURE%i.", max_texture_units - 1));
+        }
+
+        fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(target - GL_TEXTURE0);
+        attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(s), fixie::fixed_to_float(t), fixie::fixed_to_float(r), fixie::fixed_to_float(q));
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glNormal3x(GLfixed nx, GLfixed ny, GLfixed nz)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(nx), fixie::fixed_to_float(ny), fixie::fixed_to_float(nz), 1.0f);
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *pointer)
