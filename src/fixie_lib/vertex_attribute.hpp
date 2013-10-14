@@ -44,6 +44,11 @@ namespace fixie
         vector4 _generic_values;
         std::shared_ptr<fixie::buffer> _buffer;
     };
+
+    vertex_attribute get_default_vertex_attribute();
+    vertex_attribute get_default_normal_attribute();
+    vertex_attribute get_default_color_attribute();
+    vertex_attribute get_default_texcoord_attribute();
 }
 
 #endif // _VERTEX_ATTRIBUTE_HPP_

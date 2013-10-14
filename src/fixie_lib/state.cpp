@@ -26,6 +26,9 @@ namespace fixie
         , _bound_textures(caps.max_texture_units())
         , _next_buffer_id(1)
         , _active_client_texture(0)
+        , _vertex_attribute(get_default_vertex_attribute())
+        , _normal_attribute(get_default_normal_attribute())
+        , _color_attribute(get_default_color_attribute())
         , _texcoord_attributes(caps.max_texture_units())
         , _shade_model(GL_SMOOTH)
         , _error(GL_NO_ERROR)
@@ -37,6 +40,10 @@ namespace fixie
         for (size_t i = 0; i < _clip_planes.size(); i++)
         {
             _clip_planes[i] = get_default_clip_plane();
+        }
+        for (size_t i = 0; i < _texcoord_attributes.size(); i++)
+        {
+            _texcoord_attributes[i] = get_default_texcoord_attribute();
         }
     }
 
