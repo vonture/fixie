@@ -32,6 +32,7 @@ endif()
 if(MSVC)
     set(MSVC_COMPILER_DEFS "-D_CRT_SECURE_NO_DEPRECATE -D_VARIADIC_MAX=10")
     add_definitions(${MSVC_COMPILER_DEFS})
+    add_definitions(/MP)
 endif()
 
 find_package(OpenGL REQUIRED)
