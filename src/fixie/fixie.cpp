@@ -278,7 +278,7 @@ namespace fixie
                 throw invalid_enum_error(format("invalid clip plane, must be between GL_CLIP_PLANE0 and GL_CLIP_PLANE%i.", max_clip_planes - 1));
             }
 
-            ctx->state().clip_plane(p - GL_CLIP_PLANE0) = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+            ctx->state().clip_plane(p - GL_CLIP_PLANE0).equation() = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
         }
         catch (gl_error e)
         {
@@ -354,6 +354,12 @@ namespace fixie
 
     static GLboolean& get_property(std::shared_ptr<context> ctx, GLenum target)
     {
+        GLsizei max_clip_planes = ctx->caps().max_clip_planes();
+        if (target >= GL_CLIP_PLANE0 && static_cast<GLsizei>(target - GL_CLIP_PLANE0) < max_clip_planes)
+        {
+            return ctx->state().clip_plane(target - GL_CLIP_PLANE0).enabled();
+        }
+
         switch (target)
         {
         case GL_SCISSOR_TEST: return ctx->state().scissor_test();

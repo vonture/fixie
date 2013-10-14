@@ -11,6 +11,8 @@
 #include "fixie_lib/material.hpp"
 #include "fixie_lib/light.hpp"
 #include "fixie_lib/light_model.hpp"
+#include "fixie_lib/color.hpp"
+#include "fixie_lib/clip_plane.hpp"
 #include "fixie_lib/vector.hpp"
 #include "fixie_lib/matrix.hpp"
 #include "fixie_lib/matrix_stack.hpp"
@@ -64,8 +66,8 @@ namespace fixie
         fixie::light_model& light_model();
         const fixie::light_model& light_model() const;
 
-        vector4& clip_plane(size_t idx);
-        const vector4& clip_plane(size_t idx) const;
+        fixie::clip_plane& clip_plane(size_t idx);
+        const fixie::clip_plane& clip_plane(size_t idx) const;
 
         GLenum& matrix_mode();
         const GLenum& matrix_mode() const;
@@ -145,7 +147,7 @@ namespace fixie
 
         fixie::light_model _light_model;
 
-        std::vector<vector4> _clip_planes;
+        std::vector<fixie::clip_plane> _clip_planes;
 
         size_t _active_texture_unit;
 

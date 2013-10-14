@@ -25,7 +25,7 @@ namespace fixie
             }
             for (size_t i = 0; i < _uses_clip_planes.size(); ++i)
             {
-                _uses_clip_planes[i] = false; // TODO: create clip plane class with enabled member
+                _uses_clip_planes[i] = state.clip_plane(i).enabled();
             }
             for (size_t i = 0; i < _uses_lights.size(); ++i)
             {

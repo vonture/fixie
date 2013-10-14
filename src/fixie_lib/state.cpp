@@ -34,6 +34,10 @@ namespace fixie
         {
             _lights[i] = get_default_light(i);
         }
+        for (size_t i = 0; i < _clip_planes.size(); i++)
+        {
+            _clip_planes[i] = get_default_clip_plane();
+        }
     }
 
     color& state::clear_color()
@@ -166,12 +170,12 @@ namespace fixie
         return _light_model;
     }
 
-    vector4& state::clip_plane(size_t idx)
+    fixie::clip_plane& state::clip_plane(size_t idx)
     {
         return _clip_planes[idx];
     }
 
-    const vector4& state::clip_plane(size_t idx) const
+    const fixie::clip_plane& state::clip_plane(size_t idx) const
     {
         return _clip_planes[idx];
     }
