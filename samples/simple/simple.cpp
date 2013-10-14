@@ -18,7 +18,6 @@ int main(int argc, char** argv)
     }
 
     glfwMakeContextCurrent(window);
-    fixie_context fixie_ctx = fixie_create_context();
 
     const float vertices[] =
     {
@@ -68,10 +67,9 @@ int main(int argc, char** argv)
     }
 
     glDeleteBuffers(1, &vbo);
+    fixie_terminate();
 
     glfwDestroyWindow(window);
-
     glfwTerminate();
-    fixie_destroy_context(fixie_ctx);
     return 0;
 }

@@ -134,6 +134,11 @@ namespace fixie
         {
             all_contexts.erase(iter);
         }
+
+        if (all_contexts.size() == 0)
+        {
+            current_context_impl = nullptr;
+        }
     }
 
     std::shared_ptr<context> get_current_context()
@@ -162,6 +167,13 @@ namespace fixie
         {
             current_context = nullptr;
         }
+    }
+
+    void terminate()
+    {
+        current_context_impl = nullptr;
+        current_context = nullptr;
+        all_contexts.clear();
     }
 
     void log_gl_error(const gl_error& error)

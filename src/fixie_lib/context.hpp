@@ -72,6 +72,8 @@ namespace fixie
     std::shared_ptr<context> get_current_context();
     void set_current_context(context* ctx);
 
+    void terminate();
+
     void log_gl_error(const gl_error& error);
     void log_context_error(const context_error& error);
     void log_message(GLenum source, GLenum type, GLuint id, GLenum severity, const std::string& msg);

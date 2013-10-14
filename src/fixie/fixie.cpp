@@ -461,6 +461,18 @@ fixie_context FIXIE_APIENTRY fixie_get_context()
     }
 }
 
+void FIXIE_APIENTRY fixie_terminate()
+{
+    try
+    {
+        fixie::terminate();
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
+}
+
 void FIXIE_APIENTRY glAlphaFunc(GLenum func, GLclampf ref)
 {
     UNIMPLEMENTED();
