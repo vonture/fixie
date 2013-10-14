@@ -10,6 +10,8 @@ namespace fixie
         , _type(GL_FLOAT)
         , _stride(0)
         , _pointer(nullptr)
+        , _generic_values(0.0f, 0.0f, 0.0f, 1.0f)
+        , _buffer(nullptr)
     {
     }
 
@@ -61,5 +63,25 @@ namespace fixie
     const GLvoid* const& vertex_attribute::pointer() const
     {
         return _pointer;
+    }
+
+    vector4& vertex_attribute::generic_values()
+    {
+        return _generic_values;
+    }
+
+    const vector4& vertex_attribute::generic_values() const
+    {
+        return _generic_values;
+    }
+
+    std::shared_ptr<fixie::buffer>& vertex_attribute::buffer()
+    {
+        return _buffer;
+    }
+
+    std::shared_ptr<const fixie::buffer> vertex_attribute::buffer() const
+    {
+        return _buffer;
     }
 }

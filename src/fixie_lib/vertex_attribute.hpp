@@ -3,6 +3,9 @@
 
 #include "fixie/fixie_gl_types.h"
 
+#include "fixie_lib/vector.hpp"
+#include "fixie_lib/buffer.hpp"
+
 namespace fixie
 {
     class vertex_attribute
@@ -25,12 +28,21 @@ namespace fixie
         const GLvoid*& pointer();
         const GLvoid* const& pointer() const;
 
+        vector4& generic_values();
+        const vector4& generic_values() const;
+
+        std::shared_ptr<fixie::buffer>& buffer();
+        std::shared_ptr<const fixie::buffer> buffer() const;
+
     private:
         GLboolean _enabled;
         GLint _size;
         GLenum _type;
         GLsizei _stride;
         const GLvoid* _pointer;
+
+        vector4 _generic_values;
+        std::shared_ptr<fixie::buffer> _buffer;
     };
 }
 

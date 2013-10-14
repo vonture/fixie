@@ -1148,6 +1148,7 @@ void FIXIE_APIENTRY glColorPointer(GLint size, GLenum type, GLsizei stride, cons
         attribute.type() = type;
         attribute.stride() = stride;
         attribute.pointer() = pointer;
+        attribute.buffer() = ctx->state().bound_array_buffer();
     }
     catch (fixie::gl_error e)
     {
@@ -1933,6 +1934,7 @@ void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *p
         attribute.type() = type;
         attribute.stride() = stride;
         attribute.pointer() = pointer;
+        attribute.buffer() = ctx->state().bound_array_buffer();
     }
     catch (fixie::gl_error e)
     {
@@ -2217,6 +2219,7 @@ void FIXIE_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, c
         attribute.type() = type;
         attribute.stride() = stride;
         attribute.pointer() = pointer;
+        attribute.buffer() = ctx->state().bound_array_buffer();
     }
     catch (fixie::gl_error e)
     {
@@ -2324,6 +2327,7 @@ void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, con
         attribute.type() = type;
         attribute.stride() = stride;
         attribute.pointer() = pointer;
+        attribute.buffer() = ctx->state().bound_array_buffer();
     }
     catch (fixie::gl_error e)
     {
