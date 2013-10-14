@@ -17,6 +17,11 @@ namespace fixie
             _functions->gl_delete_buffers()(1, &_id);
         }
 
+        GLuint buffer::id() const
+        {
+            return _id;
+        }
+
         void buffer::set_type(GLenum type)
         {
             _type = type;

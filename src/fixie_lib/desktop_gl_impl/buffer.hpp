@@ -14,6 +14,8 @@ namespace fixie
             buffer(std::shared_ptr<const gl_functions> functions);
             ~buffer();
 
+            GLuint id() const;
+
             virtual void set_type(GLenum type) override;
             virtual void set_data(GLsizeiptr size, const GLvoid* data, GLenum usage) override;
             virtual void set_sub_data(GLintptr offset, GLsizeiptr size, const GLvoid* data) override;
