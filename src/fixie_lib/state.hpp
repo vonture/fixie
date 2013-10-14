@@ -60,8 +60,8 @@ namespace fixie
         material& back_material();
         const material& back_material() const;
 
-        light& lights(size_t idx);
-        const light& lights(size_t idx) const;
+        fixie::light& light(size_t idx);
+        const fixie::light& light(size_t idx) const;
 
         fixie::light_model& light_model();
         const fixie::light_model& light_model() const;
@@ -143,7 +143,7 @@ namespace fixie
         material _front_material;
         material _back_material;
 
-        std::vector<light> _lights;
+        std::vector<fixie::light> _lights;
 
         fixie::light_model _light_model;
 

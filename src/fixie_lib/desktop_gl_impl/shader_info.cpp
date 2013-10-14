@@ -29,7 +29,7 @@ namespace fixie
             }
             for (size_t i = 0; i < _uses_lights.size(); ++i)
             {
-                _uses_lights[i] = state.lights(i).enabled();
+                _uses_lights[i] = state.light(i).enabled();
             }
         }
 

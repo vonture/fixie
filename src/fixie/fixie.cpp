@@ -126,7 +126,7 @@ namespace fixie
             {
                 throw invalid_enum_error(format("invalid light, must be between GL_LIGHT0 and GL_LIGHT%i.", max_lights - 1));
             }
-            light& light = ctx->state().lights(l - GL_LIGHT0);
+            light& light = ctx->state().light(l - GL_LIGHT0);
 
             switch (pname)
             {

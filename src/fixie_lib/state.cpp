@@ -150,12 +150,12 @@ namespace fixie
         return _back_material;
     }
 
-    light& state::lights(size_t idx)
+    fixie::light& state::light(size_t idx)
     {
         return _lights[idx];
     }
 
-    const light& state::lights(size_t idx) const
+    const fixie::light& state::light(size_t idx) const
     {
         return _lights[idx];
     }
