@@ -18,10 +18,6 @@ namespace fixie
             shader_info();
             explicit shader_info(const state& state, const caps& caps);
 
-            GLboolean uses_vertex_position() const;
-            GLboolean uses_vertex_normal() const;
-            GLboolean uses_vertex_color() const;
-            GLboolean uses_texture_unit(size_t n) const;
             size_t texture_unit_count() const;
 
             GLboolean uses_clip_plane(size_t n) const;
@@ -33,15 +29,9 @@ namespace fixie
             GLenum shade_model() const;
 
         private:
-            GLboolean _uses_vertex_position;
-            GLboolean _uses_vertex_normal;
-            GLboolean _uses_vertex_color;
-            std::vector<GLboolean> _uses_texture_units;
-
+            size_t _texture_unit_count;
             std::vector<GLboolean> _uses_clip_planes;
-
             std::vector<GLboolean> _uses_lights;
-
             GLenum _shade_model;
         };
 

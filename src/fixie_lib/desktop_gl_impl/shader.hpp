@@ -20,7 +20,7 @@ namespace fixie
 
             void sync_state(const state& state);
 
-            GLint position_attribute_location() const;
+            GLint vertex_attribute_location() const;
             GLint normal_attribute_location() const;
             GLint color_attribute_location() const;
             GLint texcoord_attribute_location(size_t n) const;
@@ -30,8 +30,8 @@ namespace fixie
 
             GLuint _program;
 
-            GLint _position_location;
-            GLint _position_transform_location;
+            GLint _vertex_location;
+            GLint _vertex_transform_location;
 
             GLint _normal_location;
             GLint _color_location;

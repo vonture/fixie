@@ -11,18 +11,11 @@ namespace fixie
         }
 
         shader_info::shader_info(const state& state, const caps& caps)
-            : _uses_vertex_position(state.vertex_attribute().enabled())
-            , _uses_vertex_normal(state.normal_attribute().enabled())
-            , _uses_vertex_color(state.color_attribute().enabled())
-            , _uses_texture_units(caps.max_texture_units())
+            : _texture_unit_count(caps.max_texture_units())
             , _uses_clip_planes(caps.max_clip_planes())
             , _uses_lights(caps.max_lights())
             , _shade_model(state.shade_model())
         {
-            for (size_t i = 0; i < _uses_texture_units.size(); ++i)
-            {
-                _uses_texture_units[i] = state.texcoord_attribute(i).enabled();
-            }
             for (size_t i = 0; i < _uses_clip_planes.size(); ++i)
             {
                 _uses_clip_planes[i] = state.clip_plane(i).enabled();
@@ -33,29 +26,9 @@ namespace fixie
             }
         }
 
-        GLboolean shader_info::uses_vertex_position() const
-        {
-            return _uses_vertex_position;
-        }
-
-        GLboolean shader_info::uses_vertex_normal() const
-        {
-            return _uses_vertex_normal;
-        }
-
-        GLboolean shader_info::uses_vertex_color() const
-        {
-            return _uses_vertex_color;
-        }
-
-        GLboolean shader_info::uses_texture_unit(size_t n) const
-        {
-            return _uses_texture_units[n];
-        }
-
         size_t shader_info::texture_unit_count() const
         {
-            return _uses_texture_units.size();
+            return _texture_unit_count;
         }
 
         GLboolean shader_info::uses_clip_plane(size_t n) const
@@ -85,23 +58,9 @@ namespace fixie
 
         bool operator==(const shader_info& a, const shader_info& b)
         {
-            if (a.uses_vertex_position() != b.uses_vertex_position() ||
-                a.uses_vertex_normal() != b.uses_vertex_normal() ||
-                a.uses_vertex_color() != b.uses_vertex_color())
-            {
-                return false;
-            }
-
             if (a.texture_unit_count() != b.texture_unit_count())
             {
                 return false;
-            }
-            for (size_t i = 0; i < a.texture_unit_count(); ++i)
-            {
-                if (a.uses_texture_unit(i) != b.uses_texture_unit(i))
-                {
-                    return false;
-                }
             }
 
             if (a.clip_plane_count() != b.clip_plane_count())
@@ -143,13 +102,8 @@ namespace std
     size_t hash<fixie::desktop_gl_impl::shader_info>::operator()(const fixie::desktop_gl_impl::shader_info& key) const
     {
         size_t seed = 0;
-        fixie::hash_combine(seed, key.uses_vertex_position());
-        fixie::hash_combine(seed, key.uses_vertex_normal());
-        fixie::hash_combine(seed, key.uses_vertex_color());
-        for (size_t i = 0; i < key.texture_unit_count(); ++i)
-        {
-            fixie::hash_combine(seed, key.uses_texture_unit(i));
-        }
+
+        fixie::hash_combine(seed, key.texture_unit_count());
 
         for (size_t i = 0; i < key.clip_plane_count(); ++i)
         {

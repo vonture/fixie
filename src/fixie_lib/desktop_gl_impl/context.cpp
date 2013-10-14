@@ -138,34 +138,53 @@ namespace fixie
             }
         }
 
-        void context::sync_vertex_attributes(const state& state, std::shared_ptr<const shader> shader)
+        void context::sync_vertex_attribute(const state& state, const vertex_attribute& attribute, GLuint location, GLboolean normalized)
         {
-            GLint position_location = shader->position_attribute_location();
-            if (position_location != -1)
+            if (attribute.enabled())
             {
-                const vertex_attribute& attribute = state.vertex_attribute();
-                assert(attribute.enabled());
-
                 std::shared_ptr<const buffer> bound_buffer = std::dynamic_pointer_cast<const buffer>(attribute.buffer()->impl());
 
                 _functions->gl_bind_buffer()(GL_ARRAY_BUFFER, bound_buffer->id());
-                _functions->gl_enable_vertex_attrib_array()(static_cast<GLuint>(position_location));
-                _functions->gl_vertex_attrib_pointer()(static_cast<GLuint>(position_location), attribute.size(), attribute.type(),
-                                                       GL_FALSE, attribute.stride(), attribute.pointer());
+                _functions->gl_enable_vertex_attrib_array()(location);
+                _functions->gl_vertex_attrib_pointer()(location, attribute.size(), attribute.type(), normalized, attribute.stride(), attribute.pointer());
+            }
+            else
+            {
+                const vector4& generic_values = attribute.generic_values();
+
+                _functions->gl_bind_buffer()(GL_ARRAY_BUFFER, 0);
+                _functions->gl_disable_vertex_attrib_array()(location);
+                _functions->gl_vertex_attrib_4f()(location, generic_values.x, generic_values.y, generic_values.z, generic_values.w);
+            }
+        }
+
+        void context::sync_vertex_attributes(const state& state, std::shared_ptr<const shader> shader)
+        {
+            GLint vertex_location = shader->vertex_attribute_location();
+            if (vertex_location != -1)
+            {
+                sync_vertex_attribute(state, state.vertex_attribute(), static_cast<GLuint>(vertex_location), GL_FALSE);
             }
 
             GLint color_location = shader->color_attribute_location();
             if (color_location != -1)
             {
-                const vertex_attribute& attribute = state.color_attribute();
-                assert(attribute.enabled());
+                sync_vertex_attribute(state, state.color_attribute(), static_cast<GLuint>(color_location), GL_TRUE);
+            }
 
-                std::shared_ptr<const buffer> bound_buffer = std::dynamic_pointer_cast<const buffer>(attribute.buffer()->impl());
+            GLint normal_location = shader->normal_attribute_location();
+            if (normal_location != -1)
+            {
+                sync_vertex_attribute(state, state.normal_attribute(), static_cast<GLuint>(normal_location), GL_TRUE);
+            }
 
-                _functions->gl_bind_buffer()(GL_ARRAY_BUFFER, bound_buffer->id());
-                _functions->gl_enable_vertex_attrib_array()(static_cast<GLuint>(color_location));
-                _functions->gl_vertex_attrib_pointer()(static_cast<GLuint>(color_location), attribute.size(), attribute.type(),
-                                                       GL_TRUE, attribute.stride(), attribute.pointer());
+            for (size_t i = 0; i < static_cast<size_t>(_caps.max_texture_units()); ++i)
+            {
+                GLint texcoord_location = shader->texcoord_attribute_location(i);
+                if (texcoord_location != -1)
+                {
+                    sync_vertex_attribute(state, state.texcoord_attribute(i), static_cast<GLuint>(texcoord_location), GL_TRUE);
+                }
             }
         }
 
