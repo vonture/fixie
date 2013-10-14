@@ -64,6 +64,9 @@ namespace fixie
 
             DECLARE_GL_FUNCTION(gl_get_uniform_location, GLint, (GLuint program, const GLchar* name), glGetUniformLocation);
             DECLARE_GL_FUNCTION(gl_get_attrib_location, GLint, (GLuint program, const GLchar* name), glGetAttribLocation);
+            DECLARE_GL_FUNCTION(gl_vertex_attrib_pointer, void, (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer), glVertexAttribPointer);
+            DECLARE_GL_FUNCTION(gl_enable_vertex_attrib_array, void, (GLuint index), glEnableVertexAttribArray);
+            DECLARE_GL_FUNCTION(gl_disable_vertex_attrib_array, void, (GLuint index), glDisableVertexAttribArray);
 
             DECLARE_GL_FUNCTION(gl_uniform_1f, void, (GLint location, GLfloat v0), glUniform1f);
             DECLARE_GL_FUNCTION(gl_uniform_2f, void, (GLint location, GLfloat v0, GLfloat v1), glUniform2f);
@@ -101,6 +104,9 @@ namespace fixie
             DECLARE_GL_FUNCTION(gl_uniform_matrix_4x2fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix4x2fv);
             DECLARE_GL_FUNCTION(gl_uniform_matrix_3x4fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix3x4fv);
             DECLARE_GL_FUNCTION(gl_uniform_matrix_4x3fv, void, (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value), glUniformMatrix4x3fv);
+
+            DECLARE_GL_FUNCTION(gl_draw_arrays, void, (GLenum mode, GLint first, GLsizei count), glDrawArrays);
+            DECLARE_GL_FUNCTION(gl_draw_elements, void, (GLenum mode, GLsizei count, GLenum type, const GLvoid* indices), glDrawElements);
         };
 
         #undef DECLARE_GL_FUNCTION

@@ -1,10 +1,11 @@
 #include "fixie_lib/desktop_gl_impl/context.hpp"
 #include "fixie_lib/desktop_gl_impl/texture.hpp"
 #include "fixie_lib/desktop_gl_impl/buffer.hpp"
+#include "fixie_lib/util.hpp"
 
 #include "fixie/fixie_gl_es.h"
 
-#include "fixie_lib/util.hpp"
+#include <assert.h>
 
 namespace fixie
 {
@@ -65,10 +66,20 @@ namespace fixie
 
         void context::draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count)
         {
+            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps);
+            shader->sync_state(state);
+            sync_vertex_attributes(state, shader);
+
+            _functions->gl_draw_arrays()(mode, first, count);
         }
 
         void context::draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices)
         {
+            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps);
+            shader->sync_state(state);
+            sync_vertex_attributes(state, shader);
+
+            _functions->gl_draw_elements()(mode, count, type, indices);
         }
 
         void context::clear(const state& state, GLbitfield mask)
@@ -124,6 +135,37 @@ namespace fixie
             {
                 _functions->gl_viewport()(state.viewport().x, state.viewport().y, state.viewport().width, state.viewport().height);
                 _cur_viewport = state.viewport();
+            }
+        }
+
+        void context::sync_vertex_attributes(const state& state, std::shared_ptr<const shader> shader)
+        {
+            GLint position_location = shader->position_attribute_location();
+            if (position_location != -1)
+            {
+                const vertex_attribute& attribute = state.vertex_attribute();
+                assert(attribute.enabled());
+
+                std::shared_ptr<const buffer> bound_buffer = std::dynamic_pointer_cast<const buffer>(attribute.buffer()->impl());
+
+                _functions->gl_bind_buffer()(GL_ARRAY_BUFFER, bound_buffer->id());
+                _functions->gl_enable_vertex_attrib_array()(static_cast<GLuint>(position_location));
+                _functions->gl_vertex_attrib_pointer()(static_cast<GLuint>(position_location), attribute.size(), attribute.type(),
+                                                       GL_FALSE, attribute.stride(), attribute.pointer());
+            }
+
+            GLint color_location = shader->color_attribute_location();
+            if (color_location != -1)
+            {
+                const vertex_attribute& attribute = state.color_attribute();
+                assert(attribute.enabled());
+
+                std::shared_ptr<const buffer> bound_buffer = std::dynamic_pointer_cast<const buffer>(attribute.buffer()->impl());
+
+                _functions->gl_bind_buffer()(GL_ARRAY_BUFFER, bound_buffer->id());
+                _functions->gl_enable_vertex_attrib_array()(static_cast<GLuint>(color_location));
+                _functions->gl_vertex_attrib_pointer()(static_cast<GLuint>(color_location), attribute.size(), attribute.type(),
+                                                       GL_TRUE, attribute.stride(), attribute.pointer());
             }
         }
 

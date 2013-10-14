@@ -50,6 +50,8 @@ namespace fixie
             rectangle _cur_viewport;
             void sync_rasterizer_state(const state& state);
 
+            void sync_vertex_attributes(const state& state, std::shared_ptr<const shader> shader);
+
             static void initialize_caps(std::shared_ptr<const gl_functions> functions, fixie::caps& caps);
         };
     }
