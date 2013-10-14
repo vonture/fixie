@@ -27,3 +27,4 @@ macro(add_sample PROJECT_NAME SOURCE)
 endmacro()
 
 add_subdirectory(simple_triangle)
+add_subdirectory(simple_texturing)
