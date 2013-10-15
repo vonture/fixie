@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <vector>
+#include <set>
 
 #include "fixie/fixie.h"
 #include "fixie/fixie_gl_es.h"
@@ -10,6 +11,7 @@
 #include "fixie_lib/fixed_point.hpp"
 #include "fixie_lib/exceptions.hpp"
 #include "fixie_lib/util.hpp"
+#include "fixie_lib/math_util.hpp"
 
 namespace fixie
 {
@@ -2403,7 +2405,79 @@ void FIXIE_APIENTRY glTexEnvxv(GLenum target, GLenum pname, const GLfixed *param
 
 void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (target)
+        {
+        case GL_TEXTURE_2D:
+            break;
+        default:
+            throw fixie::invalid_enum_error("unkown texture target.");
+        }
+
+        std::set<GLenum> valid_types;
+        switch (internalformat)
+        {
+        case GL_ALPHA:           valid_types.insert(GL_UNSIGNED_BYTE);                                                                                               break;
+        case GL_LUMINANCE:       valid_types.insert(GL_UNSIGNED_BYTE);                                                                                               break;
+        case GL_LUMINANCE_ALPHA: valid_types.insert(GL_UNSIGNED_BYTE);                                                                                               break;
+        case GL_RGB:             valid_types.insert(GL_UNSIGNED_BYTE); valid_types.insert(GL_UNSIGNED_SHORT_5_6_5);                                                  break;
+        case GL_RGBA:            valid_types.insert(GL_UNSIGNED_BYTE); valid_types.insert(GL_UNSIGNED_SHORT_4_4_4_4); valid_types.insert(GL_UNSIGNED_SHORT_5_5_5_1); break;
+            break;
+        default:
+            throw fixie::invalid_value_error("unknown internal format.");
+        }
+
+        GLsizei max_texture_size = ctx->caps().max_texture_size();
+
+        GLsizei max_levels = fixie::log2(max_texture_size);
+        if (level < 0 || level >= max_levels)
+        {
+            throw fixie::invalid_value_error(fixie::format("level must be between 0 and %i, %i provided.", max_levels, level));
+        }
+
+        GLsizei max_level_size = (max_texture_size >> level);
+        if (width < 0 || width > max_level_size || height < 0 || height > max_level_size)
+        {
+            throw fixie::invalid_value_error(fixie::format("width and height must be between 0 and %i for level %i, %i and %i provided.",
+                                                           max_level_size, level, width, height));
+        }
+
+        if (border != 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("border must be zero, %i provided.", border));
+        }
+
+        if (format != internalformat)
+        {
+            throw fixie::invalid_operation_error("internal format and format must match.");
+        }
+
+        if (valid_types.find(type) == end(valid_types))
+        {
+            throw fixie::invalid_value_error("invalid type.");
+        }
+
+        std::shared_ptr<fixie::texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit());
+        if (texture != nullptr)
+        {
+            texture->set_data(level, internalformat, width, height, format, type, pixels);
+        }
+    }
+    catch (fixie::gl_error e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (fixie::context_error e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
