@@ -65,6 +65,10 @@ namespace fixie
             DECLARE_GL_FUNCTION(gl_compressed_tex_sub_image_2d, void, (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data), glCompressedTexSubImage2D);
             DECLARE_GL_FUNCTION(gl_copy_tex_image_2d, void, (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border), glCopyTexImage2D);
             DECLARE_GL_FUNCTION(gl_copy_tex_sub_image_2d, void, (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height), glCopyTexSubImage2D);
+            DECLARE_GL_FUNCTION(gl_tex_parameter_i, void, (GLenum target, GLenum pname, GLint param), glTexParameteri);
+            DECLARE_GL_FUNCTION(gl_tex_parameter_iv, void, (GLenum target, GLenum pname, const GLint* params), glTexParameteriv);
+            DECLARE_GL_FUNCTION(gl_tex_parameter_f, void, (GLenum target, GLenum pname, GLfloat param), glTexParameterf);
+            DECLARE_GL_FUNCTION(gl_tex_parameter_fv, void, (GLenum target, GLenum pname, const GLfloat* params), glTexParameterfv);
 
             DECLARE_GL_FUNCTION(gl_get_integerv, void, (GLenum pname, GLint *params), glGetIntegerv);
             DECLARE_GL_FUNCTION(gl_get_floatv, void, (GLenum pname, GLfloat *params), glGetFloatv);
