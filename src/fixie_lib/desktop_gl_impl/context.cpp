@@ -96,6 +96,7 @@ namespace fixie
             std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps);
             shader->sync_state(state);
             sync_vertex_attributes(state, shader);
+            sync_textures(state);
 
             _functions->gl_draw_arrays()(mode, first, count);
         }
@@ -105,6 +106,7 @@ namespace fixie
             std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps);
             shader->sync_state(state);
             sync_vertex_attributes(state, shader);
+            sync_textures(state);
 
             _functions->gl_draw_elements()(mode, count, type, indices);
         }
@@ -211,6 +213,21 @@ namespace fixie
                 if (texcoord_location != -1)
                 {
                     sync_vertex_attribute(state, state.texcoord_attribute(i), static_cast<GLuint>(texcoord_location), GL_TRUE);
+                }
+            }
+        }
+
+        void context::sync_textures(const state& state)
+        {
+            for (size_t i = 0; i < static_cast<size_t>(_caps.max_texture_units()); ++i)
+            {
+                if (state.texture_environment(i).enabled())
+                {
+                    std::shared_ptr<const fixie::texture> bound_texture = state.bound_texture(i);
+                    GLuint texuture_id = bound_texture ? std::dynamic_pointer_cast<const texture>(bound_texture->impl())->id() : 0;
+
+                    _functions->gl_active_texture()(GL_TEXTURE0 + i);
+                    _functions->gl_bind_texture()(GL_TEXTURE0, texuture_id);
                 }
             }
         }

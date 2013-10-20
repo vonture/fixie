@@ -42,6 +42,7 @@ namespace fixie
 
             DECLARE_GL_FUNCTION(gl_gen_textures, void, (GLsizei n, GLuint* textures), glGenTextures);
             DECLARE_GL_FUNCTION(gl_delete_textures, void, (GLsizei n, const GLuint* textures), glDeleteTextures);
+            DECLARE_GL_FUNCTION(gl_active_texture, void, (GLenum texture), glActiveTexture);
             DECLARE_GL_FUNCTION(gl_bind_texture, void, (GLenum target, GLuint texture), glBindTexture);
             DECLARE_GL_FUNCTION(gl_tex_image_2d, void, (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels), glTexImage2D);
             DECLARE_GL_FUNCTION(gl_tex_sub_image_2d, void, (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid* pixels), glTexSubImage2D);

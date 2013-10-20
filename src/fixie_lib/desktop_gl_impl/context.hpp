@@ -53,6 +53,8 @@ namespace fixie
             void sync_vertex_attribute(const state& state, const vertex_attribute& attribute, GLuint location, GLboolean normalized);
             void sync_vertex_attributes(const state& state, std::shared_ptr<const shader> shader);
 
+            void sync_textures(const state& state);
+
             static void initialize_caps(std::shared_ptr<const gl_functions> functions, fixie::caps& caps);
         };
     }
