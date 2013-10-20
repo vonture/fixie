@@ -18,24 +18,24 @@ namespace fixie
     {
         static GLuint compile_shader(std::shared_ptr<const gl_functions> functions, const std::string& source, GLenum type)
         {
-            GLuint shader = functions->gl_create_shader()(type);
+            GLuint shader = gl_call(functions, gl_create_shader, type);
 
             std::array<const GLchar*, 1> source_array = { source.c_str() };
-            functions->gl_shader_source()(shader, source_array.size(), source_array.data(), nullptr);
-            functions->gl_compile_shader()(shader);
+            gl_call(functions, gl_shader_source, shader, source_array.size(), source_array.data(), nullptr);
+            gl_call(functions, gl_compile_shader, shader);
 
             GLint result;
-            functions->gl_get_shader_iv()(shader, GL_COMPILE_STATUS, &result);
+            gl_call(functions, gl_get_shader_iv, shader, GL_COMPILE_STATUS, &result);
 
             if (result == 0)
             {
                 GLint info_log_length;
-                functions->gl_get_shader_iv()(shader, GL_INFO_LOG_LENGTH, &info_log_length);
+                gl_call(functions, gl_get_shader_iv, shader, GL_INFO_LOG_LENGTH, &info_log_length);
 
                 std::vector<GLchar> info_log(info_log_length);
-                functions->gl_get_shader_info_log()(shader, info_log.size(), nullptr, info_log.data());
+                gl_call(functions, gl_get_shader_info_log, shader, info_log.size(), nullptr, info_log.data());
 
-                functions->gl_delete_shader()(shader);
+                gl_call(functions, gl_delete_shader, shader);
 
                 throw compile_error(std::string(info_log.data()));
             }
@@ -59,24 +59,24 @@ namespace fixie
                 throw;
             }
 
-            GLuint program = functions->gl_create_program()();
-            functions->gl_attach_shader()(program, vertex_shader);
-            functions->gl_delete_shader()(vertex_shader);
-            functions->gl_attach_shader()(program, fragment_shader);
-            functions->gl_delete_shader()(fragment_shader);
-            functions->gl_link_program()(program);
+            GLuint program = gl_call(functions, gl_create_program);
+            gl_call(functions, gl_attach_shader, program, vertex_shader);
+            gl_call(functions, gl_delete_shader, vertex_shader);
+            gl_call(functions, gl_attach_shader, program, fragment_shader);
+            gl_call(functions, gl_delete_shader, fragment_shader);
+            gl_call(functions, gl_link_program, program);
 
             GLint result;
             functions->gl_get_program_iv()(program, GL_LINK_STATUS, &result);
             if (result == 0)
             {
                 GLint info_log_length;
-                functions->gl_get_program_iv()(program, GL_INFO_LOG_LENGTH, &info_log_length);
+                gl_call(functions, gl_get_program_iv, program, GL_INFO_LOG_LENGTH, &info_log_length);
 
                 std::vector<GLchar> info_log(info_log_length);
-                functions->gl_get_program_info_log()(program, info_log.size(), nullptr, info_log.data());
+                gl_call(functions, gl_get_program_info_log, program, info_log.size(), nullptr, info_log.data());
 
-                functions->gl_delete_program()(program);
+                gl_call(functions, gl_delete_program, program);
 
                 throw link_error(std::string(info_log.data()));
             }
@@ -181,22 +181,23 @@ namespace fixie
 
             _program = create_program(_functions, vertex_shader.str(), fragment_shader.str());
 
-            _functions->gl_bind_frag_data_location()(_program, 0, output_color_name.c_str());
+            gl_call(_functions, gl_bind_frag_data_location, _program, 0, output_color_name.c_str());
 
-            _vertex_location = _functions->gl_get_attrib_location()(_program, vertex_name(true).c_str());
-            _vertex_transform_location =  _functions->gl_get_uniform_location()(_program, vertex_transform_name.c_str());
+            _vertex_location = gl_call(_functions, gl_get_attrib_location, _program, vertex_name(true).c_str());
+            _vertex_transform_location = gl_call(_functions, gl_get_uniform_location, _program, vertex_transform_name.c_str());
 
-            _normal_location = _functions->gl_get_attrib_location()(_program, normal_name(true).c_str());
-            _color_location = _functions->gl_get_attrib_location()(_program, color_name(true).c_str());
+            _normal_location = gl_call(_functions, gl_get_attrib_location, _program, normal_name(true).c_str());
+            _color_location = gl_call(_functions, gl_get_attrib_location, _program, color_name(true).c_str());
 
+            _texcoord_locations.resize(info.texture_unit_count());
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 texcoord_uniform& uniform = _texcoord_locations[i];
                 if (info.texture_environment(i).enabled())
                 {
-                    uniform.texcoord_location = _functions->gl_get_attrib_location()(_program, tex_coord_name(true, i).c_str());
-                    uniform.texcoord_transform_location = _functions->gl_get_uniform_location()(_program, tex_coord_transform_name(i).c_str());
-                    uniform.sampler_location = _functions->gl_get_uniform_location()(_program, sampler_name(i).c_str());
+                    uniform.texcoord_location = gl_call(_functions, gl_get_attrib_location, _program, tex_coord_name(true, i).c_str());
+                    uniform.texcoord_transform_location = gl_call(_functions, gl_get_uniform_location, _program, tex_coord_transform_name(i).c_str());
+                    uniform.sampler_location = gl_call(_functions, gl_get_uniform_location, _program, sampler_name(i).c_str());
                 }
                 else
                 {
@@ -209,17 +210,17 @@ namespace fixie
 
         shader::~shader()
         {
-            _functions->gl_delete_program()(_program);
+            gl_call(_functions, gl_delete_program, _program);
         }
 
         void shader::sync_state(const state& state)
         {
-            _functions->gl_use_program()(_program);
+            gl_call(_functions, gl_use_program, _program);
 
             if (_vertex_transform_location != -1)
             {
                 matrix4 transform_matrix = state.model_view_matrix_stack().top_multiplied() * state.projection_matrix_stack().top_multiplied();
-                _functions->gl_uniform_matrix_4fv()(_vertex_transform_location, 1, GL_FALSE, transform_matrix.data);
+                gl_call(_functions, gl_uniform_matrix_4fv, _vertex_transform_location, 1, GL_FALSE, transform_matrix.data);
             }
 
             for (size_t i = 0; i < _texcoord_locations.size(); i++)
@@ -227,11 +228,11 @@ namespace fixie
                 if (_texcoord_locations[i].texcoord_transform_location != -1)
                 {
                     matrix4 texcoord_transform = state.texture_matrix_stack(i).top_multiplied();
-                    _functions->gl_uniform_matrix_4fv()(_texcoord_locations[i].texcoord_transform_location, 1, GL_FALSE, texcoord_transform.data);
+                    gl_call(_functions, gl_uniform_matrix_4fv, _texcoord_locations[i].texcoord_transform_location, 1, GL_FALSE, texcoord_transform.data);
                 }
                 if (_texcoord_locations[i].sampler_location != -1)
                 {
-                    _functions->gl_uniform_1i()(_texcoord_locations[i].sampler_location, i);
+                    gl_call(_functions, gl_uniform_1i, _texcoord_locations[i].sampler_location, i);
                 }
             }
         }
@@ -253,15 +254,7 @@ namespace fixie
 
         GLint shader::texcoord_attribute_location(size_t n) const
         {
-            auto iter = _texcoord_locations.find(n);
-            if (iter != end(_texcoord_locations))
-            {
-                return iter->second.texcoord_location;
-            }
-            else
-            {
-                return -1;
-            }
+            return _texcoord_locations[n].texcoord_location;
         }
     }
 }

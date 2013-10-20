@@ -9,12 +9,12 @@ namespace fixie
         texture::texture(std::shared_ptr<const gl_functions> functions)
             : _functions(functions)
         {
-            _functions->gl_gen_textures()(1, &_id);
+            gl_call(_functions, gl_gen_textures, 1, &_id);
         }
 
         texture::~texture()
         {
-            _functions->gl_delete_textures()(1, &_id);
+            gl_call(_functions, gl_delete_textures, 1, &_id);
         }
 
         GLuint texture::id() const
@@ -24,26 +24,26 @@ namespace fixie
 
         void texture::set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
         {
-            _functions->gl_bind_texture()(GL_TEXTURE_2D, _id);
-            _functions->gl_tex_image_2d()(GL_TEXTURE_2D, level, internal_format, width, height, 0, format, type, pixels);
+            gl_call(_functions, gl_bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, gl_tex_image_2d, GL_TEXTURE_2D, level, internal_format, width, height, 0, format, type, pixels);
         }
 
         void texture::set_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
         {
-            _functions->gl_bind_texture()(GL_TEXTURE_2D, _id);
-            _functions->gl_tex_sub_image_2d()(GL_TEXTURE_2D, level, xoffset, yoffset, width, height, format, type, pixels);
+            gl_call(_functions, gl_bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, gl_tex_sub_image_2d, GL_TEXTURE_2D, level, xoffset, yoffset, width, height, format, type, pixels);
         }
 
         void texture::set_compressed_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLsizei image_size, const GLvoid *data)
         {
-            _functions->gl_bind_texture()(GL_TEXTURE_2D, _id);
-            _functions->gl_compressed_tex_image_2d()(GL_TEXTURE_2D, level, internal_format, width, height, 0, image_size, data);
+            gl_call(_functions, gl_bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, gl_compressed_tex_image_2d, GL_TEXTURE_2D, level, internal_format, width, height, 0, image_size, data);
         }
 
         void texture::set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei image_size, const GLvoid *data)
         {
-            _functions->gl_bind_texture()(GL_TEXTURE_2D, _id);
-            _functions->gl_tex_sub_image_2d()(GL_TEXTURE_2D, level, xoffset, yoffset, width, height, format, image_size, data);
+            gl_call(_functions, gl_bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, gl_tex_sub_image_2d, GL_TEXTURE_2D, level, xoffset, yoffset, width, height, format, image_size, data);
         }
 
         void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::shared_ptr<const texture_impl> source)

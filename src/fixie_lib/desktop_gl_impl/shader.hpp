@@ -42,7 +42,7 @@ namespace fixie
                 GLint texcoord_transform_location;
                 GLint sampler_location;
             };
-            std::unordered_map<size_t, texcoord_uniform> _texcoord_locations;
+            std::vector<texcoord_uniform> _texcoord_locations;
 
             struct light_uniform
             {
