@@ -600,6 +600,184 @@ namespace fixie
         }
     }
 
+    static void set_texture_real_parameters(GLenum target, GLenum pname, const real_ptr& params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            if (target != GL_TEXTURE_2D)
+            {
+                throw invalid_enum_error("texture parameter target must be GL_TEXTURE_2D.");
+            }
+
+            std::shared_ptr<texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit());
+
+            switch (pname)
+            {
+            case GL_TEXTURE_WRAP_S:
+                switch (static_cast<GLenum>(params.as_float(0)))
+                {
+                case GL_REPEAT:
+                case GL_CLAMP_TO_EDGE:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture wrap s value.");
+                }
+                texture->wrap_s() = static_cast<GLenum>(params.as_float(0));
+                break;
+
+            case GL_TEXTURE_WRAP_T:
+                switch (static_cast<GLenum>(params.as_float(0)))
+                {
+                case GL_REPEAT:
+                case GL_CLAMP_TO_EDGE:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture wrap t value.");
+                }
+                texture->wrap_t() = static_cast<GLenum>(params.as_float(0));
+                break;
+
+            case GL_TEXTURE_MIN_FILTER:
+                switch (static_cast<GLenum>(params.as_float(0)))
+                {
+                case GL_NEAREST_MIPMAP_NEAREST:
+                case GL_NEAREST_MIPMAP_LINEAR:
+                case GL_LINEAR_MIPMAP_NEAREST:
+                case GL_LINEAR_MIPMAP_LINEAR:
+                case GL_NEAREST:
+                case GL_LINEAR:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture min filter value.");
+                }
+                texture->min_filter() = static_cast<GLenum>(params.as_float(0));
+                break;
+
+            case GL_TEXTURE_MAG_FILTER:
+                switch (static_cast<GLenum>(params.as_float(0)))
+                {
+                case GL_NEAREST:
+                case GL_LINEAR:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture min filter value.");
+                }
+                texture->mag_filter() = static_cast<GLenum>(params.as_float(0));
+                break;
+
+            case GL_GENERATE_MIPMAP:
+                texture->auto_generate_mipmap() = (params.as_float(0) != 0.0f);
+                break;
+
+            default:
+                throw invalid_enum_error("unknown texture parameter name.");
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
+    static void set_texture_int_parameters(GLenum target, GLenum pname, const GLint* params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            if (target != GL_TEXTURE_2D)
+            {
+                throw invalid_enum_error("texture parameter target target must be GL_TEXTURE_2D.");
+            }
+
+            std::shared_ptr<texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit());
+
+            switch (pname)
+            {
+            case GL_TEXTURE_WRAP_S:
+                switch (params[0])
+                {
+                case GL_REPEAT:
+                case GL_CLAMP_TO_EDGE:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture wrap s value.");
+                }
+                texture->wrap_s() = params[0];
+                break;
+
+            case GL_TEXTURE_WRAP_T:
+                switch (params[0])
+                {
+                case GL_REPEAT:
+                case GL_CLAMP_TO_EDGE:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture wrap t value.");
+                }
+                texture->wrap_t() = params[0];
+                break;
+
+            case GL_TEXTURE_MIN_FILTER:
+                switch (params[0])
+                {
+                case GL_NEAREST_MIPMAP_NEAREST:
+                case GL_NEAREST_MIPMAP_LINEAR:
+                case GL_LINEAR_MIPMAP_NEAREST:
+                case GL_LINEAR_MIPMAP_LINEAR:
+                case GL_NEAREST:
+                case GL_LINEAR:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture min filter value.");
+                }
+                texture->min_filter() = params[0];
+                break;
+
+            case GL_TEXTURE_MAG_FILTER:
+                switch (params[0])
+                {
+                case GL_NEAREST:
+                case GL_LINEAR:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture min filter value.");
+                }
+                texture->mag_filter() = params[0];
+                break;
+
+            case GL_GENERATE_MIPMAP:
+                texture->auto_generate_mipmap() = (params[0] != GL_FALSE);
+                break;
+
+            default:
+                throw invalid_enum_error("unknown texture parameter name.");
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
     static void set_clip_plane(GLenum p, const real_ptr& params)
     {
         try
@@ -1156,12 +1334,12 @@ void FIXIE_APIENTRY glTexEnvfv(GLenum target, GLenum pname, const GLfloat *param
 
 void FIXIE_APIENTRY glTexParameterf(GLenum target, GLenum pname, GLfloat param)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_real_parameters(target, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glTexParameterfv(GLenum target, GLenum pname, const GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_real_parameters(target, pname, params, true);
 }
 
 void FIXIE_APIENTRY glTranslatef(GLfloat x, GLfloat y, GLfloat z)
@@ -2815,22 +2993,22 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
 
 void FIXIE_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_int_parameters(target, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glTexParameterx(GLenum target, GLenum pname, GLfixed param)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_real_parameters(target, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glTexParameteriv(GLenum target, GLenum pname, const GLint *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_int_parameters(target, pname, params, true);
 }
 
 void FIXIE_APIENTRY glTexParameterxv(GLenum target, GLenum pname, const GLfixed *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_real_parameters(target, pname, params, true);
 }
 
 void FIXIE_APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
