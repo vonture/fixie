@@ -280,13 +280,32 @@ namespace fixie
             {
                 caps.insert_compressed_format(compressed_formats[i]);
             }
-            
+
+            #define GL_FRAMEBUFFER 0x8D40
+            #define GL_FRONT_LEFT 0x0400
+            #define GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE 0x8212
+            #define GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE 0x8213
+            #define GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE 0x8214
+            #define GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE 0x8215
+            #define GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE 0x8216
+            #define GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE 0x8217
+            #define GL_DEPTH 0x1801
+            #define GL_STENCIL 0x1802
+
+            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE, &caps.red_bits());
+            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE, &caps.green_bits());
+            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE, &caps.blue_bits());
+            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, &caps.alpha_bits());
+            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_DEPTH, GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, &caps.depth_bits());
+            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &caps.stencil_bits());
+            /*
             gl_call(functions, gl_get_integerv, GL_RED_BITS, &caps.red_bits());
             gl_call(functions, gl_get_integerv, GL_GREEN_BITS, &caps.green_bits());
             gl_call(functions, gl_get_integerv, GL_BLUE_BITS, &caps.blue_bits());
             gl_call(functions, gl_get_integerv, GL_ALPHA_BITS, &caps.alpha_bits());
             gl_call(functions, gl_get_integerv, GL_DEPTH_BITS, &caps.depth_bits());
             gl_call(functions, gl_get_integerv, GL_STENCIL_BITS, &caps.stencil_bits());
+            */
         }
     }
 }

@@ -75,6 +75,7 @@ namespace fixie
             DECLARE_GL_FUNCTION(gl_get_string, GLubyte*, (GLenum name), glGetString);
             DECLARE_GL_FUNCTION(gl_get_stringi, GLubyte*, (GLenum name, GLuint index), glGetStringi);
             DECLARE_GL_FUNCTION(gl_get_error, GLenum, (), glGetError);
+            DECLARE_GL_FUNCTION(get_framebuffer_attachment_parameter_iv, void, (GLenum target, GLenum attachment, GLenum pname, GLint* params), glGetFramebufferAttachmentParameteriv);
 
             DECLARE_GL_FUNCTION(gl_create_shader, GLuint, (GLenum shader_type), glCreateShader);
             DECLARE_GL_FUNCTION(gl_delete_shader, void, (GLuint shader), glDeleteShader);
