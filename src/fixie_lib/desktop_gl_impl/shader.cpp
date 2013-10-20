@@ -166,17 +166,19 @@ namespace fixie
             fragment_shader << tab << "vec4 " << local_output_color_name << " = " << color_name(false) << ";" << std::endl;
 
             const std::string texture_result_name = "texture_result";
-            fragment_shader << tab << "vec4 " << texture_result_name << " = vec4(0.0, 0.0, 0.0, 0.0);" << std::endl;
+            fragment_shader << tab << "vec4 " << texture_result_name << " = vec4(1.0, 1.0, 1.0, 1.0);" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 if (info.texture_environment(i).enabled())
                 {
                     const std::string texture_sample_name = format("texture_sample_%u", i);
                     fragment_shader << tab << "vec4 " << texture_sample_name << " = texture(" << sampler_name(i) << ", " << tex_coord_name(false, i) << ".xy);" << std::endl;
+                    fragment_shader << tab << texture_result_name << " *= " << texture_sample_name << ";" << std::endl;
                 }
             }
+            fragment_shader << tab << local_output_color_name << " *= " << texture_result_name << ";" << std::endl;
 
-            fragment_shader << tab << output_color_name << " = " << local_output_color_name << ";" << std::endl;
+            fragment_shader << tab << output_color_name << " = " << local_output_color_name<< ";" << std::endl;
             fragment_shader << "}" << std::endl;
 
             _program = create_program(_functions, vertex_shader.str(), fragment_shader.str());
