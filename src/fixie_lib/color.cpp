@@ -1,4 +1,5 @@
 #include "fixie_lib/color.hpp"
+#include "fixie_lib/util.hpp"
 
 namespace fixie
 {
@@ -37,5 +38,18 @@ namespace fixie
     bool operator!=(const color& a, const color& b)
     {
         return !(a == b);
+    }
+}
+
+namespace std
+{
+    size_t hash<fixie::color>::operator()(const fixie::color& key) const
+    {
+        size_t seed = 0;
+        fixie::hash_combine(seed, key.r);
+        fixie::hash_combine(seed, key.g);
+        fixie::hash_combine(seed, key.b);
+        fixie::hash_combine(seed, key.a);
+        return seed;
     }
 }

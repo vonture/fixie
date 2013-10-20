@@ -1,5 +1,7 @@
 #include "fixie_lib/desktop_gl_impl/shader_info.hpp"
 
+#include <algorithm>
+
 #include "fixie_lib/util.hpp"
 
 namespace fixie
@@ -11,11 +13,15 @@ namespace fixie
         }
 
         shader_info::shader_info(const state& state, const caps& caps)
-            : _texture_unit_count(caps.max_texture_units())
+            : _texture_environments(caps.max_texture_units())
             , _uses_clip_planes(caps.max_clip_planes())
             , _uses_lights(caps.max_lights())
             , _shade_model(state.shade_model())
         {
+            for (size_t i = 0; i < _texture_environments.size(); ++i)
+            {
+                _texture_environments[i] = state.texture_environment(i);
+            }
             for (size_t i = 0; i < _uses_clip_planes.size(); ++i)
             {
                 _uses_clip_planes[i] = state.clip_plane(i).enabled();
@@ -26,9 +32,14 @@ namespace fixie
             }
         }
 
+        const fixie::texture_environment& shader_info::texture_environment(size_t n) const
+        {
+            return _texture_environments[n];
+        }
+
         size_t shader_info::texture_unit_count() const
         {
-            return _texture_unit_count;
+            return _texture_environments.size();
         }
 
         GLboolean shader_info::uses_clip_plane(size_t n) const
@@ -62,6 +73,13 @@ namespace fixie
             {
                 return false;
             }
+            for (size_t i = 0; i < a.texture_unit_count(); ++i)
+            {
+                if (a.texture_environment(i) != b.texture_environment(i))
+                {
+                    return false;
+                }
+            }
 
             if (a.clip_plane_count() != b.clip_plane_count())
             {
@@ -93,6 +111,11 @@ namespace fixie
             }
 
             return true;
+        }
+
+        bool operator!=(const shader_info& a, const shader_info& b)
+        {
+            return !(a == b);
         }
     }
 }

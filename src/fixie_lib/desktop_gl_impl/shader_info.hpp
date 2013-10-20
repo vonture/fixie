@@ -18,6 +18,7 @@ namespace fixie
             shader_info();
             explicit shader_info(const state& state, const caps& caps);
 
+            const fixie::texture_environment& texture_environment(size_t n) const;
             size_t texture_unit_count() const;
 
             GLboolean uses_clip_plane(size_t n) const;
@@ -29,13 +30,14 @@ namespace fixie
             GLenum shade_model() const;
 
         private:
-            size_t _texture_unit_count;
+            std::vector<fixie::texture_environment> _texture_environments;
             std::vector<GLboolean> _uses_clip_planes;
             std::vector<GLboolean> _uses_lights;
             GLenum _shade_model;
         };
 
         bool operator==(const shader_info& a, const shader_info& b);
+        bool operator!=(const shader_info& a, const shader_info& b);
     }
 }
 
