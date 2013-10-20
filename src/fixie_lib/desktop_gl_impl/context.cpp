@@ -11,6 +11,12 @@ namespace fixie
 {
     namespace desktop_gl_impl
     {
+        void GL_APIENTRY debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message,
+                                        const GLvoid* user_param)
+        {
+            log_message(source, type, id, severity, std::string(message));
+        }
+
         context::context()
             : _functions(std::make_shared<gl_functions>())
             , _shader_cache(_functions)
@@ -27,10 +33,31 @@ namespace fixie
             std::string gl_renderer_string(reinterpret_cast<const char*>(_functions->gl_get_string()(GL_RENDERER)));
             std::string gl_vendor_string(reinterpret_cast<const char*>(_functions->gl_get_string()(GL_VENDOR)));
 
-            std::string gl_extension_string(reinterpret_cast<const char*>(_functions->gl_get_string()(GL_EXTENSIONS)));
-            split(gl_extension_string, ' ', std::inserter(_extensions, _extensions.end()));
+            if (_major_version >= 3)
+            {
+                #define GL_NUM_EXTENSIONS 0x821D
+
+                GLint num_extensions;
+                _functions->gl_get_integerv()(GL_NUM_EXTENSIONS, &num_extensions);
+                for (GLint i = 0; i < num_extensions; i++)
+                {
+                    _extensions.insert(reinterpret_cast<const char*>(_functions->gl_get_stringi()(GL_EXTENSIONS, i)));
+                }
+            }
+            else
+            {
+                std::string gl_extension_string(reinterpret_cast<const char*>(_functions->gl_get_string()(GL_EXTENSIONS)));
+                split(gl_extension_string, ' ', std::inserter(_extensions, _extensions.end()));
+            }
 
             _renderer_string = format("%s OpenGL %s", gl_renderer_string.c_str(), gl_version_string.c_str());
+
+            if (_extensions.find("GL_ARB_debug_output") != end(_extensions))
+            {
+                _functions->gl_enable()(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+                _functions->gl_debug_message_control_arb()(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+                _functions->gl_debug_message_callback_arb()(debug_callback, nullptr);
+            }
         }
 
         const fixie::caps& context::caps()

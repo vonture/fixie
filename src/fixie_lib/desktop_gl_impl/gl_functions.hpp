@@ -24,7 +24,6 @@ namespace fixie
         class gl_functions
         {
             DECLARE_GL_FUNCTION(gl_enable, void, (GLenum cap), glEnable);
-
             DECLARE_GL_FUNCTION(gl_disable, void, (GLenum cap), glDisable);
 
             DECLARE_GL_FUNCTION(gl_clear_color, void, (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha), glClearColor);
@@ -122,6 +121,12 @@ namespace fixie
 
             DECLARE_GL_FUNCTION(gl_draw_arrays, void, (GLenum mode, GLint first, GLsizei count), glDrawArrays);
             DECLARE_GL_FUNCTION(gl_draw_elements, void, (GLenum mode, GLsizei count, GLenum type, const GLvoid* indices), glDrawElements);
+
+            typedef void (GL_APIENTRY *DEBUGPROCARB)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const GLvoid* userParam);
+            DECLARE_GL_FUNCTION(gl_debug_message_control_arb, void, (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled), glDebugMessageControlARB);
+            DECLARE_GL_FUNCTION(gl_debug_message_insert_arb, void, (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* buf), glDebugMessageInsertARB);
+            DECLARE_GL_FUNCTION(gl_debug_message_callback_arb, void, (DEBUGPROCARB callback, const GLvoid* userParam), glDebugMessageCallbackARB);
+            DECLARE_GL_FUNCTION(gl_debug_message_log_arb, void, (GLuint count, GLsizei bufSize, GLenum* sources, GLenum* types, GLuint* ids, GLenum* severities, GLsizei* lengths, GLchar* messageLog), glGetDebugMessageLogARB);
         };
 
         #undef DECLARE_GL_FUNCTION
