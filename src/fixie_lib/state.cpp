@@ -1,5 +1,7 @@
 #include "fixie_lib/state.hpp"
 
+#include <algorithm>
+
 #include "fixie/fixie_gl_es.h"
 #include "fixie_lib/exceptions.hpp"
 #include "fixie_lib/debug.hpp"
@@ -24,7 +26,10 @@ namespace fixie
         , _texture_matrix_stacks(caps.max_texture_units())
         , _next_texture_id(1)
         , _bound_textures(caps.max_texture_units())
+        , _texture_environments(caps.max_texture_units())
         , _next_buffer_id(1)
+        , _bound_array_buffer(nullptr)
+        , _bound_element_array_buffer(nullptr)
         , _active_client_texture(0)
         , _vertex_attribute(get_default_vertex_attribute())
         , _normal_attribute(get_default_normal_attribute())
@@ -33,18 +38,14 @@ namespace fixie
         , _shade_model(GL_SMOOTH)
         , _error(GL_NO_ERROR)
     {
-        for (size_t i = 0; i < _lights.size(); i++)
+        for (size_t i = 0; i < _lights.size(); ++i)
         {
             _lights[i] = get_default_light(i);
         }
-        for (size_t i = 0; i < _clip_planes.size(); i++)
-        {
-            _clip_planes[i] = get_default_clip_plane();
-        }
-        for (size_t i = 0; i < _texcoord_attributes.size(); i++)
-        {
-            _texcoord_attributes[i] = get_default_texcoord_attribute();
-        }
+        std::generate(begin(_clip_planes), end(_clip_planes), get_default_clip_plane);
+        std::fill(begin(_bound_textures), end(_bound_textures), nullptr);
+        std::generate(begin(_texture_environments), end(_texture_environments), get_default_texture_environment);
+        std::generate(begin(_texcoord_attributes), end(_texcoord_attributes), get_default_texcoord_attribute);
     }
 
     color& state::clear_color()
@@ -280,6 +281,16 @@ namespace fixie
     std::shared_ptr<const fixie::texture> state::bound_texture(size_t unit) const
     {
         return _bound_textures[unit];
+    }
+
+    fixie::texture_environment& state::texture_environment(size_t unit)
+    {
+        return _texture_environments[unit];
+    }
+
+    const fixie::texture_environment& state::texture_environment(size_t unit) const
+    {
+        return _texture_environments[unit];
     }
 
     GLuint state::insert_buffer(std::shared_ptr<fixie::buffer> buffer)

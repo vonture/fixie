@@ -19,6 +19,7 @@
 #include "fixie_lib/texture.hpp"
 #include "fixie_lib/buffer.hpp"
 #include "fixie_lib/vertex_attribute.hpp"
+#include "fixie_lib/texture_environment.hpp"
 
 namespace fixie
 {
@@ -91,6 +92,8 @@ namespace fixie
 
         std::shared_ptr<fixie::texture>& bound_texture(size_t unit);
         std::shared_ptr<const fixie::texture> bound_texture(size_t unit) const;
+        fixie::texture_environment& texture_environment(size_t unit);
+        const fixie::texture_environment& texture_environment(size_t unit) const;
 
         GLuint insert_buffer(std::shared_ptr<fixie::buffer> buffer);
         void delete_buffer(GLuint id);
@@ -160,6 +163,7 @@ namespace fixie
         GLuint _next_texture_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::texture> > _textures;
         std::vector< std::shared_ptr<fixie::texture> > _bound_textures;
+        std::vector<fixie::texture_environment> _texture_environments;
 
         GLuint _next_buffer_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::buffer> > _buffers;

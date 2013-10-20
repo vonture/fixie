@@ -268,6 +268,338 @@ namespace fixie
         }
     }
 
+    static void set_texture_env_real_parameters(GLenum target, GLenum pname, const real_ptr& params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            if (target != GL_TEXTURE_ENV)
+            {
+                throw invalid_enum_error("texture environment target must be GL_TEXTURE_ENV.");
+            }
+
+            texture_environment& environment = ctx->state().texture_environment(ctx->state().active_texture_unit());
+
+            switch (pname)
+            {
+            case GL_TEXTURE_ENV_COLOR:
+                if (!vector_call)
+                {
+                    throw invalid_enum_error("multi-valued texture environment parameter name, GL_TEXTURE_ENV_COLOR, passed to "
+                                             "non-vector  texture environment function.");
+                }
+                environment.color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                break;
+
+            case GL_RGB_SCALE:
+                if (params.as_float(0) != 1.0f && params.as_float(0) != 2.0f && params.as_float(0) != 4.0f)
+                {
+                    throw invalid_value_error(format("rgb scale must be 1.0, 2.0 or 4.0, %g provided.", params.as_float(0)));
+                }
+                environment.rgb_scale() = params.as_float(0);
+                break;
+
+            case GL_ALPHA_SCALE:
+                if (params.as_float(0) != 1.0f && params.as_float(0) != 2.0f && params.as_float(0) != 4.0f)
+                {
+                    throw invalid_value_error(format("alpha scale must be 1.0, 2.0 or 4.0, %g provided.", params.as_float(0)));
+                }
+                environment.alpha_scale() = params.as_float(0);
+                break;
+
+            default:
+                throw invalid_enum_error("unknown texture environment parameter name.");
+            }
+
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
+    static void set_texture_env_int_parameters(GLenum target, GLenum pname, const GLint* params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            if (target != GL_TEXTURE_ENV)
+            {
+                throw invalid_enum_error("texture environment target must be GL_TEXTURE_ENV.");
+            }
+
+            texture_environment& environment = ctx->state().texture_environment(ctx->state().active_texture_unit());
+
+            switch (pname)
+            {
+            case GL_TEXTURE_ENV_MODE:
+                switch (params[0])
+                {
+                case GL_REPLACE:
+                case GL_MODULATE:
+                case GL_DECAL:
+                case GL_BLEND:
+                case GL_ADD:
+                case GL_COMBINE:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment mode.");
+                }
+                environment.mode() = static_cast<GLenum>(params[0]);
+                break;
+
+            case GL_TEXTURE_ENV_COLOR:
+                if (!vector_call)
+                {
+                    throw invalid_enum_error("multi-valued texture environment parameter name, GL_TEXTURE_ENV_COLOR, passed to "
+                        "non-vector  texture environment function.");
+                }
+                environment.color() = color(static_cast<GLfloat>(params[0]), static_cast<GLfloat>(params[1]), static_cast<GLfloat>(params[2]),
+                                            static_cast<GLfloat>(params[3]));
+                break;
+
+            case GL_COMBINE_RGB:
+                // parameters from ES 1.1.12 spec, table 3.17
+                switch (params[0])
+                {
+                case GL_REPLACE:
+                case GL_MODULATE:
+                case GL_ADD:
+                case GL_ADD_SIGNED:
+                case GL_INTERPOLATE:
+                case GL_SUBTRACT:
+                case GL_DOT3_RGB:
+                case GL_DOT3_RGBA:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment rgb combine function.");
+                }
+                environment.combine_rgb() = params[0];
+                break;
+
+            case GL_COMBINE_ALPHA:
+                // parameters from ES 1.1.12 spec, table 3.17
+                switch (params[0])
+                {
+                case GL_REPLACE:
+                case GL_MODULATE:
+                case GL_ADD:
+                case GL_ADD_SIGNED:
+                case GL_INTERPOLATE:
+                case GL_SUBTRACT:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment alpha combine function.");
+                }
+                environment.combine_alpha() = params[0];
+                break;
+
+            case GL_SRC0_RGB:
+                switch (params[0])
+                {
+                case GL_TEXTURE:
+                case GL_CONSTANT:
+                case GL_PRIMARY_COLOR:
+                case GL_PREVIOUS:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment source 0 rgb function.");
+                }
+                environment.source0_rgb() = params[0];
+                break;
+
+            case GL_SRC1_RGB:
+                switch (params[0])
+                {
+                case GL_TEXTURE:
+                case GL_CONSTANT:
+                case GL_PRIMARY_COLOR:
+                case GL_PREVIOUS:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment source 1 rgb function.");
+                }
+                environment.source1_rgb() = params[0];
+                break;
+
+            case GL_SRC2_RGB:
+                switch (params[0])
+                {
+                case GL_TEXTURE:
+                case GL_CONSTANT:
+                case GL_PRIMARY_COLOR:
+                case GL_PREVIOUS:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment source 2 rgb function.");
+                }
+                environment.source2_rgb() = params[0];
+                break;
+
+            case GL_SRC0_ALPHA:
+                switch (params[0])
+                {
+                case GL_TEXTURE:
+                case GL_CONSTANT:
+                case GL_PRIMARY_COLOR:
+                case GL_PREVIOUS:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment source 0 alpha function.");
+                }
+                environment.source0_alpha() = params[0];
+                break;
+
+            case GL_SRC1_ALPHA:
+                switch (params[0])
+                {
+                case GL_TEXTURE:
+                case GL_CONSTANT:
+                case GL_PRIMARY_COLOR:
+                case GL_PREVIOUS:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment source 1 alpha function.");
+                }
+                environment.source1_alpha() = params[0];
+                break;
+
+            case GL_SRC2_ALPHA:
+                switch (params[0])
+                {
+                case GL_TEXTURE:
+                case GL_CONSTANT:
+                case GL_PRIMARY_COLOR:
+                case GL_PREVIOUS:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment source 2 alpha function.");
+                }
+                environment.source2_alpha() = params[0];
+                break;
+
+            case GL_OPERAND0_RGB:
+                switch (params[0])
+                {
+                case GL_SRC_COLOR:
+                case GL_ONE_MINUS_SRC_COLOR:
+                case GL_SRC_ALPHA:
+                case GL_ONE_MINUS_SRC_ALPHA:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment operand 0 rgb function.");
+                }
+                environment.operand0_rgb() = params[0];
+                break;
+
+            case GL_OPERAND1_RGB:
+                switch (params[0])
+                {
+                case GL_SRC_COLOR:
+                case GL_ONE_MINUS_SRC_COLOR:
+                case GL_SRC_ALPHA:
+                case GL_ONE_MINUS_SRC_ALPHA:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment operand 1 rgb function.");
+                }
+                environment.operand1_rgb() = params[0];
+                break;
+
+            case GL_OPERAND2_RGB:
+                switch (params[0])
+                {
+                case GL_SRC_COLOR:
+                case GL_ONE_MINUS_SRC_COLOR:
+                case GL_SRC_ALPHA:
+                case GL_ONE_MINUS_SRC_ALPHA:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment operand 2 rgb unction.");
+                }
+                environment.operand2_rgb() = params[0];
+                break;
+
+            case GL_OPERAND0_ALPHA:
+                switch (params[0])
+                {
+                case GL_SRC_ALPHA:
+                case GL_ONE_MINUS_SRC_ALPHA:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment operand 0 alpha function.");
+                }
+                environment.operand0_alpha() = params[0];
+                break;
+
+            case GL_OPERAND1_ALPHA:
+                switch (params[0])
+                {
+                case GL_SRC_ALPHA:
+                case GL_ONE_MINUS_SRC_ALPHA:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment operand 1 alpha function.");
+                }
+                environment.operand1_alpha() = params[0];
+                break;
+
+            case GL_OPERAND2_ALPHA:
+                switch (params[0])
+                {
+                case GL_SRC_ALPHA:
+                case GL_ONE_MINUS_SRC_ALPHA:
+                    break;
+                default:
+                    throw invalid_value_error("unknown texture environment operand 2 alpha unction.");
+                }
+                environment.operand2_alpha() = params[0];
+                break;
+
+            case GL_RGB_SCALE:
+                if (params[0] != 1 && params[0] != 2 && params[0] != 4)
+                {
+                    throw invalid_value_error(format("rgb scale must be 1, 2 or 4, %i provided.", params[0]));
+                }
+                environment.rgb_scale() = static_cast<GLfloat>(params[0]);
+                break;
+
+            case GL_ALPHA_SCALE:
+                if (params[0] != 1 && params[0] != 2 && params[0] != 4)
+                {
+                    throw invalid_value_error(format("alpha scale must be 1, 2 or 4, %i provided.", params[0]));
+                }
+                environment.alpha_scale() = static_cast<GLfloat>(params[0]);
+                break;
+
+            default:
+                throw invalid_enum_error("unknown texture environment parameter name.");
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
     static void set_clip_plane(GLenum p, const real_ptr& params)
     {
         try
@@ -364,6 +696,7 @@ namespace fixie
 
         switch (target)
         {
+        case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).enabled();
         case GL_SCISSOR_TEST: return ctx->state().scissor_test();
         case GL_DEPTH_TEST:   return ctx->state().depth_test();
         default: throw invalid_enum_error("unknown target.");
@@ -813,12 +1146,12 @@ void FIXIE_APIENTRY glScalef(GLfloat x, GLfloat y, GLfloat z)
 
 void FIXIE_APIENTRY glTexEnvf(GLenum target, GLenum pname, GLfloat param)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_env_real_parameters(target, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glTexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_env_real_parameters(target, pname, params, true);
 }
 
 void FIXIE_APIENTRY glTexParameterf(GLenum target, GLenum pname, GLfloat param)
@@ -2385,22 +2718,22 @@ void FIXIE_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, c
 
 void FIXIE_APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_env_int_parameters(target, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glTexEnvx(GLenum target, GLenum pname, GLfixed param)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_env_real_parameters(target, pname, &param, false);
 }
 
 void FIXIE_APIENTRY glTexEnviv(GLenum target, GLenum pname, const GLint *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_env_int_parameters(target, pname, params, true);
 }
 
 void FIXIE_APIENTRY glTexEnvxv(GLenum target, GLenum pname, const GLfixed *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_texture_env_real_parameters(target, pname, params, true);
 }
 
 void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
