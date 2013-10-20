@@ -1,4 +1,5 @@
 #include "fixie_lib/exceptions.hpp"
+#include "fixie_lib/util.hpp"
 
 #include "fixie/fixie_gl_es.h"
 
@@ -75,5 +76,25 @@ namespace fixie
     out_of_memory_error::out_of_memory_error(const std::string& msg)
         : gl_error(GL_OUT_OF_MEMORY, "out of memory", msg)
     {
+    }
+
+    void throw_gl_error(GLenum error_code, const std::string& file, size_t line)
+    {
+        throw_gl_error(error_code, format("%s:%u", file.c_str(), line));
+    }
+
+    void throw_gl_error(GLenum error_code, const std::string& msg)
+    {
+        switch (error_code)
+        {
+        case GL_NO_ERROR:          return;
+        case GL_INVALID_ENUM:      throw invalid_enum_error(msg);
+        case GL_INVALID_VALUE:     throw invalid_value_error(msg);
+        case GL_INVALID_OPERATION: throw invalid_operation_error(msg);
+        case GL_STACK_OVERFLOW:    throw stack_overflow_error(msg);
+        case GL_STACK_UNDERFLOW:   throw stack_underflow_error(msg);
+        case GL_OUT_OF_MEMORY:     throw out_of_memory_error(msg);
+        default:                   break;
+        }
     }
 }

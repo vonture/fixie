@@ -85,6 +85,9 @@ namespace fixie
     public:
         out_of_memory_error(const std::string& msg);
     };
+
+    void throw_gl_error(GLenum error_code, const std::string& file, size_t line);
+    void throw_gl_error(GLenum error_code, const std::string& msg);
 }
 
 #endif // _EXCEPTIONS_HPP_

@@ -3,6 +3,21 @@
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/function_loader.hpp"
+#include "fixie_lib/exceptions.hpp"
+
+#if defined BUILD_DEBUG
+    #define gl_call(functions_ptr, name, ...) \
+        ((functions_ptr)->name()(__VA_ARGS__)); \
+        { \
+            GLenum error_code = (functions_ptr)->gl_get_error()(); \
+            if (error_code != GL_NO_ERROR) \
+            { \
+                throw_gl_error(error_code, __FILE__, __LINE__); \
+            } \
+        }
+#else
+    #define gl_call(functions_ptr, name, ...) (functions_ptr->name()(__VA_ARGS__))
+#endif
 
 namespace fixie
 {
@@ -55,6 +70,7 @@ namespace fixie
             DECLARE_GL_FUNCTION(gl_get_floatv, void, (GLenum pname, GLfloat *params), glGetFloatv);
             DECLARE_GL_FUNCTION(gl_get_string, GLubyte*, (GLenum name), glGetString);
             DECLARE_GL_FUNCTION(gl_get_stringi, GLubyte*, (GLenum name, GLuint index), glGetStringi);
+            DECLARE_GL_FUNCTION(gl_get_error, GLenum, (), glGetError);
 
             DECLARE_GL_FUNCTION(gl_create_shader, GLuint, (GLenum shader_type), glCreateShader);
             DECLARE_GL_FUNCTION(gl_delete_shader, void, (GLuint shader), glDeleteShader);
