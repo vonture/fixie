@@ -56,6 +56,7 @@ namespace fixie
             {
                 functions->gl_delete_shader()(vertex_shader);
                 functions->gl_delete_shader()(fragment_shader);
+                throw;
             }
 
             GLuint program = functions->gl_create_program()();
@@ -112,16 +113,27 @@ namespace fixie
             vertex_shader << "out vec4 " << color_name(false) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
-                vertex_shader << "in vec4 " << tex_coord_name(true, i) << ";" << std::endl;
-                vertex_shader << "out vec2 " << tex_coord_name(false, i) << ";" << std::endl;
-                vertex_shader << "uniform mat4 " << tex_coord_transform_name(i) << ";" << std::endl;
+                if (info.texture_environment(i).enabled())
+                {
+                    vertex_shader << "in vec4 " << tex_coord_name(true, i) << ";" << std::endl;
+                    vertex_shader << "out vec4 " << tex_coord_name(false, i) << ";" << std::endl;
+                    vertex_shader << "uniform mat4 " << tex_coord_transform_name(i) << ";" << std::endl;
+                }
             }
 
             vertex_shader << std::endl;
             vertex_shader << "void main(void)" << std::endl;
             vertex_shader << "{" << std::endl;
             vertex_shader << tab << vertex_name(false) << " = " << vertex_transform_name << " * " << vertex_name(true) << ";" << std::endl;
+            vertex_shader << tab << normal_name(false) << " = " << normal_name(true) << ";" << std::endl; // TODO: how are normals transformed?
             vertex_shader << tab << color_name(false) << " = " << color_name(true) << ";" << std::endl;
+            for (size_t i = 0; i < info.texture_unit_count(); ++i)
+            {
+                if (info.texture_environment(i).enabled())
+                {
+                    vertex_shader << tab << tex_coord_name(false, i) << " = " << tex_coord_transform_name(i) << " * " << tex_coord_name(true, i) << ";" << std::endl;
+                }
+            }
             vertex_shader << std::endl;
             vertex_shader << tab << "gl_Position = " << vertex_name(false) << ";" << std::endl;
             vertex_shader << "}" << std::endl;
@@ -137,8 +149,11 @@ namespace fixie
             fragment_shader << "in vec4 " << color_name(false) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
-                fragment_shader << "in vec2 " << tex_coord_name(false, i) << ";" << std::endl;
-                fragment_shader << "uniform sampler2D " << sampler_name(i) << ";" << std::endl;
+                if (info.texture_environment(i).enabled())
+                {
+                    fragment_shader << "in vec4 " << tex_coord_name(false, i) << ";" << std::endl;
+                    fragment_shader << "uniform sampler2D " << sampler_name(i) << ";" << std::endl;
+                }
             }
             fragment_shader << "uniform vec4 " << ambient_color_name << ";" << std::endl;
             fragment_shader << "out vec4 " << output_color_name << ";" << std::endl;
@@ -149,8 +164,19 @@ namespace fixie
 
             const std::string local_output_color_name = "result_color";
             fragment_shader << tab << "vec4 " << local_output_color_name << " = " << color_name(false) << ";" << std::endl;
-            fragment_shader << tab << output_color_name << " = " << local_output_color_name << ";" << std::endl;
 
+            const std::string texture_result_name = "texture_result";
+            fragment_shader << tab << "vec4 " << texture_result_name << " = vec4(0.0, 0.0, 0.0, 0.0);" << std::endl;
+            for (size_t i = 0; i < info.texture_unit_count(); ++i)
+            {
+                if (info.texture_environment(i).enabled())
+                {
+                    const std::string texture_sample_name = format("texture_sample_%u", i);
+                    fragment_shader << tab << "vec4 " << texture_sample_name << " = texture(" << sampler_name(i) << ", " << tex_coord_name(false, i) << ".xy);" << std::endl;
+                }
+            }
+
+            fragment_shader << tab << output_color_name << " = " << local_output_color_name << ";" << std::endl;
             fragment_shader << "}" << std::endl;
 
             _program = create_program(_functions, vertex_shader.str(), fragment_shader.str());
@@ -166,9 +192,18 @@ namespace fixie
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 texcoord_uniform& uniform = _texcoord_locations[i];
-                uniform.texcoord_location = _functions->gl_get_attrib_location()(_program, tex_coord_name(true, i).c_str());
-                uniform.texcoord_transform_location = _functions->gl_get_uniform_location()(_program, tex_coord_transform_name(i).c_str());
-                uniform.sampler_location = _functions->gl_get_uniform_location()(_program, sampler_name(i).c_str());
+                if (info.texture_environment(i).enabled())
+                {
+                    uniform.texcoord_location = _functions->gl_get_attrib_location()(_program, tex_coord_name(true, i).c_str());
+                    uniform.texcoord_transform_location = _functions->gl_get_uniform_location()(_program, tex_coord_transform_name(i).c_str());
+                    uniform.sampler_location = _functions->gl_get_uniform_location()(_program, sampler_name(i).c_str());
+                }
+                else
+                {
+                    uniform.texcoord_location = -1;
+                    uniform.texcoord_transform_location = -1;
+                    uniform.sampler_location = -1;
+                }
             }
         }
 
@@ -181,8 +216,24 @@ namespace fixie
         {
             _functions->gl_use_program()(_program);
 
-            matrix4 transform_matrix = state.model_view_matrix_stack().top_multiplied() * state.projection_matrix_stack().top_multiplied();
-            _functions->gl_uniform_matrix_4fv()(_vertex_transform_location, 1, GL_FALSE, transform_matrix.data);
+            if (_vertex_transform_location != -1)
+            {
+                matrix4 transform_matrix = state.model_view_matrix_stack().top_multiplied() * state.projection_matrix_stack().top_multiplied();
+                _functions->gl_uniform_matrix_4fv()(_vertex_transform_location, 1, GL_FALSE, transform_matrix.data);
+            }
+
+            for (size_t i = 0; i < _texcoord_locations.size(); i++)
+            {
+                if (_texcoord_locations[i].texcoord_transform_location != -1)
+                {
+                    matrix4 texcoord_transform = state.texture_matrix_stack(i).top_multiplied();
+                    _functions->gl_uniform_matrix_4fv()(_texcoord_locations[i].texcoord_transform_location, 1, GL_FALSE, texcoord_transform.data);
+                }
+                if (_texcoord_locations[i].sampler_location != -1)
+                {
+                    _functions->gl_uniform_1i()(_texcoord_locations[i].sampler_location, i);
+                }
+            }
         }
 
         GLint shader::vertex_attribute_location() const
