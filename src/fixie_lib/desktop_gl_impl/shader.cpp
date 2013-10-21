@@ -1,6 +1,7 @@
 #include "fixie_lib/desktop_gl_impl/shader.hpp"
 #include "fixie_lib/desktop_gl_impl/exceptions.hpp"
 #include "fixie_lib/util.hpp"
+#include "fixie_lib/debug.hpp"
 #include "fixie/fixie_gl_es.h"
 #include <sstream>
 #include <array>
@@ -11,7 +12,6 @@ namespace fixie
     #define GL_INFO_LOG_LENGTH 0x8B84
     #define GL_VERTEX_SHADER 0x8B31
     #define GL_FRAGMENT_SHADER 0x8B30
-
     #define GL_LINK_STATUS 0x8B82
 
     namespace desktop_gl_impl
@@ -84,39 +84,91 @@ namespace fixie
             return program;
         }
 
-        shader::shader(const shader_info& info, std::shared_ptr<const gl_functions> functions)
-            : _functions(functions)
+        static GLuint shader_version()
         {
-            const GLuint shader_version = 140;
-            auto vertex_name = [](bool vs) { return format("position_%s", vs ? "vs" : "fs"); };
-            const std::string vertex_transform_name = "position_transform";
-            auto normal_name = [](bool vs) { return format("normal_%s", vs ? "vs" : "fs"); };
-            auto color_name = [](bool vs) { return format("color_%s", vs ? "vs" : "fs"); };
-            auto tex_coord_name = [](bool vs, size_t i) { return format("texcoord_%s_%u", vs ? "vs" : "fs", i); };
-            auto tex_coord_transform_name = [](size_t i) { return format("texcoord_transform_%u", i); };
-            auto sampler_name = [](size_t i) { return format("sampler_%u", i); };
-            const std::string ambient_color_name = "ambient_color";
-            const std::string output_color_name = "color_out";
-            const std::string tab = "    ";
+            return 140;
+        }
 
+        enum shader_type
+        {
+            vertex_input,
+            vertex_output,
+            fragment_input,
+            fragment_output,
+        };
+
+        static std::string shader_type_name(shader_type type)
+        {
+            switch(type)
+            {
+            case vertex_input:      return "vs";
+            case vertex_output:     return "fs";
+            case fragment_input:    return "fs";
+            case fragment_output:   return "out";
+            default: UNREACHABLE(); return "";
+            }
+        }
+
+        static std::string vertex_name(shader_type type)
+        {
+            return format("position_%s", shader_type_name(type).c_str());
+        }
+
+        static std::string vertex_transform_name()
+        {
+            return "position_transform";
+        }
+
+        static std::string normal_name(shader_type type)
+        {
+            return format("normal_%s", shader_type_name(type).c_str());
+        }
+
+        static std::string color_name(shader_type type)
+        {
+            return format("color_%s", shader_type_name(type).c_str());
+        }
+
+        static std::string tex_coord_name(shader_type type, size_t i)
+        {
+            return format("texcoord_%s_%u", shader_type_name(type).c_str(), i);
+        }
+
+        static std::string tex_coord_transform_name(size_t i)
+        {
+            return format("texcoord_transform_%u", i);
+        }
+
+        static std::string sampler_name(size_t i)
+        {
+            return format("sampler_%u", i);
+        }
+
+        static std::string tab()
+        {
+            return "    ";
+        }
+
+        static std::string generate_vertex_shader(const shader_info& info)
+        {
             std::ostringstream vertex_shader;
 
-            vertex_shader << "#version " << shader_version << std::endl;
+            vertex_shader << "#version " << shader_version() << std::endl;
             vertex_shader << std::endl;
 
-            vertex_shader << "in vec4 " << vertex_name(true) << ";" << std::endl;
-            vertex_shader << "out vec4 " << vertex_name(false) << ";" << std::endl;
-            vertex_shader << "uniform mat4 " << vertex_transform_name << ";" << std::endl;
-            vertex_shader << "in vec3 " << normal_name(true) << ";" << std::endl;
-            vertex_shader << "out vec3 " << normal_name(false) << ";" << std::endl;
-            vertex_shader << "in vec4 " << color_name(true) << ";" << std::endl;
-            vertex_shader << "out vec4 " << color_name(false) << ";" << std::endl;
+            vertex_shader << "in vec4 " << vertex_name(vertex_input) << ";" << std::endl;
+            vertex_shader << "out vec4 " << vertex_name(vertex_output) << ";" << std::endl;
+            vertex_shader << "uniform mat4 " << vertex_transform_name() << ";" << std::endl;
+            vertex_shader << "in vec3 " << normal_name(vertex_input) << ";" << std::endl;
+            vertex_shader << "out vec3 " << normal_name(vertex_output) << ";" << std::endl;
+            vertex_shader << "in vec4 " << color_name(vertex_input) << ";" << std::endl;
+            vertex_shader << "out vec4 " << color_name(vertex_output) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 if (info.texture_environment(i).enabled())
                 {
-                    vertex_shader << "in vec4 " << tex_coord_name(true, i) << ";" << std::endl;
-                    vertex_shader << "out vec4 " << tex_coord_name(false, i) << ";" << std::endl;
+                    vertex_shader << "in vec4 " << tex_coord_name(vertex_input, i) << ";" << std::endl;
+                    vertex_shader << "out vec4 " << tex_coord_name(vertex_output, i) << ";" << std::endl;
                     vertex_shader << "uniform mat4 " << tex_coord_transform_name(i) << ";" << std::endl;
                 }
             }
@@ -124,72 +176,81 @@ namespace fixie
             vertex_shader << std::endl;
             vertex_shader << "void main(void)" << std::endl;
             vertex_shader << "{" << std::endl;
-            vertex_shader << tab << vertex_name(false) << " = " << vertex_transform_name << " * " << vertex_name(true) << ";" << std::endl;
-            vertex_shader << tab << normal_name(false) << " = " << normal_name(true) << ";" << std::endl; // TODO: how are normals transformed?
-            vertex_shader << tab << color_name(false) << " = " << color_name(true) << ";" << std::endl;
+            vertex_shader << tab() << vertex_name(vertex_output) << " = " << vertex_transform_name() << " * " << vertex_name(vertex_input) << ";" << std::endl;
+            vertex_shader << tab() << normal_name(vertex_output) << " = " << normal_name(vertex_input) << ";" << std::endl; // TODO: how are normals transformed?
+            vertex_shader << tab() << color_name(vertex_output) << " = " << color_name(vertex_input) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 if (info.texture_environment(i).enabled())
                 {
-                    vertex_shader << tab << tex_coord_name(false, i) << " = " << tex_coord_transform_name(i) << " * " << tex_coord_name(true, i) << ";" << std::endl;
+                    vertex_shader << tab() << tex_coord_name(vertex_output, i) << " = " << tex_coord_transform_name(i) << " * " << tex_coord_name(vertex_input, i) << ";" << std::endl;
                 }
             }
             vertex_shader << std::endl;
-            vertex_shader << tab << "gl_Position = " << vertex_name(false) << ";" << std::endl;
+            vertex_shader << tab() << "gl_Position = " << vertex_name(vertex_output) << ";" << std::endl;
             vertex_shader << "}" << std::endl;
 
+            return vertex_shader.str();
+        }
 
+        static std::string generate_fragment_shader(const shader_info& info)
+        {
             std::ostringstream fragment_shader;
 
-            fragment_shader << "#version " << shader_version << std::endl;
+            fragment_shader << "#version " << shader_version() << std::endl;
             fragment_shader << std::endl;
 
-            fragment_shader << "in vec4 " << vertex_name(false) << ";" << std::endl;
-            fragment_shader << "in vec3 " << normal_name(false) << ";" << std::endl;
-            fragment_shader << "in vec4 " << color_name(false) << ";" << std::endl;
+            fragment_shader << "in vec4 " << vertex_name(fragment_input) << ";" << std::endl;
+            fragment_shader << "in vec3 " << normal_name(fragment_input) << ";" << std::endl;
+            fragment_shader << "in vec4 " << color_name(fragment_input) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 if (info.texture_environment(i).enabled())
                 {
-                    fragment_shader << "in vec4 " << tex_coord_name(false, i) << ";" << std::endl;
+                    fragment_shader << "in vec4 " << tex_coord_name(fragment_input, i) << ";" << std::endl;
                     fragment_shader << "uniform sampler2D " << sampler_name(i) << ";" << std::endl;
                 }
             }
-            fragment_shader << "uniform vec4 " << ambient_color_name << ";" << std::endl;
-            fragment_shader << "out vec4 " << output_color_name << ";" << std::endl;
+            fragment_shader << "out vec4 " << color_name(fragment_output) << ";" << std::endl;
 
             fragment_shader << std::endl;
             fragment_shader << "void main(void)" << std::endl;
             fragment_shader << "{" << std::endl;
 
             const std::string local_output_color_name = "result_color";
-            fragment_shader << tab << "vec4 " << local_output_color_name << " = " << color_name(false) << ";" << std::endl;
+            fragment_shader << tab() << "vec4 " << local_output_color_name << " = " << color_name(fragment_input) << ";" << std::endl;
 
             const std::string texture_result_name = "texture_result";
-            fragment_shader << tab << "vec4 " << texture_result_name << " = vec4(1.0, 1.0, 1.0, 1.0);" << std::endl;
+            fragment_shader << tab() << "vec4 " << texture_result_name << " = vec4(1.0, 1.0, 1.0, 1.0);" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 if (info.texture_environment(i).enabled())
                 {
                     const std::string texture_sample_name = format("texture_sample_%u", i);
-                    fragment_shader << tab << "vec4 " << texture_sample_name << " = texture(" << sampler_name(i) << ", " << tex_coord_name(false, i) << ".xy);" << std::endl;
-                    fragment_shader << tab << texture_result_name << " *= " << texture_sample_name << ";" << std::endl;
+                    fragment_shader << tab() << "vec4 " << texture_sample_name << " = texture(" << sampler_name(i) << ", " << tex_coord_name(fragment_input, i) << ".xy);" << std::endl;
+                    fragment_shader << tab() << texture_result_name << " *= " << texture_sample_name << ";" << std::endl;
                 }
             }
-            fragment_shader << tab << local_output_color_name << " *= " << texture_result_name << ";" << std::endl;
+            fragment_shader << tab() << local_output_color_name << " *= " << texture_result_name << ";" << std::endl;
 
-            fragment_shader << tab << output_color_name << " = " << local_output_color_name<< ";" << std::endl;
+            fragment_shader << tab() << color_name(fragment_output) << " = " << local_output_color_name<< ";" << std::endl;
             fragment_shader << "}" << std::endl;
 
-            _program = create_program(_functions, vertex_shader.str(), fragment_shader.str());
+            return fragment_shader.str();
+        }
 
-            gl_call(_functions, gl_bind_frag_data_location, _program, 0, output_color_name.c_str());
+        shader::shader(const shader_info& info, std::shared_ptr<const gl_functions> functions)
+            : _functions(functions)
+        {
+            _program = create_program(_functions, generate_vertex_shader(info), generate_fragment_shader(info));
 
-            _vertex_location = gl_call(_functions, gl_get_attrib_location, _program, vertex_name(true).c_str());
-            _vertex_transform_location = gl_call(_functions, gl_get_uniform_location, _program, vertex_transform_name.c_str());
+            gl_call(_functions, gl_bind_frag_data_location, _program, 0, color_name(fragment_output).c_str());
 
-            _normal_location = gl_call(_functions, gl_get_attrib_location, _program, normal_name(true).c_str());
-            _color_location = gl_call(_functions, gl_get_attrib_location, _program, color_name(true).c_str());
+            _vertex_location = gl_call(_functions, gl_get_attrib_location, _program, vertex_name(vertex_input).c_str());
+            _vertex_transform_location = gl_call(_functions, gl_get_uniform_location, _program, vertex_transform_name().c_str());
+
+            _normal_location = gl_call(_functions, gl_get_attrib_location, _program, normal_name(vertex_input).c_str());
+            _color_location = gl_call(_functions, gl_get_attrib_location, _program, color_name(vertex_input).c_str());
 
             _texcoord_locations.resize(info.texture_unit_count());
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
@@ -197,7 +258,7 @@ namespace fixie
                 texcoord_uniform& uniform = _texcoord_locations[i];
                 if (info.texture_environment(i).enabled())
                 {
-                    uniform.texcoord_location = gl_call(_functions, gl_get_attrib_location, _program, tex_coord_name(true, i).c_str());
+                    uniform.texcoord_location = gl_call(_functions, gl_get_attrib_location, _program, tex_coord_name(vertex_input, i).c_str());
                     uniform.texcoord_transform_location = gl_call(_functions, gl_get_uniform_location, _program, tex_coord_transform_name(i).c_str());
                     uniform.sampler_location = gl_call(_functions, gl_get_uniform_location, _program, sampler_name(i).c_str());
                 }
