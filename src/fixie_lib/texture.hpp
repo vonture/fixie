@@ -18,6 +18,7 @@ namespace fixie
         virtual void set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei image_size, const GLvoid *data) = 0;
         virtual void copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::shared_ptr<const texture_impl> source) = 0;
         virtual void copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::shared_ptr<const texture_impl> source) = 0;
+        virtual void generate_mipmaps() = 0;
     };
 
     class texture : public noncopyable
@@ -71,6 +72,9 @@ namespace fixie
             mip_info();
         };
         std::vector<mip_info> _mips;
+
+        size_t required_mip_levels(GLsizei width, GLsizei height) const;
+        void generate_mipmaps();
 
         std::shared_ptr<texture_impl> _impl;
     };

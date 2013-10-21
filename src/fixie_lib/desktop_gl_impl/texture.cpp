@@ -53,5 +53,11 @@ namespace fixie
         void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::shared_ptr<const texture_impl> source)
         {
         }
+
+        void texture::generate_mipmaps()
+        {
+            gl_call(_functions, gl_bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, gl_generate_mipmap, GL_TEXTURE_2D);
+        }
     }
 }

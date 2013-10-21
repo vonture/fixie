@@ -105,14 +105,14 @@ namespace fixie
         if (_min_filter == GL_NEAREST_MIPMAP_LINEAR || _min_filter == GL_NEAREST_MIPMAP_LINEAR ||
             _min_filter == GL_LINEAR_MIPMAP_NEAREST || _min_filter == GL_LINEAR_MIPMAP_LINEAR)
         {
-            size_t required_mip_levels = log2(std::max(_mips[0].width, _mips[0].height));
+            size_t required_mip_complete_levels = required_mip_levels(_mips[0].width, _mips[0].height);
 
-            if (_mips.size() != required_mip_levels)
+            if (_mips.size() != required_mip_complete_levels)
             {
                 return false;
             }
 
-            for (size_t i = 0; i < required_mip_levels; ++i)
+            for (size_t i = 0; i < required_mip_complete_levels; ++i)
             {
                 if (std::max(_mips[0].width  >> i, 1) != _mips[i].width ||
                     std::max(_mips[0].height >> i, 1) != _mips[i].height)
@@ -146,11 +146,20 @@ namespace fixie
         _mips[level].internal_format = internal_format;
         _mips[level].width = width;
         _mips[level].height = width;
+
+        if (level == 0 && auto_generate_mipmap())
+        {
+            generate_mipmaps();
+        }
     }
 
     void texture::set_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
     {
         _impl->set_sub_data(level, xoffset, yoffset, width, height, format, type, pixels);
+        if (level == 0 && auto_generate_mipmap())
+        {
+            generate_mipmaps();
+        }
     }
 
     void texture::set_compressed_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLsizei image_size, const GLvoid *data)
@@ -182,10 +191,37 @@ namespace fixie
         _mips[level].internal_format = internal_format;
         _mips[level].width = width;
         _mips[level].height = width;
+
+        if (level == 0 && auto_generate_mipmap())
+        {
+            generate_mipmaps();
+        }
     }
 
     void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const texture& source)
     {
         _impl->copy_sub_data(level, xoffset, yoffset, width, height, format, type, source.impl());
+        if (level == 0 && auto_generate_mipmap())
+        {
+            generate_mipmaps();
+        }
     }
+
+    size_t texture::required_mip_levels(GLsizei width, GLsizei height) const
+    {
+        return log2(std::max(width, height));
+    }
+
+    void texture::generate_mipmaps()
+    {
+        _impl->generate_mipmaps();
+        _mips.resize(required_mip_levels(_mips[0].width, _mips[0].height));
+        for (size_t i = 0; i < _mips.size(); i++)
+        {
+            _mips[i].internal_format = _mips[0].internal_format;
+            _mips[i].width = std::max(_mips[0].width, 1);
+            _mips[i].height = std::max(_mips[0].height, 1);
+        }
+    }
+
 }
