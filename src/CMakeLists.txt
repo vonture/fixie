@@ -1,5 +1,5 @@
 FILE(GLOB FIXIE_LIB_SOURCE fixie_lib/*.cpp fixie_lib/*.hpp fixie_lib/*.inl)
-FILE(GLOB FIXIE_LIB_NULL_IMPL_SOURCE fixie_lib/null_impl/*.fixie_lib fixie_lib/null_impl/*.hpp fixie_lib/null_impl/*.inl)
+FILE(GLOB FIXIE_LIB_NULL_IMPL_SOURCE fixie_lib/null_impl/*.cpp fixie_lib/null_impl/*.hpp fixie_lib/null_impl/*.inl)
 FILE(GLOB FIXIE_LIB_DESKTOP_GL_IMPL_SOURCE fixie_lib/desktop_gl_impl/*.cpp fixie_lib/desktop_gl_impl/*.hpp fixie_lib/desktop_gl_impl/*.inl)
 FILE(GLOB FIXIE_SOURCE fixie/*.cpp fixie/*.hpp fixie/*.inl)
 FILE(GLOB FIXIE_INCLUDE ${PUBLIC_INCLUDES}/fixie/*.h)

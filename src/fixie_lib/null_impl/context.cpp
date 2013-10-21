@@ -1,6 +1,6 @@
-#include "fixie/null_impl/context.hpp"
-#include "fixie/null_impl/texture.hpp"
-#include "fixie/null_impl/buffer.hpp"
+#include "fixie_lib/null_impl/context.hpp"
+#include "fixie_lib/null_impl/texture.hpp"
+#include "fixie_lib/null_impl/buffer.hpp"
 
 namespace fixie
 {
