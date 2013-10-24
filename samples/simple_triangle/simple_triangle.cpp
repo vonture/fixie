@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrthof(width / -2.0f, width / 2.0f, height / 2.0f, height / -2.0f, 1.0f, -1.0f);
+        glOrthof(width / -2.0f, width / 2.0f, height / 2.0f, height / -2.0f, 1000.0f, -1000.0f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();

@@ -154,22 +154,22 @@ namespace fixie
 
     matrix4 operator*(const matrix4& a, const matrix4& b)
     {
-        return matrix4(a.data[ 0] * b.data[ 0] + a.data[ 4] * b.data[ 1] + a.data[ 8] * b.data[ 2] + a.data[12] * b.data[ 3],
-                       a.data[ 0] * b.data[ 4] + a.data[ 4] * b.data[ 5] + a.data[ 8] * b.data[ 6] + a.data[12] * b.data[ 7],
-                       a.data[ 0] * b.data[ 8] + a.data[ 4] * b.data[ 9] + a.data[ 8] * b.data[10] + a.data[12] * b.data[11],
-                       a.data[ 0] * b.data[12] + a.data[ 4] * b.data[13] + a.data[ 8] * b.data[14] + a.data[12] * b.data[15],
-                       a.data[ 1] * b.data[ 0] + a.data[ 5] * b.data[ 1] + a.data[ 9] * b.data[ 2] + a.data[13] * b.data[ 3],
-                       a.data[ 1] * b.data[ 4] + a.data[ 5] * b.data[ 5] + a.data[ 9] * b.data[ 6] + a.data[13] * b.data[ 7],
-                       a.data[ 1] * b.data[ 8] + a.data[ 5] * b.data[ 9] + a.data[ 9] * b.data[10] + a.data[13] * b.data[11],
-                       a.data[ 1] * b.data[12] + a.data[ 5] * b.data[13] + a.data[ 9] * b.data[14] + a.data[13] * b.data[15],
-                       a.data[ 2] * b.data[ 0] + a.data[ 6] * b.data[ 1] + a.data[10] * b.data[ 2] + a.data[14] * b.data[ 3],
-                       a.data[ 2] * b.data[ 4] + a.data[ 6] * b.data[ 5] + a.data[10] * b.data[ 6] + a.data[14] * b.data[ 7],
-                       a.data[ 2] * b.data[ 8] + a.data[ 6] * b.data[ 9] + a.data[10] * b.data[10] + a.data[14] * b.data[11],
-                       a.data[ 2] * b.data[12] + a.data[ 6] * b.data[13] + a.data[10] * b.data[14] + a.data[14] * b.data[15],
-                       a.data[ 3] * b.data[ 0] + a.data[ 7] * b.data[ 1] + a.data[11] * b.data[ 2] + a.data[15] * b.data[ 3],
-                       a.data[ 3] * b.data[ 4] + a.data[ 7] * b.data[ 5] + a.data[11] * b.data[ 6] + a.data[15] * b.data[ 7],
-                       a.data[ 3] * b.data[ 8] + a.data[ 7] * b.data[ 9] + a.data[11] * b.data[10] + a.data[15] * b.data[11],
-                       a.data[ 3] * b.data[12] + a.data[ 7] * b.data[13] + a.data[11] * b.data[14] + a.data[15] * b.data[15]);
+        return matrix4(b.data[ 0] * a.data[ 0] + b.data[ 4] * a.data[ 1] + b.data[ 8] * a.data[ 2] + b.data[12] * a.data[ 3],
+                       b.data[ 0] * a.data[ 4] + b.data[ 4] * a.data[ 5] + b.data[ 8] * a.data[ 6] + b.data[12] * a.data[ 7],
+                       b.data[ 0] * a.data[ 8] + b.data[ 4] * a.data[ 9] + b.data[ 8] * a.data[10] + b.data[12] * a.data[11],
+                       b.data[ 0] * a.data[12] + b.data[ 4] * a.data[13] + b.data[ 8] * a.data[14] + b.data[12] * a.data[15],
+                       b.data[ 1] * a.data[ 0] + b.data[ 5] * a.data[ 1] + b.data[ 9] * a.data[ 2] + b.data[13] * a.data[ 3],
+                       b.data[ 1] * a.data[ 4] + b.data[ 5] * a.data[ 5] + b.data[ 9] * a.data[ 6] + b.data[13] * a.data[ 7],
+                       b.data[ 1] * a.data[ 8] + b.data[ 5] * a.data[ 9] + b.data[ 9] * a.data[10] + b.data[13] * a.data[11],
+                       b.data[ 1] * a.data[12] + b.data[ 5] * a.data[13] + b.data[ 9] * a.data[14] + b.data[13] * a.data[15],
+                       b.data[ 2] * a.data[ 0] + b.data[ 6] * a.data[ 1] + b.data[10] * a.data[ 2] + b.data[14] * a.data[ 3],
+                       b.data[ 2] * a.data[ 4] + b.data[ 6] * a.data[ 5] + b.data[10] * a.data[ 6] + b.data[14] * a.data[ 7],
+                       b.data[ 2] * a.data[ 8] + b.data[ 6] * a.data[ 9] + b.data[10] * a.data[10] + b.data[14] * a.data[11],
+                       b.data[ 2] * a.data[12] + b.data[ 6] * a.data[13] + b.data[10] * a.data[14] + b.data[14] * a.data[15],
+                       b.data[ 3] * a.data[ 0] + b.data[ 7] * a.data[ 1] + b.data[11] * a.data[ 2] + b.data[15] * a.data[ 3],
+                       b.data[ 3] * a.data[ 4] + b.data[ 7] * a.data[ 5] + b.data[11] * a.data[ 6] + b.data[15] * a.data[ 7],
+                       b.data[ 3] * a.data[ 8] + b.data[ 7] * a.data[ 9] + b.data[11] * a.data[10] + b.data[15] * a.data[11],
+                       b.data[ 3] * a.data[12] + b.data[ 7] * a.data[13] + b.data[11] * a.data[14] + b.data[15] * a.data[15]);
     }
 
     matrix4& operator*=(matrix4& a, const matrix4& b)

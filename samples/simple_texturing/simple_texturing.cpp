@@ -118,13 +118,13 @@ int main(int argc, char** argv)
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrthof(width / -2.0f, width / 2.0f, height / 2.0f, height / -2.0f, 1.0f, -1.0f);
+        glOrthof(width / -2.0f, width / 2.0f, height / 2.0f, height / -2.0f, 1000.0f, -1000.0f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
+        glRotatef(time * 50.f, 1.0f, 1.0f, 1.0f);
         float scale = std::min(width, height) * 0.9f;
         glScalef(scale, scale, scale);
-        glRotatef(time * 50.f, 1.0f, 1.0f, 1.0f);
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(3, GL_FLOAT, sizeof(float) * 5, 0);

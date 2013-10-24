@@ -71,17 +71,16 @@ int main(int argc, char** argv)
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        perspective_matrix(60.0f, ratio, 0.1f, 100.0f);
         glTranslatef(0.0f, 0.0f, -50.0f);
+        perspective_matrix(60.0f, ratio, 0.1f, 100.0f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        glTranslatef(0.0f, 0.0f, sinf(time) * 25.0f);
-        glRotatef(time * 50.f, 0.0f, 1.0f, 0.0f);
-
         float scale = 10.0f;
         glScalef(scale, scale, scale);
+        glRotatef(time * 50.f, 0.0f, 1.0f, 0.0f);
+        glTranslatef(0.0f, 0.0f, sinf(time) * 25.0f);
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, position_vbo);
