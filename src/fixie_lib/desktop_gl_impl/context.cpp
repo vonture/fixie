@@ -20,6 +20,9 @@ namespace fixie
         context::context()
             : _functions(std::make_shared<gl_functions>())
             , _shader_cache(_functions)
+            , _cur_depth_test(GL_FALSE)
+            , _cur_depth_range(0.0f, 1.0f)
+            , _cur_depth_func(GL_LESS)
             , _cur_clear_color(0.0f, 0.0f, 0.0f, 0.0f)
             , _cur_clear_depth(1.0f)
             , _cur_clear_stencil(0)
@@ -99,6 +102,9 @@ namespace fixie
             sync_vertex_attributes(state, shader);
             sync_textures(state);
 
+            sync_depth_stencil_state(state);
+            sync_rasterizer_state(state);
+
             gl_call(_functions, gl_draw_arrays, mode, first, count);
         }
 
@@ -109,6 +115,9 @@ namespace fixie
             sync_vertex_attributes(state, shader);
             sync_textures(state);
 
+            sync_depth_stencil_state(state);
+            sync_rasterizer_state(state);
+
             gl_call(_functions, gl_draw_elements, mode, count, type, indices);
         }
 
@@ -117,6 +126,34 @@ namespace fixie
             sync_clear_state(state);
             sync_rasterizer_state(state);
             gl_call(_functions, gl_clear, mask);
+        }
+
+        void context::sync_depth_stencil_state(const state& state)
+        {
+            if (_cur_depth_test != state.depth_test())
+            {
+                if (state.depth_test())
+                {
+                    gl_call(_functions, gl_enable, GL_DEPTH_TEST);
+                }
+                else
+                {
+                    gl_call(_functions, gl_disable, GL_DEPTH_TEST);
+                }
+                _cur_depth_test = state.depth_test();
+            }
+
+            if (_cur_depth_range != state.depth_range())
+            {
+                gl_call(_functions, gl_depth_range_f, state.depth_range().near, state.depth_range().far);
+                _cur_depth_range = state.depth_range();
+            }
+
+            if (_cur_depth_func != state.depth_func())
+            {
+                gl_call(_functions, gl_depth_func, state.depth_func());
+                _cur_depth_func = state.depth_func();
+            }
         }
 
         void context::sync_clear_state(const state& state)

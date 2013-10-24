@@ -82,6 +82,9 @@
             }
         }
     }
+
+    #undef near
+    #undef far
 #else
     #include <GL/glx.h>
 

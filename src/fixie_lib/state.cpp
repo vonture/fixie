@@ -12,6 +12,7 @@ namespace fixie
         : _clear_color(0.0f, 0.0f, 0.0f, 0.0f)
         , _clear_depth(1.0f)
         , _clear_stencil(0)
+        , _depth_test(GL_FALSE)
         , _depth_range(0.0f, 1.0f)
         , _depth_func(GL_LESS)
         , _viewport(0, 0, 1, 1)
