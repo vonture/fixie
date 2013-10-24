@@ -267,10 +267,13 @@ namespace fixie
                     gl_call(_functions, gl_active_texture, GL_TEXTURE0 + i);
                     gl_call(_functions, gl_enable, GL_TEXTURE_2D);
                     gl_call(_functions, gl_bind_texture, GL_TEXTURE_2D, texuture_id);
-                    gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, bound_texture->wrap_s());
-                    gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, bound_texture->wrap_t());
-                    gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, bound_texture->min_filter());
-                    gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, bound_texture->mag_filter());
+                    if (texuture_id != 0)
+                    {
+                        gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, bound_texture->wrap_s());
+                        gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, bound_texture->wrap_t());
+                        gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, bound_texture->min_filter());
+                        gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, bound_texture->mag_filter());
+                    }
                 }
             }
         }
