@@ -40,10 +40,8 @@ namespace fixie
             GLuint _minor_version;
             std::unordered_set<std::string> _extensions;
 
-            GLboolean _cur_depth_test;
-            range _cur_depth_range;
-            GLenum _cur_depth_func;
-            void sync_depth_stencil_state(const state& state);
+            depth_stencil_state _cur_depth_stencil_state;
+            void sync_depth_stencil_state(const depth_stencil_state& state);
 
             color _cur_clear_color;
             GLclampf _cur_clear_depth;

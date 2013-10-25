@@ -12,9 +12,7 @@ namespace fixie
         : _clear_color(0.0f, 0.0f, 0.0f, 0.0f)
         , _clear_depth(1.0f)
         , _clear_stencil(0)
-        , _depth_test(GL_FALSE)
-        , _depth_range(0.0f, 1.0f)
-        , _depth_func(GL_LESS)
+        , _depth_stencil_state(get_default_depth_stencil_state())
         , _viewport(0, 0, 1, 1)
         , _scissor_test(GL_FALSE)
         , _scissor(0, 0, 1, 1)
@@ -79,34 +77,14 @@ namespace fixie
         return _clear_stencil;
     }
 
-    const GLboolean& state::depth_test() const
+    const fixie::depth_stencil_state& state::depth_stencil_state() const
     {
-        return _depth_test;
+        return _depth_stencil_state;
     }
 
-    GLboolean& state::depth_test()
+    fixie::depth_stencil_state& state::depth_stencil_state()
     {
-        return _depth_test;
-    }
-
-    range& state::depth_range()
-    {
-        return _depth_range;
-    }
-
-    const range& state::depth_range() const
-    {
-        return _depth_range;
-    }
-
-    GLenum& state::depth_func()
-    {
-        return _depth_func;
-    }
-
-    const GLenum& state::depth_func() const
-    {
-        return _depth_func;
+        return _depth_stencil_state;
     }
 
     rectangle& state::viewport()

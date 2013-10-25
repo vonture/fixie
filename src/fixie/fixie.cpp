@@ -876,7 +876,7 @@ namespace fixie
         {
         case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).enabled();
         case GL_SCISSOR_TEST: return ctx->state().scissor_test();
-        case GL_DEPTH_TEST:   return ctx->state().depth_test();
+        case GL_DEPTH_TEST:   return ctx->state().depth_stencil_state().depth_test();
         default: throw invalid_enum_error("unknown target.");
         }
     }
@@ -1072,7 +1072,7 @@ void FIXIE_APIENTRY glDepthRangef(GLclampf zNear, GLclampf zFar)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().depth_range() = fixie::range(zNear, zFar);
+        ctx->state().depth_stencil_state().depth_range() = fixie::range(zNear, zFar);
     }
     catch (fixie::gl_error e)
     {
@@ -1881,7 +1881,7 @@ void FIXIE_APIENTRY glDepthRangex(GLclampx zNear, GLclampx zFar)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().depth_range() = fixie::range(fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar));
+        ctx->state().depth_stencil_state().depth_range() = fixie::range(fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar));
     }
     catch (fixie::gl_error e)
     {

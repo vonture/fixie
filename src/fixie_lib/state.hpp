@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "fixie_lib/caps.hpp"
+#include "fixie_lib/depth_stencil_state.hpp"
 #include "fixie_lib/rectangle.hpp"
 #include "fixie_lib/range.hpp"
 #include "fixie_lib/material.hpp"
@@ -37,14 +38,8 @@ namespace fixie
         GLint& clear_stencil();
         const GLint& clear_stencil() const;
 
-        GLboolean& depth_test();
-        const GLboolean& depth_test() const;
-
-        range& depth_range();
-        const range& depth_range() const;
-
-        GLenum& depth_func();
-        const GLenum& depth_func() const;
+        const fixie::depth_stencil_state& depth_stencil_state() const;
+        fixie::depth_stencil_state& depth_stencil_state();
 
         rectangle& viewport();
         const rectangle& viewport() const;
@@ -134,9 +129,7 @@ namespace fixie
         GLclampf _clear_depth;
         GLint _clear_stencil;
 
-        GLboolean _depth_test;
-        range _depth_range;
-        GLenum _depth_func;
+        fixie::depth_stencil_state _depth_stencil_state;
 
         rectangle _viewport;
 
