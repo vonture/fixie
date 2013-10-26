@@ -8,6 +8,7 @@
 #include "fixie_lib/caps.hpp"
 #include "fixie_lib/depth_stencil_state.hpp"
 #include "fixie_lib/clear_state.hpp"
+#include "fixie_lib/rasterizer_state.hpp"
 #include "fixie_lib/rectangle.hpp"
 #include "fixie_lib/range.hpp"
 #include "fixie_lib/material.hpp"
@@ -36,14 +37,8 @@ namespace fixie
         const fixie::depth_stencil_state& depth_stencil_state() const;
         fixie::depth_stencil_state& depth_stencil_state();
 
-        rectangle& viewport();
-        const rectangle& viewport() const;
-
-        GLboolean& scissor_test();
-        const GLboolean& scissor_test() const;
-
-        rectangle& scissor();
-        const rectangle& scissor() const;
+        const fixie::rasterizer_state rasterizer_state() const;
+        fixie::rasterizer_state& rasterizer_state();
 
         material& front_material();
         const material& front_material() const;
@@ -122,11 +117,7 @@ namespace fixie
     private:
         fixie::clear_state _clear_state;
         fixie::depth_stencil_state _depth_stencil_state;
-
-        rectangle _viewport;
-
-        GLboolean _scissor_test;
-        rectangle _scissor;
+        fixie::rasterizer_state _rasterizer_state;
 
         material _front_material;
         material _back_material;

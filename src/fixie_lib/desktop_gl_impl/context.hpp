@@ -46,10 +46,8 @@ namespace fixie
             clear_state _cur_clear_state;
             void sync_clear_state(const clear_state& state);
 
-            GLboolean _cur_scissor_test;
-            rectangle _cur_scissor;
-            rectangle _cur_viewport;
-            void sync_rasterizer_state(const state& state);
+            rasterizer_state _cur_rasterizer_state;
+            void sync_rasterizer_state(const rasterizer_state& state);
 
             void sync_vertex_attribute(const state& state, const vertex_attribute& attribute, GLuint location, GLboolean normalized);
             void sync_vertex_attributes(const state& state, std::shared_ptr<const shader> shader);

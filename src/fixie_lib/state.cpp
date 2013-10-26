@@ -11,9 +11,7 @@ namespace fixie
     state::state(const caps& caps)
         : _clear_state(get_default_clear_state())
         , _depth_stencil_state(get_default_depth_stencil_state())
-        , _viewport(0, 0, 1, 1)
-        , _scissor_test(GL_FALSE)
-        , _scissor(0, 0, 1, 1)
+        , _rasterizer_state(get_default_rasterizer_state())
         , _front_material(get_default_material())
         , _back_material(get_default_material())
         , _lights(caps.max_lights())
@@ -65,34 +63,14 @@ namespace fixie
         return _depth_stencil_state;
     }
 
-    rectangle& state::viewport()
+    const fixie::rasterizer_state state::rasterizer_state() const
     {
-        return _viewport;
+        return _rasterizer_state;
     }
 
-    const rectangle& state::viewport() const
+    fixie::rasterizer_state& state::rasterizer_state()
     {
-        return _viewport;
-    }
-
-    GLboolean& state::scissor_test()
-    {
-        return _scissor_test;
-    }
-
-    const GLboolean& state::scissor_test() const
-    {
-        return _scissor_test;
-    }
-
-    rectangle& state::scissor()
-    {
-        return _scissor;
-    }
-
-    const rectangle& state::scissor() const
-    {
-        return _scissor;
+        return _rasterizer_state;
     }
 
     material& state::front_material()

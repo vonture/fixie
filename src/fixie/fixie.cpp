@@ -875,7 +875,7 @@ namespace fixie
         switch (target)
         {
         case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).enabled();
-        case GL_SCISSOR_TEST: return ctx->state().scissor_test();
+        case GL_SCISSOR_TEST: return ctx->state().rasterizer_state().scissor_test();
         case GL_DEPTH_TEST:   return ctx->state().depth_stencil_state().depth_test();
         default: throw invalid_enum_error("unknown target.");
         }
@@ -2805,7 +2805,7 @@ void FIXIE_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
             throw fixie::invalid_value_error(fixie::format("scissor width and hight cannot be negative, %i and %i provided.", width, height));
         }
 
-        ctx->state().scissor() = fixie::rectangle(x, y, width, height);
+        ctx->state().rasterizer_state().scissor() = fixie::rectangle(x, y, width, height);
     }
     catch (fixie::gl_error e)
     {
@@ -3085,7 +3085,7 @@ void FIXIE_APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
             throw fixie::invalid_value_error(fixie::format("viewport width and hight cannot be negative, %i and %i provided.", width, height));
         }
 
-        ctx->state().viewport() = fixie::rectangle(x, y, width, height);
+        ctx->state().rasterizer_state().viewport() = fixie::rectangle(x, y, width, height);
     }
     catch (fixie::gl_error e)
     {
