@@ -1386,7 +1386,7 @@ void FIXIE_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        std::shared_ptr<fixie::buffer> buf = ctx->state().buffer(buffer);
+        std::weak_ptr<fixie::buffer> buf = ctx->state().buffer(buffer);
 
         switch (target)
         {
@@ -1459,7 +1459,7 @@ void FIXIE_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid *d
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-         std::shared_ptr<fixie::buffer> buffer;
+         std::weak_ptr<fixie::buffer> buffer;
          switch (target)
          {
          case GL_ARRAY_BUFFER:
@@ -1489,7 +1489,11 @@ void FIXIE_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid *d
              throw fixie::invalid_value_error(fixie::format("size must be at least 0, %i provided.", size));
          }
 
-         buffer->set_data(size, data, usage);
+         std::shared_ptr<fixie::buffer> locked_buffer = buffer.lock();
+         if (locked_buffer)
+         {
+             locked_buffer->set_data(size, data, usage);
+         }
     }
     catch (fixie::gl_error e)
     {
@@ -1511,7 +1515,7 @@ void FIXIE_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr s
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        std::shared_ptr<fixie::buffer> buffer;
+        std::weak_ptr<fixie::buffer> buffer;
         switch (target)
         {
         case GL_ARRAY_BUFFER:
@@ -1531,13 +1535,17 @@ void FIXIE_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr s
             throw fixie::invalid_value_error(fixie::format("size must be at least 0, %i provided.", size));
         }
 
-        if (offset + size > buffer->size())
+        std::shared_ptr<fixie::buffer> locked_buffer = buffer.lock();
+        if (locked_buffer)
         {
-            throw fixie::invalid_value_error(fixie::format("offset (%i) + size (%i) must be at less than the buffer size (%i).",
-                                                           offset, size, buffer->size()));
-        }
+            if (offset + size > locked_buffer->size())
+            {
+                throw fixie::invalid_value_error(fixie::format("offset (%i) + size (%i) must be at less than the buffer size (%i).",
+                                                                offset, size, locked_buffer->size()));
+            }
 
-        buffer->set_sub_data(offset, size, data);
+            locked_buffer->set_sub_data(offset, size, data);
+        }
     }
     catch (fixie::gl_error e)
     {
@@ -2352,10 +2360,7 @@ GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-
-        std::shared_ptr<fixie::buffer> buf = ctx->state().buffer(buffer);
-
-        return (buf != nullptr) ? GL_TRUE : GL_FALSE;
+        return (ctx->state().buffer(buffer).use_count() > 0) ? GL_TRUE : GL_FALSE;
     }
     catch (fixie::gl_error e)
     {

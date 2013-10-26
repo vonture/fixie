@@ -19,14 +19,14 @@ namespace fixie
     class buffer : public noncopyable
     {
     public:
-        explicit buffer(std::shared_ptr<buffer_impl> impl);
+        explicit buffer(std::unique_ptr<buffer_impl> impl);
 
         GLenum type() const;
         GLsizei size() const;
         GLenum usage() const;
 
-        std::shared_ptr<buffer_impl> impl();
-        std::shared_ptr<const buffer_impl> impl() const;
+        std::weak_ptr<buffer_impl> impl();
+        std::weak_ptr<const buffer_impl> impl() const;
 
         void bind(GLenum type);
         void set_data(GLsizeiptr size, const GLvoid* data, GLenum usage);

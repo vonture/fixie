@@ -16,7 +16,7 @@ namespace fixie
             virtual void initialize_state(fixie::state& state) override;
 
             virtual std::shared_ptr<texture_impl> create_texture() override;
-            virtual std::shared_ptr<buffer_impl> create_buffer() override;
+            virtual std::unique_ptr<buffer_impl> create_buffer() override;
 
             virtual void draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count) override;
             virtual void draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices) override;

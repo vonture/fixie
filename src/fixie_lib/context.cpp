@@ -30,9 +30,9 @@ namespace fixie
 
     GLuint context::create_buffer()
     {
-        std::shared_ptr<buffer_impl> impl = _impl->create_buffer();
-        std::shared_ptr<fixie::buffer> buffer = std::make_shared<fixie::buffer>(impl);
-        return _state.insert_buffer(buffer);
+        std::unique_ptr<buffer_impl> impl = _impl->create_buffer();
+        std::unique_ptr<fixie::buffer> buffer = std::unique_ptr<fixie::buffer>(new fixie::buffer(std::move(impl)));
+        return _state.insert_buffer(std::move(buffer));
     }
 
     fixie::state& context::state()

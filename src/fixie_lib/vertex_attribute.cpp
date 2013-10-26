@@ -11,7 +11,7 @@ namespace fixie
         , _stride(0)
         , _pointer(nullptr)
         , _generic_values(0.0f, 0.0f, 0.0f, 1.0f)
-        , _buffer(nullptr)
+        , _buffer()
     {
     }
 
@@ -75,12 +75,12 @@ namespace fixie
         return _generic_values;
     }
 
-    std::shared_ptr<fixie::buffer>& vertex_attribute::buffer()
+    std::weak_ptr<fixie::buffer>& vertex_attribute::buffer()
     {
         return _buffer;
     }
 
-    std::shared_ptr<const fixie::buffer> vertex_attribute::buffer() const
+    std::weak_ptr<const fixie::buffer> vertex_attribute::buffer() const
     {
         return _buffer;
     }
@@ -94,7 +94,7 @@ namespace fixie
         attribute.stride() = 0;
         attribute.pointer() = nullptr;
         attribute.generic_values() = vector4(0.0f, 0.0f, 0.0f, 1.0f);
-        attribute.buffer() = nullptr;
+        attribute.buffer().reset();
         return attribute;
     }
 

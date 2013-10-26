@@ -86,9 +86,9 @@ namespace fixie
             return std::make_shared<texture>(_functions);
         }
 
-        std::shared_ptr<buffer_impl> context::create_buffer()
+        std::unique_ptr<buffer_impl> context::create_buffer()
         {
-            return std::make_shared<buffer>(_functions);
+            return std::unique_ptr<buffer_impl>(new buffer(_functions));
         }
 
         void context::draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count)
@@ -232,9 +232,12 @@ namespace fixie
         {
             if (attribute.enabled())
             {
-                std::shared_ptr<const buffer> bound_buffer = std::dynamic_pointer_cast<const buffer>(attribute.buffer()->impl());
+                std::shared_ptr<const fixie::buffer> bound_buffer = attribute.buffer().lock();
+                std::shared_ptr<const fixie::buffer_impl> bound_buffer_impl = (bound_buffer != nullptr) ? bound_buffer->impl().lock() : nullptr;
+                std::shared_ptr<const buffer> desktop_buffer = std::dynamic_pointer_cast<const buffer>(bound_buffer_impl);
+                GLuint buffer_id = desktop_buffer ? desktop_buffer->id() : 0;
 
-                gl_call(_functions, gl_bind_buffer, GL_ARRAY_BUFFER, bound_buffer->id());
+                gl_call(_functions, gl_bind_buffer, GL_ARRAY_BUFFER, buffer_id);
                 gl_call(_functions, gl_enable_vertex_attrib_array, location);
                 gl_call(_functions, gl_vertex_attrib_pointer, location, attribute.size(), attribute.type(), normalized, attribute.stride(), attribute.pointer());
             }

@@ -27,9 +27,9 @@ namespace fixie
             return std::make_shared<texture>();
         }
 
-        std::shared_ptr<buffer_impl> context::create_buffer()
+        std::unique_ptr<buffer_impl> context::create_buffer()
         {
-            return std::make_shared<buffer>();
+            return std::unique_ptr<buffer_impl>(new buffer());
         }
 
         void context::draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count)

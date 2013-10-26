@@ -20,7 +20,7 @@ namespace fixie
         virtual void initialize_state(fixie::state& state) = 0;
 
         virtual std::shared_ptr<texture_impl> create_texture() = 0;
-        virtual std::shared_ptr<buffer_impl> create_buffer() = 0;
+        virtual std::unique_ptr<buffer_impl> create_buffer() = 0;
 
         virtual void draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count) = 0;
         virtual void draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices) = 0;

@@ -31,8 +31,8 @@ namespace fixie
         vector4& generic_values();
         const vector4& generic_values() const;
 
-        std::shared_ptr<fixie::buffer>& buffer();
-        std::shared_ptr<const fixie::buffer> buffer() const;
+        std::weak_ptr<fixie::buffer>& buffer();
+        std::weak_ptr<const fixie::buffer> buffer() const;
 
     private:
         GLboolean _enabled;
@@ -42,7 +42,7 @@ namespace fixie
         const GLvoid* _pointer;
 
         vector4 _generic_values;
-        std::shared_ptr<fixie::buffer> _buffer;
+        std::weak_ptr<fixie::buffer> _buffer;
     };
 
     vertex_attribute get_default_vertex_attribute();

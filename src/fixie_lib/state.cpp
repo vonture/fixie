@@ -23,8 +23,8 @@ namespace fixie
         , _bound_textures(caps.max_texture_units())
         , _texture_environments(caps.max_texture_units())
         , _next_buffer_id(1)
-        , _bound_array_buffer(nullptr)
-        , _bound_element_array_buffer(nullptr)
+        , _bound_array_buffer()
+        , _bound_element_array_buffer()
         , _active_client_texture(0)
         , _vertex_attribute(get_default_vertex_attribute())
         , _normal_attribute(get_default_normal_attribute())
@@ -228,10 +228,10 @@ namespace fixie
         return _texture_environments[unit];
     }
 
-    GLuint state::insert_buffer(std::shared_ptr<fixie::buffer> buffer)
+    GLuint state::insert_buffer(std::unique_ptr<fixie::buffer> buffer)
     {
         GLuint id = _next_buffer_id++;
-        _buffers[id] = buffer;
+        _buffers[id] = std::move(buffer);
         return id;
     }
 
@@ -240,72 +240,68 @@ namespace fixie
         auto iter = _buffers.find(id);
         if (iter != end(_buffers))
         {
-            if (_bound_array_buffer == iter->second)
-            {
-                _bound_array_buffer = nullptr;
-            }
-            if (_bound_element_array_buffer == iter->second)
-            {
-                _bound_element_array_buffer = nullptr;
-            }
             _buffers.erase(iter);
         }
     }
 
-    std::shared_ptr<fixie::buffer> state::buffer(GLuint id)
+    std::weak_ptr<fixie::buffer> state::buffer(GLuint id)
     {
         auto iter = _buffers.find(id);
         return (iter != end(_buffers)) ? iter->second : nullptr;
     }
 
-    std::shared_ptr<const fixie::buffer> state::buffer(GLuint id) const
+    std::weak_ptr<const fixie::buffer> state::buffer(GLuint id) const
     {
         auto iter = _buffers.find(id);
         return (iter != end(_buffers)) ? iter->second : nullptr;
     }
 
-    void state::bind_array_buffer(std::shared_ptr<fixie::buffer> buf)
+    void state::bind_array_buffer(std::weak_ptr<fixie::buffer> buf)
     {
         _bound_array_buffer = buf;
-        if (buf)
+        std::shared_ptr<fixie::buffer> locked_array_buffer = _bound_array_buffer.lock();
+        if (locked_array_buffer)
         {
-            buf->bind(GL_ARRAY_BUFFER);
-            if (_bound_element_array_buffer == buf)
+            locked_array_buffer->bind(GL_ARRAY_BUFFER);
+            std::shared_ptr<fixie::buffer> locked_element_array_buffer = _bound_element_array_buffer.lock();
+            if (locked_element_array_buffer == locked_array_buffer)
             {
-                _bound_element_array_buffer = nullptr;
+                _bound_element_array_buffer.reset();
             }
         }
     }
 
-    std::shared_ptr<const fixie::buffer> state::bound_array_buffer() const
+    std::weak_ptr<const fixie::buffer> state::bound_array_buffer() const
     {
         return _bound_array_buffer;
     }
 
-    std::shared_ptr<fixie::buffer> state::bound_array_buffer()
+    std::weak_ptr<fixie::buffer> state::bound_array_buffer()
     {
         return _bound_array_buffer;
     }
 
-    void state::bind_element_array_buffer(std::shared_ptr<fixie::buffer> buf)
+    void state::bind_element_array_buffer(std::weak_ptr<fixie::buffer> buf)
     {
-        _bound_element_array_buffer = buf;
-        if (buf)
+        _bound_element_array_buffer = buf.lock();
+        std::shared_ptr<fixie::buffer> locked_element_array_buffer = _bound_element_array_buffer.lock();
+        if (locked_element_array_buffer)
         {
-            buf->bind(GL_ELEMENT_ARRAY_BUFFER);
-            if (_bound_array_buffer == buf)
+            locked_element_array_buffer->bind(GL_ELEMENT_ARRAY_BUFFER);
+            std::shared_ptr<fixie::buffer> locked_array_buffer = _bound_array_buffer.lock();
+            if (locked_array_buffer == locked_element_array_buffer)
             {
-                _bound_array_buffer = nullptr;
+                _bound_array_buffer.reset();
             }
         }
     }
 
-    std::shared_ptr<const fixie::buffer> state::bound_element_array_buffer() const
+    std::weak_ptr<const fixie::buffer> state::bound_element_array_buffer() const
     {
         return _bound_element_array_buffer;
     }
 
-    std::shared_ptr<fixie::buffer> state::bound_element_array_buffer()
+    std::weak_ptr<fixie::buffer> state::bound_element_array_buffer()
     {
         return _bound_element_array_buffer;
     }

@@ -80,18 +80,18 @@ namespace fixie
         fixie::texture_environment& texture_environment(size_t unit);
         const fixie::texture_environment& texture_environment(size_t unit) const;
 
-        GLuint insert_buffer(std::shared_ptr<fixie::buffer> buffer);
+        GLuint insert_buffer(std::unique_ptr<fixie::buffer> buffer);
         void delete_buffer(GLuint id);
-        std::shared_ptr<fixie::buffer> buffer(GLuint id);
-        std::shared_ptr<const fixie::buffer> buffer(GLuint id) const;
+        std::weak_ptr<fixie::buffer> buffer(GLuint id);
+        std::weak_ptr<const fixie::buffer> buffer(GLuint id) const;
 
-        void bind_array_buffer(std::shared_ptr<fixie::buffer> buf);
-        std::shared_ptr<const fixie::buffer> bound_array_buffer() const;
-        std::shared_ptr<fixie::buffer> bound_array_buffer();
+        void bind_array_buffer(std::weak_ptr<fixie::buffer> buf);
+        std::weak_ptr<const fixie::buffer> bound_array_buffer() const;
+        std::weak_ptr<fixie::buffer> bound_array_buffer();
 
-        void bind_element_array_buffer(std::shared_ptr<fixie::buffer> buf);
-        std::shared_ptr<const fixie::buffer> bound_element_array_buffer() const;
-        std::shared_ptr<fixie::buffer> bound_element_array_buffer();
+        void bind_element_array_buffer(std::weak_ptr<fixie::buffer> buf);
+        std::weak_ptr<const fixie::buffer> bound_element_array_buffer() const;
+        std::weak_ptr<fixie::buffer> bound_element_array_buffer();
 
         fixie::vertex_attribute& vertex_attribute();
         const fixie::vertex_attribute& vertex_attribute() const;
@@ -143,8 +143,8 @@ namespace fixie
 
         GLuint _next_buffer_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::buffer> > _buffers;
-        std::shared_ptr<fixie::buffer> _bound_array_buffer;
-        std::shared_ptr<fixie::buffer> _bound_element_array_buffer;
+        std::weak_ptr<fixie::buffer> _bound_array_buffer;
+        std::weak_ptr<fixie::buffer> _bound_element_array_buffer;
 
         fixie::vertex_attribute _vertex_attribute;
         fixie::vertex_attribute _normal_attribute;

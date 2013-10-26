@@ -4,11 +4,11 @@
 
 namespace fixie
 {
-    buffer::buffer(std::shared_ptr<buffer_impl> impl)
+    buffer::buffer(std::unique_ptr<buffer_impl> impl)
         : _type(0)
         , _size(0)
         , _usage(GL_STATIC_DRAW)
-        , _impl(impl)
+        , _impl(std::move(impl))
     {
     }
 
@@ -27,12 +27,12 @@ namespace fixie
         return _usage;
     }
 
-    std::shared_ptr<buffer_impl> buffer::impl()
+    std::weak_ptr<buffer_impl> buffer::impl()
     {
         return _impl;
     }
 
-    std::shared_ptr<const buffer_impl> buffer::impl() const
+    std::weak_ptr<const buffer_impl> buffer::impl() const
     {
         return _impl;
     }
