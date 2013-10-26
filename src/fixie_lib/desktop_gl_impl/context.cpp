@@ -21,9 +21,7 @@ namespace fixie
             : _functions(std::make_shared<gl_functions>())
             , _shader_cache(_functions)
             , _cur_depth_stencil_state(get_default_depth_stencil_state())
-            , _cur_clear_color(0.0f, 0.0f, 0.0f, 0.0f)
-            , _cur_clear_depth(1.0f)
-            , _cur_clear_stencil(0)
+            , _cur_clear_state(get_default_clear_state())
         {
             initialize_caps(_functions, _caps);
 
@@ -114,14 +112,14 @@ namespace fixie
             sync_textures(state);
 
             sync_depth_stencil_state(state.depth_stencil_state());
-            sync_rasterizer_state(state);
+            sync_rasterizer_state(state.rasterizer_state());
 
             gl_call(_functions, gl_draw_elements, mode, count, type, indices);
         }
 
         void context::clear(const state& state, GLbitfield mask)
         {
-            sync_clear_state(state);
+            sync_clear_state(state.clear_state());
             sync_rasterizer_state(state);
             gl_call(_functions, gl_clear, mask);
         }
@@ -154,24 +152,24 @@ namespace fixie
             }
         }
 
-        void context::sync_clear_state(const state& state)
+        void context::sync_clear_state(const clear_state& state)
         {
-            if (_cur_clear_color != state.clear_color())
+            if (_cur_clear_state.clear_color() != state.clear_color())
             {
                 gl_call(_functions, gl_clear_color, state.clear_color().r, state.clear_color().g, state.clear_color().b, state.clear_color().a);
-                _cur_clear_color = state.clear_color();
+                _cur_clear_state.clear_color() = state.clear_color();
             }
 
-            if (_cur_clear_depth != state.clear_depth())
+            if (_cur_clear_state.clear_depth() != state.clear_depth())
             {
                 gl_call(_functions, gl_clear_depthf, state.clear_depth());
-                _cur_clear_depth = state.clear_depth();
+                _cur_clear_state.clear_depth() = state.clear_depth();
             }
 
-            if (_cur_clear_stencil != state.clear_stencil())
+            if (_cur_clear_state.clear_stencil() != state.clear_stencil())
             {
                 gl_call(_functions, gl_clear_stencil, state.clear_stencil());
-                _cur_clear_stencil = state.clear_stencil();
+                _cur_clear_state.clear_stencil() = state.clear_stencil();
             }
         }
 

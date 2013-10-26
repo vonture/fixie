@@ -7,6 +7,7 @@
 
 #include "fixie_lib/caps.hpp"
 #include "fixie_lib/depth_stencil_state.hpp"
+#include "fixie_lib/clear_state.hpp"
 #include "fixie_lib/rectangle.hpp"
 #include "fixie_lib/range.hpp"
 #include "fixie_lib/material.hpp"
@@ -29,14 +30,8 @@ namespace fixie
     public:
         state(const caps& caps);
 
-        color& clear_color();
-        const color& clear_color() const;
-
-        GLclampf& clear_depth();
-        const GLclampf& clear_depth() const;
-
-        GLint& clear_stencil();
-        const GLint& clear_stencil() const;
+        const fixie::clear_state& clear_state() const;
+        fixie::clear_state& clear_state();
 
         const fixie::depth_stencil_state& depth_stencil_state() const;
         fixie::depth_stencil_state& depth_stencil_state();
@@ -125,10 +120,7 @@ namespace fixie
         const GLenum& error() const;
 
     private:
-        color _clear_color;
-        GLclampf _clear_depth;
-        GLint _clear_stencil;
-
+        fixie::clear_state _clear_state;
         fixie::depth_stencil_state _depth_stencil_state;
 
         rectangle _viewport;

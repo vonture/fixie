@@ -43,10 +43,8 @@ namespace fixie
             depth_stencil_state _cur_depth_stencil_state;
             void sync_depth_stencil_state(const depth_stencil_state& state);
 
-            color _cur_clear_color;
-            GLclampf _cur_clear_depth;
-            GLint _cur_clear_stencil;
-            void sync_clear_state(const state& state);
+            clear_state _cur_clear_state;
+            void sync_clear_state(const clear_state& state);
 
             GLboolean _cur_scissor_test;
             rectangle _cur_scissor;

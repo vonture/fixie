@@ -1002,7 +1002,7 @@ void FIXIE_APIENTRY glClearColor(GLclampf red, GLclampf green, GLclampf blue, GL
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().clear_color() = fixie::color(red, green, blue, alpha);
+        ctx->state().clear_state().clear_color() = fixie::color(red, green, blue, alpha);
     }
     catch (fixie::gl_error e)
     {
@@ -1023,7 +1023,7 @@ void FIXIE_APIENTRY glClearDepthf(GLclampf depth)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().clear_depth() = depth;
+        ctx->state().clear_state().clear_depth() = depth;
     }
     catch (fixie::gl_error e)
     {
@@ -1586,8 +1586,8 @@ void FIXIE_APIENTRY glClearColorx(GLclampx red, GLclampx green, GLclampx blue, G
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().clear_color() = fixie::color(fixie::fixed_to_float(red), fixie::fixed_to_float(green), fixie::fixed_to_float(blue),
-                                                  fixie::fixed_to_float(alpha));
+        ctx->state().clear_state().clear_color() = fixie::color(fixie::fixed_to_float(red), fixie::fixed_to_float(green),
+                                                                fixie::fixed_to_float(blue), fixie::fixed_to_float(alpha));
     }
     catch (fixie::gl_error e)
     {
@@ -1608,7 +1608,7 @@ void FIXIE_APIENTRY glClearDepthx(GLclampx depth)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().clear_depth() = fixie::fixed_to_float(depth);
+        ctx->state().clear_state().clear_depth() = fixie::fixed_to_float(depth);
     }
     catch (fixie::gl_error e)
     {
@@ -1629,7 +1629,7 @@ void FIXIE_APIENTRY glClearStencil(GLint s)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().clear_stencil() = s;
+        ctx->state().clear_state().clear_stencil() = s;
     }
     catch (fixie::gl_error e)
     {

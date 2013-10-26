@@ -9,9 +9,7 @@
 namespace fixie
 {
     state::state(const caps& caps)
-        : _clear_color(0.0f, 0.0f, 0.0f, 0.0f)
-        , _clear_depth(1.0f)
-        , _clear_stencil(0)
+        : _clear_state(get_default_clear_state())
         , _depth_stencil_state(get_default_depth_stencil_state())
         , _viewport(0, 0, 1, 1)
         , _scissor_test(GL_FALSE)
@@ -47,34 +45,14 @@ namespace fixie
         std::generate(begin(_texcoord_attributes), end(_texcoord_attributes), get_default_texcoord_attribute);
     }
 
-    color& state::clear_color()
+    const fixie::clear_state& state::clear_state() const
     {
-        return _clear_color;
+        return _clear_state;
     }
 
-    const color& state::clear_color() const
+    fixie::clear_state& state::clear_state()
     {
-        return _clear_color;
-    }
-
-    GLclampf& state::clear_depth()
-    {
-        return _clear_depth;
-    }
-
-    const GLclampf& state::clear_depth() const
-    {
-        return _clear_depth;
-    }
-
-    GLint& state::clear_stencil()
-    {
-        return _clear_stencil;
-    }
-
-    const GLint& state::clear_stencil() const
-    {
-        return _clear_stencil;
+        return _clear_state;
     }
 
     const fixie::depth_stencil_state& state::depth_stencil_state() const
