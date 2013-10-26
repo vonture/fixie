@@ -38,7 +38,6 @@ namespace fixie
             _lights[i] = get_default_light(i);
         }
         std::generate(begin(_clip_planes), end(_clip_planes), get_default_clip_plane);
-        std::fill(begin(_bound_textures), end(_bound_textures), nullptr);
         std::generate(begin(_texture_environments), end(_texture_environments), get_default_texture_environment);
         std::generate(begin(_texcoord_attributes), end(_texcoord_attributes), get_default_texcoord_attribute);
     }
@@ -163,10 +162,10 @@ namespace fixie
         return _projection_matrix_stack;
     }
 
-    GLuint state::insert_texture(std::shared_ptr<fixie::texture> texture)
+    GLuint state::insert_texture(std::unique_ptr<fixie::texture> texture)
     {
         GLuint id = _next_texture_id++;
-        _textures[id] = texture;
+        _textures[id] = std::move(texture);
         return id;
     }
 
@@ -175,27 +174,20 @@ namespace fixie
         auto iter = _textures.find(id);
         if (iter != end(_textures))
         {
-            for (auto bind = begin(_bound_textures); bind != end(_bound_textures); ++bind)
-            {
-                if (iter->second == *bind)
-                {
-                    *bind = nullptr;
-                }
-            }
             _textures.erase(iter);
         }
     }
 
-    std::shared_ptr<fixie::texture> state::texture(GLuint id)
+    std::weak_ptr<fixie::texture> state::texture(GLuint id)
     {
         auto iter = _textures.find(id);
-        return (iter != end(_textures)) ? iter->second : nullptr;
+        return (iter != end(_textures)) ? iter->second : std::weak_ptr<fixie::texture>();
     }
 
-    std::shared_ptr<const fixie::texture> state::texture(GLuint id) const
+    std::weak_ptr<const fixie::texture> state::texture(GLuint id) const
     {
         auto iter = _textures.find(id);
-        return (iter != end(_textures)) ? iter->second : nullptr;
+        return (iter != end(_textures)) ? iter->second : std::weak_ptr<fixie::texture>();
     }
 
     size_t& state::active_texture_unit()
@@ -208,12 +200,17 @@ namespace fixie
         return _active_texture_unit;
     }
 
-    std::shared_ptr<fixie::texture>& state::bound_texture(size_t unit)
+    void state::bind_texture(std::weak_ptr<fixie::texture> texture, size_t unit)
+    {
+        _bound_textures[unit] = texture;
+    }
+
+    std::weak_ptr<const fixie::texture> state::bound_texture(size_t unit) const
     {
         return _bound_textures[unit];
     }
 
-    std::shared_ptr<const fixie::texture> state::bound_texture(size_t unit) const
+    std::weak_ptr<fixie::texture> state::bound_texture(size_t unit)
     {
         return _bound_textures[unit];
     }

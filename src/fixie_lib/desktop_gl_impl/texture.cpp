@@ -46,11 +46,11 @@ namespace fixie
             gl_call(_functions, gl_tex_sub_image_2d, GL_TEXTURE_2D, level, xoffset, yoffset, width, height, format, image_size, data);
         }
 
-        void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::shared_ptr<const texture_impl> source)
+        void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::weak_ptr<const texture_impl> source)
         {
         }
 
-        void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::shared_ptr<const texture_impl> source)
+        void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::weak_ptr<const texture_impl> source)
         {
         }
 

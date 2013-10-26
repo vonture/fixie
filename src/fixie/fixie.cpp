@@ -611,7 +611,7 @@ namespace fixie
                 throw invalid_enum_error("texture parameter target must be GL_TEXTURE_2D.");
             }
 
-            std::shared_ptr<texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit());
+            std::shared_ptr<texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
 
             switch (pname)
             {
@@ -624,7 +624,11 @@ namespace fixie
                 default:
                     throw invalid_value_error("unknown texture wrap s value.");
                 }
-                texture->wrap_s() = static_cast<GLenum>(params.as_float(0));
+
+                if (texture)
+                {
+                    texture->wrap_s() = static_cast<GLenum>(params.as_float(0));
+                }
                 break;
 
             case GL_TEXTURE_WRAP_T:
@@ -636,7 +640,11 @@ namespace fixie
                 default:
                     throw invalid_value_error("unknown texture wrap t value.");
                 }
-                texture->wrap_t() = static_cast<GLenum>(params.as_float(0));
+
+                if (texture)
+                {
+                    texture->wrap_t() = static_cast<GLenum>(params.as_float(0));
+                }
                 break;
 
             case GL_TEXTURE_MIN_FILTER:
@@ -652,7 +660,11 @@ namespace fixie
                 default:
                     throw invalid_value_error("unknown texture min filter value.");
                 }
-                texture->min_filter() = static_cast<GLenum>(params.as_float(0));
+
+                if (texture)
+                {
+                    texture->min_filter() = static_cast<GLenum>(params.as_float(0));
+                }
                 break;
 
             case GL_TEXTURE_MAG_FILTER:
@@ -664,11 +676,18 @@ namespace fixie
                 default:
                     throw invalid_value_error("unknown texture min filter value.");
                 }
-                texture->mag_filter() = static_cast<GLenum>(params.as_float(0));
+
+                if (texture)
+                {
+                    texture->mag_filter() = static_cast<GLenum>(params.as_float(0));
+                }
                 break;
 
             case GL_GENERATE_MIPMAP:
-                texture->auto_generate_mipmap() = (params.as_float(0) != 0.0f);
+                if (texture)
+                {
+                    texture->auto_generate_mipmap() = (params.as_float(0) != 0.0f);
+                }
                 break;
 
             default:
@@ -700,7 +719,7 @@ namespace fixie
                 throw invalid_enum_error("texture parameter target target must be GL_TEXTURE_2D.");
             }
 
-            std::shared_ptr<texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit());
+            std::shared_ptr<texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
 
             switch (pname)
             {
@@ -713,7 +732,11 @@ namespace fixie
                 default:
                     throw invalid_value_error("unknown texture wrap s value.");
                 }
-                texture->wrap_s() = params[0];
+
+                if (texture)
+                {
+                    texture->wrap_s() = params[0];
+                }
                 break;
 
             case GL_TEXTURE_WRAP_T:
@@ -725,7 +748,11 @@ namespace fixie
                 default:
                     throw invalid_value_error("unknown texture wrap t value.");
                 }
-                texture->wrap_t() = params[0];
+
+                if (texture)
+                {
+                    texture->wrap_t() = params[0];
+                }
                 break;
 
             case GL_TEXTURE_MIN_FILTER:
@@ -741,7 +768,11 @@ namespace fixie
                 default:
                     throw invalid_value_error("unknown texture min filter value.");
                 }
-                texture->min_filter() = params[0];
+
+                if (texture)
+                {
+                    texture->min_filter() = params[0];
+                }
                 break;
 
             case GL_TEXTURE_MAG_FILTER:
@@ -753,11 +784,18 @@ namespace fixie
                 default:
                     throw invalid_value_error("unknown texture min filter value.");
                 }
-                texture->mag_filter() = params[0];
+
+                if (texture)
+                {
+                    texture->mag_filter() = params[0];
+                }
                 break;
 
             case GL_GENERATE_MIPMAP:
-                texture->auto_generate_mipmap() = (params[0] != GL_FALSE);
+                if (texture)
+                {
+                    texture->auto_generate_mipmap() = (params[0] != GL_FALSE);
+                }
                 break;
 
             default:
@@ -1422,12 +1460,12 @@ void FIXIE_APIENTRY glBindTexture(GLenum target, GLuint texture)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        std::shared_ptr<fixie::texture> tex = ctx->state().texture(texture);
+        std::weak_ptr<fixie::texture> tex = ctx->state().texture(texture);
 
         switch (target)
         {
         case GL_TEXTURE_2D:
-            ctx->state().bound_texture(ctx->state().active_texture_unit()) = tex;
+            ctx->state().bind_texture(tex, ctx->state().active_texture_unit());
             break;
 
         default:
@@ -2409,10 +2447,7 @@ GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-
-        std::shared_ptr<fixie::texture> tex = ctx->state().texture(texture);
-
-        return (tex != nullptr) ? GL_TRUE : GL_FALSE;
+        return (ctx->state().texture(texture).use_count() > 0) ? GL_TRUE : GL_FALSE;
     }
     catch (fixie::gl_error e)
     {
@@ -2976,7 +3011,7 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
             throw fixie::invalid_value_error("invalid type.");
         }
 
-        std::shared_ptr<fixie::texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit());
+        std::shared_ptr<fixie::texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
         if (texture != nullptr)
         {
             texture->set_data(level, internalformat, width, height, format, type, pixels);

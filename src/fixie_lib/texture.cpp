@@ -8,13 +8,13 @@
 
 namespace fixie
 {
-    texture::texture(std::shared_ptr<texture_impl> impl)
+    texture::texture(std::unique_ptr<texture_impl> impl)
         : _wrap_s(GL_REPEAT)
         , _wrap_t(GL_REPEAT)
         , _min_filter(GL_NEAREST_MIPMAP_LINEAR)
         , _mag_filter(GL_LINEAR)
         , _auto_generate_mipmap(GL_FALSE)
-        , _impl(impl)
+        , _impl(std::move(impl))
     {
     }
 
@@ -125,12 +125,12 @@ namespace fixie
         return true;
     }
 
-    std::shared_ptr<texture_impl> texture::impl()
+    std::weak_ptr<texture_impl> texture::impl()
     {
         return _impl;
     }
 
-    std::shared_ptr<const texture_impl> texture::impl() const
+    std::weak_ptr<const texture_impl> texture::impl() const
     {
         return _impl;
     }
@@ -175,14 +175,19 @@ namespace fixie
         _mips[level].height = width;
     }
 
-    void texture::set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei image_size, const GLvoid *data)
+    void texture::set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height,
+                                          GLenum format, GLsizei image_size, const GLvoid *data)
     {
         _impl->set_compressed_sub_data(level, xoffset, yoffset, width, height, format, image_size, data);
     }
 
-    void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, const texture& source)
+    void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height,
+                            std::weak_ptr<const texture> source)
     {
-        _impl->copy_data(level, internal_format, x, y, width, height, source.impl());
+        std::shared_ptr<const texture> source_locked = source.lock();
+        std::weak_ptr<const texture_impl> source_impl = source_locked ? source_locked->impl()
+                                                                      : std::weak_ptr<const texture_impl>();
+        _impl->copy_data(level, internal_format, x, y, width, height, source_impl);
 
         if (_mips.size() <= static_cast<size_t>(level))
         {
@@ -198,9 +203,13 @@ namespace fixie
         }
     }
 
-    void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const texture& source)
+    void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format,
+                                GLenum type, std::weak_ptr<const texture> source)
     {
-        _impl->copy_sub_data(level, xoffset, yoffset, width, height, format, type, source.impl());
+        std::shared_ptr<const texture> source_locked = source.lock();
+        std::weak_ptr<const texture_impl> source_impl = source_locked ? source_locked->impl()
+                                                                      : std::weak_ptr<const texture_impl>();
+        _impl->copy_sub_data(level, xoffset, yoffset, width, height, format, type, source_impl);
         if (level == 0 && auto_generate_mipmap())
         {
             generate_mipmaps();

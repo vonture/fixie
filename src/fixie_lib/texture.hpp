@@ -16,15 +16,15 @@ namespace fixie
         virtual void set_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels) = 0;
         virtual void set_compressed_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLsizei image_size, const GLvoid *data) = 0;
         virtual void set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei image_size, const GLvoid *data) = 0;
-        virtual void copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::shared_ptr<const texture_impl> source) = 0;
-        virtual void copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::shared_ptr<const texture_impl> source) = 0;
+        virtual void copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::weak_ptr<const texture_impl> source) = 0;
+        virtual void copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::weak_ptr<const texture_impl> source) = 0;
         virtual void generate_mipmaps() = 0;
     };
 
     class texture : public noncopyable
     {
     public:
-        explicit texture(std::shared_ptr<texture_impl> impl);
+        explicit texture(std::unique_ptr<texture_impl> impl);
 
         GLenum& wrap_t();
         const GLenum& wrap_t() const;
@@ -46,15 +46,15 @@ namespace fixie
         GLsizei mip_level_height(size_t mip) const;
         GLboolean complete() const;
 
-        std::shared_ptr<texture_impl> impl();
-        std::shared_ptr<const texture_impl> impl() const;
+        std::weak_ptr<texture_impl> impl();
+        std::weak_ptr<const texture_impl> impl() const;
 
         void set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels);
         void set_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels);
         void set_compressed_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLsizei image_size, const GLvoid *data);
         void set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei image_size, const GLvoid *data);
-        void copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, const texture& source);
-        void copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const texture& source);
+        void copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::weak_ptr<const texture> source);
+        void copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::weak_ptr<const texture> source);
 
     private:
         GLenum _wrap_s;

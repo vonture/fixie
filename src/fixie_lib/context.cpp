@@ -23,9 +23,9 @@ namespace fixie
 
     GLuint context::create_texture()
     {
-        std::shared_ptr<texture_impl> impl = _impl->create_texture();
-        std::shared_ptr<fixie::texture> texture = std::make_shared<fixie::texture>(impl);
-        return _state.insert_texture(texture);
+        std::unique_ptr<texture_impl> impl = _impl->create_texture();
+        std::unique_ptr<fixie::texture> texture = std::unique_ptr<fixie::texture>(new fixie::texture(std::move(impl)));
+        return _state.insert_texture(std::move(texture));
     }
 
     GLuint context::create_buffer()

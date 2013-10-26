@@ -22,9 +22,9 @@ namespace fixie
         {
         }
 
-        std::shared_ptr<texture_impl> context::create_texture()
+        std::unique_ptr<texture_impl> context::create_texture()
         {
-            return std::make_shared<texture>();
+            return std::unique_ptr<texture_impl>(new texture());
         }
 
         std::unique_ptr<buffer_impl> context::create_buffer()

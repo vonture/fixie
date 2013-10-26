@@ -81,9 +81,9 @@ namespace fixie
             state.rasterizer_state().scissor() = rectangle(scissor_values[0], scissor_values[1], scissor_values[2], scissor_values[3]);
         }
 
-        std::shared_ptr<texture_impl> context::create_texture()
+        std::unique_ptr<texture_impl> context::create_texture()
         {
-            return std::make_shared<texture>(_functions);
+            return std::unique_ptr<texture_impl>(new texture(_functions));
         }
 
         std::unique_ptr<buffer_impl> context::create_buffer()
@@ -287,13 +287,15 @@ namespace fixie
             {
                 if (state.texture_environment(i).enabled())
                 {
-                    std::shared_ptr<const fixie::texture> bound_texture = state.bound_texture(i);
-                    GLuint texuture_id = bound_texture ? std::dynamic_pointer_cast<const texture>(bound_texture->impl())->id() : 0;
+                    std::shared_ptr<const fixie::texture> bound_texture = state.bound_texture(i).lock();
+                    std::shared_ptr<const fixie::texture_impl> bound_texture_impl = (bound_texture != nullptr) ? bound_texture->impl().lock() : nullptr;
+                    std::shared_ptr<const texture> desktop_texture = std::dynamic_pointer_cast<const texture>(bound_texture_impl);
+                    GLuint texuture_id = desktop_texture ? desktop_texture->id() : 0;
 
                     gl_call(_functions, gl_active_texture, GL_TEXTURE0 + i);
                     gl_call(_functions, gl_enable, GL_TEXTURE_2D);
                     gl_call(_functions, gl_bind_texture, GL_TEXTURE_2D, texuture_id);
-                    if (texuture_id != 0)
+                    if (bound_texture)
                     {
                         gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, bound_texture->wrap_s());
                         gl_call(_functions, gl_tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, bound_texture->wrap_t());

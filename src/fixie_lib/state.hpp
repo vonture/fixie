@@ -67,16 +67,17 @@ namespace fixie
         matrix_stack& projection_matrix_stack();
         const matrix_stack& projection_matrix_stack() const;
 
-        GLuint insert_texture(std::shared_ptr<fixie::texture> texture);
+        GLuint insert_texture(std::unique_ptr<fixie::texture> texture);
         void delete_texture(GLuint id);
-        std::shared_ptr<fixie::texture> texture(GLuint id);
-        std::shared_ptr<const fixie::texture> texture(GLuint id) const;
+        std::weak_ptr<fixie::texture> texture(GLuint id);
+        std::weak_ptr<const fixie::texture> texture(GLuint id) const;
 
         size_t& active_texture_unit();
         const size_t& active_texture_unit() const;
 
-        std::shared_ptr<fixie::texture>& bound_texture(size_t unit);
-        std::shared_ptr<const fixie::texture> bound_texture(size_t unit) const;
+        void bind_texture(std::weak_ptr<fixie::texture> texture, size_t unit);
+        std::weak_ptr<const fixie::texture> bound_texture(size_t unit) const;
+        std::weak_ptr<fixie::texture> bound_texture(size_t unit);
         fixie::texture_environment& texture_environment(size_t unit);
         const fixie::texture_environment& texture_environment(size_t unit) const;
 
@@ -138,7 +139,7 @@ namespace fixie
 
         GLuint _next_texture_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::texture> > _textures;
-        std::vector< std::shared_ptr<fixie::texture> > _bound_textures;
+        std::vector< std::weak_ptr<fixie::texture> > _bound_textures;
         std::vector<fixie::texture_environment> _texture_environments;
 
         GLuint _next_buffer_id;
