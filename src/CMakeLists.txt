@@ -9,8 +9,8 @@ add_library(${FIXIE_LIB_PROJECT_NAME} STATIC ${FIXIE_LIB_SOURCE} ${FIXIE_LIB_NUL
 include_directories(.)
 
 source_group(src FILES ${FIXIE_LIB_SOURCE})
-source_group(src/null_impl FILES ${FIXIE_LIB_NULL_IMPL_SOURCE})
-source_group(src/desktop_gl FILES ${FIXIE_LIB_DESKTOP_GL_IMPL_SOURCE})
+source_group(src\\null_impl FILES ${FIXIE_LIB_NULL_IMPL_SOURCE})
+source_group(src\\desktop_gl_impl FILES ${FIXIE_LIB_DESKTOP_GL_IMPL_SOURCE})
 source_group(include FILES ${FIXIE_INCLUDE})
 
 
