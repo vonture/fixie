@@ -31,7 +31,8 @@ namespace fixie
             GLuint _program;
 
             GLint _vertex_location;
-            GLint _vertex_transform_location;
+            GLint _model_view_transform_location;
+            GLint _projection_transform_location;
 
             GLint _normal_location;
             GLint _color_location;

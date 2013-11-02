@@ -115,9 +115,14 @@ namespace fixie
             return format("position_%s", shader_type_name(type).c_str());
         }
 
-        static std::string vertex_transform_name()
+        static std::string model_view_transform_name()
         {
-            return "position_transform";
+            return "model_view_transform";
+        }
+
+        static std::string projection_transform_name()
+        {
+            return "projection_transform";
         }
 
         static std::string normal_name(shader_type type)
@@ -159,7 +164,8 @@ namespace fixie
 
             vertex_shader << "in vec4 " << vertex_name(vertex_input) << ";" << std::endl;
             vertex_shader << "out vec4 " << vertex_name(vertex_output) << ";" << std::endl;
-            vertex_shader << "uniform mat4 " << vertex_transform_name() << ";" << std::endl;
+            vertex_shader << "uniform mat4 " << model_view_transform_name() << ";" << std::endl;
+            vertex_shader << "uniform mat4 " << projection_transform_name() << ";" << std::endl;
             vertex_shader << "in vec3 " << normal_name(vertex_input) << ";" << std::endl;
             vertex_shader << "out vec3 " << normal_name(vertex_output) << ";" << std::endl;
             vertex_shader << "in vec4 " << color_name(vertex_input) << ";" << std::endl;
@@ -177,8 +183,8 @@ namespace fixie
             vertex_shader << std::endl;
             vertex_shader << "void main(void)" << std::endl;
             vertex_shader << "{" << std::endl;
-            vertex_shader << tab() << vertex_name(vertex_output) << " = " << vertex_transform_name() << " * " << vertex_name(vertex_input) << ";" << std::endl;
-            vertex_shader << tab() << normal_name(vertex_output) << " = " << normal_name(vertex_input) << ";" << std::endl; // TODO: how are normals transformed?
+            vertex_shader << tab() << vertex_name(vertex_output) << " = " << model_view_transform_name() << " * " << vertex_name(vertex_input) << ";" << std::endl;
+            vertex_shader << tab() << normal_name(vertex_output) << " = mat3(" << model_view_transform_name() << ") * " << normal_name(vertex_input) << ";" << std::endl;
             vertex_shader << tab() << color_name(vertex_output) << " = " << color_name(vertex_input) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
@@ -188,7 +194,7 @@ namespace fixie
                 }
             }
             vertex_shader << std::endl;
-            vertex_shader << tab() << "gl_Position = " << vertex_name(vertex_output) << ";" << std::endl;
+            vertex_shader << tab() << "gl_Position = (" << projection_transform_name() << " * "<< model_view_transform_name() << ") * " << vertex_name(vertex_input) << ";" << std::endl;
             vertex_shader << "}" << std::endl;
 
             return vertex_shader.str();
@@ -234,7 +240,7 @@ namespace fixie
             }
             fragment_shader << tab() << local_output_color_name << " *= " << texture_result_name << ";" << std::endl;
 
-            fragment_shader << tab() << color_name(fragment_output) << " = " << local_output_color_name<< ";" << std::endl;
+            fragment_shader << tab() << color_name(fragment_output) << " = " << local_output_color_name << ";" << std::endl;
             fragment_shader << "}" << std::endl;
 
             return fragment_shader.str();
@@ -248,7 +254,8 @@ namespace fixie
             gl_call(_functions, gl_bind_frag_data_location, _program, 0, color_name(fragment_output).c_str());
 
             _vertex_location = gl_call(_functions, gl_get_attrib_location, _program, vertex_name(vertex_input).c_str());
-            _vertex_transform_location = gl_call(_functions, gl_get_uniform_location, _program, vertex_transform_name().c_str());
+            _model_view_transform_location = gl_call(_functions, gl_get_uniform_location, _program, model_view_transform_name().c_str());
+            _projection_transform_location = gl_call(_functions, gl_get_uniform_location, _program, projection_transform_name().c_str());
 
             _normal_location = gl_call(_functions, gl_get_attrib_location, _program, normal_name(vertex_input).c_str());
             _color_location = gl_call(_functions, gl_get_attrib_location, _program, color_name(vertex_input).c_str());
@@ -281,22 +288,25 @@ namespace fixie
         {
             gl_call(_functions, gl_use_program, _program);
 
-            if (_vertex_transform_location != -1)
+            if (_model_view_transform_location != -1)
             {
-                matrix4 transform_matrix = state.model_view_matrix_stack().top_multiplied() * state.projection_matrix_stack().top_multiplied();
-                gl_call(_functions, gl_uniform_matrix_4fv, _vertex_transform_location, 1, GL_FALSE, transform_matrix.data);
+                gl_call(_functions, gl_uniform_matrix_4fv, _model_view_transform_location, 1, GL_FALSE, state.model_view_matrix_stack().top_multiplied().data);
+            }
+
+            if (_projection_transform_location != -1)
+            {
+                gl_call(_functions, gl_uniform_matrix_4fv, _projection_transform_location, 1, GL_FALSE, state.projection_matrix_stack().top_multiplied().data);
             }
 
             for (size_t i = 0; i < _texcoord_locations.size(); i++)
             {
                 if (_texcoord_locations[i].texcoord_transform_location != -1)
                 {
-                    matrix4 texcoord_transform = state.texture_matrix_stack(i).top_multiplied();
-                    gl_call(_functions, gl_uniform_matrix_4fv, _texcoord_locations[i].texcoord_transform_location, 1, GL_FALSE, texcoord_transform.data);
+                    gl_call(_functions, gl_uniform_matrix_4fv, _texcoord_locations[i].texcoord_transform_location, 1, GL_FALSE, state.texture_matrix_stack(i).top_multiplied().data);
                 }
                 if (_texcoord_locations[i].sampler_location != -1)
                 {
-                    gl_call(_functions, gl_uniform_1i, _texcoord_locations[i].sampler_location, i);
+                    gl_call(_functions, gl_uniform_1i, _texcoord_locations[i].sampler_location, static_cast<GLint>(i));
                 }
             }
         }
