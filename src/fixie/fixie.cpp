@@ -910,6 +910,12 @@ namespace fixie
             return ctx->state().clip_plane(target - GL_CLIP_PLANE0).enabled();
         }
 
+        GLsizei max_lights = ctx->caps().max_lights();
+        if (target >= GL_LIGHT0 && static_cast<GLsizei>(target - GL_LIGHT0) < max_lights)
+        {
+            return ctx->state().light(target - GL_LIGHT0).enabled();
+        }
+
         switch (target)
         {
         case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).enabled();
