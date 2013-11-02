@@ -21,7 +21,7 @@ namespace fixie
             GLuint shader = gl_call(functions, gl_create_shader, type);
 
             std::array<const GLchar*, 1> source_array = { source.c_str() };
-            gl_call(functions, gl_shader_source, shader, source_array.size(), source_array.data(), nullptr);
+            gl_call(functions, gl_shader_source, shader, static_cast<GLsizei>(source_array.size()), source_array.data(), nullptr);
             gl_call(functions, gl_compile_shader, shader);
 
             GLint result;
@@ -33,7 +33,7 @@ namespace fixie
                 gl_call(functions, gl_get_shader_iv, shader, GL_INFO_LOG_LENGTH, &info_log_length);
 
                 std::vector<GLchar> info_log(info_log_length);
-                gl_call(functions, gl_get_shader_info_log, shader, info_log.size(), nullptr, info_log.data());
+                gl_call(functions, gl_get_shader_info_log, shader, static_cast<GLsizei>(info_log.size()), nullptr, info_log.data());
 
                 gl_call(functions, gl_delete_shader, shader);
 
@@ -74,7 +74,8 @@ namespace fixie
                 gl_call(functions, gl_get_program_iv, program, GL_INFO_LOG_LENGTH, &info_log_length);
 
                 std::vector<GLchar> info_log(info_log_length);
-                gl_call(functions, gl_get_program_info_log, program, info_log.size(), nullptr, info_log.data());
+                gl_call(functions, gl_get_program_info_log, program, static_cast<GLsizei>(info_log.size()), nullptr,
+                                                            info_log.data());
 
                 gl_call(functions, gl_delete_program, program);
 

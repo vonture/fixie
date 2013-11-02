@@ -295,7 +295,7 @@ namespace fixie
                     std::shared_ptr<const texture> desktop_texture = std::dynamic_pointer_cast<const texture>(bound_texture_impl);
                     GLuint texuture_id = desktop_texture ? desktop_texture->id() : 0;
 
-                    gl_call(_functions, gl_active_texture, GL_TEXTURE0 + i);
+                    gl_call(_functions, gl_active_texture, static_cast<GLenum>(GL_TEXTURE0 + i));
                     gl_call(_functions, gl_enable, GL_TEXTURE_2D);
                     gl_call(_functions, gl_bind_texture, GL_TEXTURE_2D, texuture_id);
                     if (bound_texture)
