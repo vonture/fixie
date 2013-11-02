@@ -5,18 +5,22 @@
 #include "fixie_lib/function_loader.hpp"
 #include "fixie_lib/exceptions.hpp"
 
-#if defined BUILD_DEBUG
-    #define gl_call(functions_ptr, name, ...) \
-        ((functions_ptr)->name()(__VA_ARGS__)); \
+#define gl_call_throw(functions_ptr, name, ...) \
+    ((functions_ptr)->name()(__VA_ARGS__)); \
+    { \
+        GLenum error_code = (functions_ptr)->gl_get_error()(); \
+        if (error_code != GL_NO_ERROR) \
         { \
-            GLenum error_code = (functions_ptr)->gl_get_error()(); \
-            if (error_code != GL_NO_ERROR) \
-            { \
-                throw_gl_error(error_code, __FILE__, __LINE__); \
-            } \
-        }
+            throw_gl_error(error_code, __FILE__, __LINE__); \
+        } \
+    }
+
+#define gl_call_nothrow(functions_ptr, name, ...) (functions_ptr->name()(__VA_ARGS__))
+
+#if defined BUILD_DEBUG
+    #define gl_call(functions_ptr, name, ...) gl_call_throw(functions_ptr, name, __VA_ARGS__)
 #else
-    #define gl_call(functions_ptr, name, ...) (functions_ptr->name()(__VA_ARGS__))
+    #define gl_call(functions_ptr, name, ...) gl_call_nothrow(functions_ptr, name, __VA_ARGS__)
 #endif
 
 namespace fixie

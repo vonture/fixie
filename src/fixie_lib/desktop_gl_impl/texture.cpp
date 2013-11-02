@@ -14,7 +14,7 @@ namespace fixie
 
         texture::~texture()
         {
-            gl_call(_functions, gl_delete_textures, 1, &_id);
+            gl_call_nothrow(_functions, gl_delete_textures, 1, &_id);
         }
 
         GLuint texture::id() const

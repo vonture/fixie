@@ -14,7 +14,7 @@ namespace fixie
 
         buffer::~buffer()
         {
-            gl_call(_functions, gl_delete_buffers, 1, &_id);
+            gl_call_nothrow(_functions, gl_delete_buffers, 1, &_id);
         }
 
         GLuint buffer::id() const
