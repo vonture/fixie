@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        float scale = std::min<float>(width, height) * 0.75f;
+        float scale = std::min(static_cast<float>(width), static_cast<float>(height)) * 0.75f;
         glScalef(scale, scale, scale);
         glRotatef(time * 50.f, 1.0f, 1.0f, 1.0f);
 
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
         glVertexPointer(3, GL_FLOAT, sizeof(float) * 7, 0);
 
         glEnableClientState(GL_COLOR_ARRAY);
-        glColorPointer(4, GL_FLOAT, sizeof(float) * 7, (GLvoid*)(sizeof(float) * 3));
+        glColorPointer(4, GL_FLOAT, sizeof(float) * 7, reinterpret_cast<GLvoid*>(sizeof(float) * 3));
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
 

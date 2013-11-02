@@ -61,9 +61,9 @@ int main(int argc, char** argv)
     {
         size_t pixel_index = i * 4;
 
-        color_pallete[pixel_index + 0] = GLubyte((((std::min(std::max(i, 0U), 31U)) - 0U) / 32.0f) * 255);
-        color_pallete[pixel_index + 1] = GLubyte((((std::min(std::max(i, 32U), 63U)) - 32U) / 32.0f) * 255);
-        color_pallete[pixel_index + 2] = GLubyte((((std::min(std::max(i, 64U), 255U)) - 192U) / 192.0f) * 255);
+        color_pallete[pixel_index + 0] = GLubyte((((std::min<size_t>(std::max<size_t>(i, 0), 31)) - 0) / 32.0f) * 255);
+        color_pallete[pixel_index + 1] = GLubyte((((std::min<size_t>(std::max<size_t>(i, 32), 63)) - 32U) / 32.0f) * 255);
+        color_pallete[pixel_index + 2] = GLubyte((((std::min<size_t>(std::max<size_t>(i, 64), 255)) - 192) / 192.0f) * 255);
         color_pallete[pixel_index + 3] = 255;
     }
 

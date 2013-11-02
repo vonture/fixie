@@ -15,7 +15,8 @@ GLuint make_model_vbo(const std::vector< std::array<GLfloat, n> >& vertices)
     GLuint vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * n * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(GLfloat) * n * vertices.size()), vertices.data(),
+                 GL_STATIC_DRAW);
     return vbo;
 }
 
@@ -27,7 +28,8 @@ GLuint make_tga_texture(const sample_util::tga_image& img)
     glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width, img.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.data.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(img.width), static_cast<GLsizei>(img.height), 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, img.data.data());
     return texture;
 }
 
@@ -97,7 +99,7 @@ int main(int argc, char** argv)
         glBindBuffer(GL_ARRAY_BUFFER, texcoord_vbo);
         glTexCoordPointer(3, GL_FLOAT, 0, 0);
 
-        glDrawArrays(GL_TRIANGLES, 0, m.vertices.size());
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(m.vertices.size()));
 
         glfwSwapBuffers(window);
         glfwPollEvents();
