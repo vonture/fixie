@@ -93,7 +93,7 @@ namespace fixie
 
         void context::draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count)
         {
-            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps);
+            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps).lock();
             shader->sync_state(state);
             sync_vertex_attributes(state, shader);
             sync_textures(state);
@@ -106,7 +106,7 @@ namespace fixie
 
         void context::draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices)
         {
-            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps);
+            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps).lock();
             shader->sync_state(state);
             sync_vertex_attributes(state, shader);
             sync_textures(state);
@@ -251,21 +251,24 @@ namespace fixie
             }
         }
 
-        void context::sync_vertex_attributes(const state& state, std::shared_ptr<const shader> shader)
+        void context::sync_vertex_attributes(const state& state, std::weak_ptr<const shader> shader)
         {
-            GLint vertex_location = shader->vertex_attribute_location();
+            std::shared_ptr<const desktop_gl_impl::shader> locked_shader = shader.lock();
+            assert(locked_shader != nullptr);
+
+            GLint vertex_location = locked_shader->vertex_attribute_location();
             if (vertex_location != -1)
             {
                 sync_vertex_attribute(state, state.vertex_attribute(), static_cast<GLuint>(vertex_location), GL_FALSE);
             }
 
-            GLint color_location = shader->color_attribute_location();
+            GLint color_location = locked_shader->color_attribute_location();
             if (color_location != -1)
             {
                 sync_vertex_attribute(state, state.color_attribute(), static_cast<GLuint>(color_location), GL_TRUE);
             }
 
-            GLint normal_location = shader->normal_attribute_location();
+            GLint normal_location = locked_shader->normal_attribute_location();
             if (normal_location != -1)
             {
                 sync_vertex_attribute(state, state.normal_attribute(), static_cast<GLuint>(normal_location), GL_TRUE);
@@ -273,7 +276,7 @@ namespace fixie
 
             for (size_t i = 0; i < static_cast<size_t>(_caps.max_texture_units()); ++i)
             {
-                GLint texcoord_location = shader->texcoord_attribute_location(i);
+                GLint texcoord_location = locked_shader->texcoord_attribute_location(i);
                 if (texcoord_location != -1)
                 {
                     sync_vertex_attribute(state, state.texcoord_attribute(i), static_cast<GLuint>(texcoord_location), GL_TRUE);

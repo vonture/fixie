@@ -9,7 +9,7 @@ namespace fixie
         {
         }
 
-        std::shared_ptr<shader> shader_cache::get_shader(const state& state, const caps& caps)
+        std::weak_ptr<shader> shader_cache::get_shader(const state& state, const caps& caps)
         {
             shader_info key(state, caps);
             auto iter = _shaders.find(key);

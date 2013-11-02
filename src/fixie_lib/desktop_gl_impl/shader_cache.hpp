@@ -17,7 +17,7 @@ namespace fixie
         public:
             shader_cache(std::shared_ptr<const gl_functions> functions);
 
-            std::shared_ptr<shader> get_shader(const state& state, const caps& caps);
+            std::weak_ptr<shader> get_shader(const state& state, const caps& caps);
 
         private:
             std::shared_ptr<const gl_functions> _functions;
