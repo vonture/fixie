@@ -39,7 +39,7 @@ macro(add_sample PROJECT_NAME SOURCE COPY_FILES)
                            copy ${COPY_FILE} ${PROJECT_BINARY_DIR}/samples/${PROJECT_NAME})
     endforeach()
 
-    add_definitions(-DFIXIE_DLL_LIBRARY_IMPORT -DSAMPLE_NAME=\"${PROJECT_NAME}\" -DSAMPLE_WIDTH=${SAMPLE_WINDOW_WIDTH} -DSAMPLE_HEIGHT=${SAMPLE_WINDOW_HEIGHT})
+    add_definitions(-DSAMPLE_NAME=\"${PROJECT_NAME}\" -DSAMPLE_WIDTH=${SAMPLE_WINDOW_WIDTH} -DSAMPLE_HEIGHT=${SAMPLE_WINDOW_HEIGHT})
 endmacro()
 
 add_subdirectory(sample_util)
