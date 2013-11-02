@@ -4,15 +4,18 @@
 #include <array>
 #include <vector>
 
-typedef std::array<unsigned char, 4> pixel;
-
-struct tga_image
+namespace sample_util
 {
-    size_t width;
-    size_t height;
-    std::vector<pixel> data;
-};
+    typedef std::array<unsigned char, 4> pixel;
 
-tga_image load_tga_image_from_file(const std::string& path);
+    struct tga_image
+    {
+        size_t width;
+        size_t height;
+        std::vector<pixel> data;
+    };
+
+    tga_image load_tga_image_from_file(const std::string& path);
+}
 
 #endif // _TGA_LOADER_HPP_

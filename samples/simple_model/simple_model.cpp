@@ -19,7 +19,7 @@ GLuint make_model_vbo(const std::vector< std::array<GLfloat, n> >& vertices)
     return vbo;
 }
 
-GLuint make_tga_texture(const tga_image& img)
+GLuint make_tga_texture(const sample_util::tga_image& img)
 {
     GLuint texture;
     glGenTextures(1, &texture);
@@ -47,8 +47,8 @@ int main(int argc, char** argv)
 
     glfwMakeContextCurrent(window);
 
-    model m = load_model_from_file("suzanne.obj");
-    tga_image image = load_tga_image_from_file("gradient.tga");
+    sample_util::model m = sample_util::load_model_from_file("suzanne.obj");
+    sample_util::tga_image image = sample_util::load_tga_image_from_file("gradient.tga");
 
     GLuint position_vbo = make_model_vbo(m.vertices);
     GLuint normal_vbo = make_model_vbo(m.normals);
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glTranslatef(0.0f, 0.0f, -50.0f);
-        perspective_matrix(60.0f, ratio, 0.1f, 100.0f);
+        sample_util::perspective_matrix(60.0f, ratio, 0.1f, 100.0f);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
