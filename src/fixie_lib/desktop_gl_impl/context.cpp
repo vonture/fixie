@@ -247,7 +247,7 @@ namespace fixie
 
                 gl_call(_functions, gl_bind_buffer, GL_ARRAY_BUFFER, 0);
                 gl_call(_functions, gl_disable_vertex_attrib_array, location);
-                gl_call(_functions, gl_vertex_attrib_4f, location, generic_values.x, generic_values.y, generic_values.z, generic_values.w);
+                gl_call(_functions, gl_vertex_attrib_4f, location, generic_values.x(), generic_values.y(), generic_values.z(), generic_values.w());
             }
         }
 

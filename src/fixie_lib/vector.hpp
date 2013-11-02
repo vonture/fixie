@@ -2,24 +2,28 @@
 #define _VECTOR_HPP_
 
 #include <cstddef>
+#include <array>
 #include "fixie/fixie_gl_types.h"
 
 namespace fixie
 {
-    struct vector3
+    class vector3
     {
-        union
-        {
-            struct
-            {
-                GLfloat x, y, z;
-            };
-            GLfloat data[3];
-        };
-
+    public:
         vector3();
         vector3(GLfloat x, GLfloat y, GLfloat z);
-        vector3(const GLfloat data[3]);
+        explicit vector3(const GLfloat data[3]);
+
+        const GLfloat& x() const;
+        GLfloat& x();
+
+        const GLfloat& y() const;
+        GLfloat& y();
+
+        const GLfloat& z() const;
+        GLfloat& z();
+
+        const GLfloat* data() const;
 
         const GLfloat& operator()(size_t idx) const;
         GLfloat& operator()(size_t idx);
@@ -31,22 +35,31 @@ namespace fixie
 
         static GLfloat dot(const vector3& a, const vector3& b);
         static vector3 cross(const vector3& a, const vector3& b);
+
+    private:
+        std::array<GLfloat, 3> _data;
     };
 
-    struct vector4
+    class vector4
     {
-        union
-        {
-            struct
-            {
-                GLfloat x, y, z, w;
-            };
-            GLfloat data[4];
-        };
-
+    public:
         vector4();
         vector4(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        vector4(const GLfloat data[4]);
+        explicit vector4(const GLfloat data[4]);
+
+        const GLfloat& x() const;
+        GLfloat& x();
+
+        const GLfloat& y() const;
+        GLfloat& y();
+
+        const GLfloat& z() const;
+        GLfloat& z();
+
+        const GLfloat& w() const;
+        GLfloat& w();
+
+        const GLfloat* data() const;
 
         const GLfloat& operator()(size_t idx) const;
         GLfloat& operator()(size_t idx);
@@ -57,6 +70,9 @@ namespace fixie
         static vector4 normalize(const vector4& vec);
 
         static GLfloat dot(const vector4& a, const vector4& b);
+
+    private:
+        std::array<GLfloat, 4> _data;
     };
 }
 

@@ -72,9 +72,9 @@ namespace fixie
         vector3 one(1.0f, 1.0f, 1.0f);
         vector3 normalized_one(vector3::normalize(one));
         GLfloat expected_comp_value = 1.0f / sqrt(3.0f);
-        EXPECT_LT(std::abs(normalized_one.x - expected_comp_value), epsilon);
-        EXPECT_LT(std::abs(normalized_one.y - expected_comp_value), epsilon);
-        EXPECT_LT(std::abs(normalized_one.z - expected_comp_value), epsilon);
+        EXPECT_LT(std::abs(normalized_one.x() - expected_comp_value), epsilon);
+        EXPECT_LT(std::abs(normalized_one.y() - expected_comp_value), epsilon);
+        EXPECT_LT(std::abs(normalized_one.z() - expected_comp_value), epsilon);
     }
 
     TEST_F(vector_tests, dot)

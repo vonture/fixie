@@ -290,19 +290,19 @@ namespace fixie
 
             if (_model_view_transform_location != -1)
             {
-                gl_call(_functions, gl_uniform_matrix_4fv, _model_view_transform_location, 1, GL_FALSE, state.model_view_matrix_stack().top_multiplied().data);
+                gl_call(_functions, gl_uniform_matrix_4fv, _model_view_transform_location, 1, GL_FALSE, state.model_view_matrix_stack().top_multiplied().data());
             }
 
             if (_projection_transform_location != -1)
             {
-                gl_call(_functions, gl_uniform_matrix_4fv, _projection_transform_location, 1, GL_FALSE, state.projection_matrix_stack().top_multiplied().data);
+                gl_call(_functions, gl_uniform_matrix_4fv, _projection_transform_location, 1, GL_FALSE, state.projection_matrix_stack().top_multiplied().data());
             }
 
             for (size_t i = 0; i < _texcoord_locations.size(); i++)
             {
                 if (_texcoord_locations[i].texcoord_transform_location != -1)
                 {
-                    gl_call(_functions, gl_uniform_matrix_4fv, _texcoord_locations[i].texcoord_transform_location, 1, GL_FALSE, state.texture_matrix_stack(i).top_multiplied().data);
+                    gl_call(_functions, gl_uniform_matrix_4fv, _texcoord_locations[i].texcoord_transform_location, 1, GL_FALSE, state.texture_matrix_stack(i).top_multiplied().data());
                 }
                 if (_texcoord_locations[i].sampler_location != -1)
                 {
