@@ -137,12 +137,12 @@ namespace fixie
 
         static std::string tex_coord_name(shader_type type, size_t i)
         {
-            return format("texcoord_%s_%u", shader_type_name(type).c_str(), i);
+            return format("texcoord_%u_%s", i, shader_type_name(type).c_str());
         }
 
         static std::string tex_coord_transform_name(size_t i)
         {
-            return format("texcoord_transform_%u", i);
+            return format("texcoord_%u_transform", i);
         }
 
         static std::string sampler_name(size_t i)
