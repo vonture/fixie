@@ -45,11 +45,17 @@ namespace fixie
             };
             std::vector<texcoord_uniform> _texcoord_locations;
 
+            GLint _material_ambient_color_location;
+            GLint _material_diffuse_color_location;
+            GLint _material_specular_color_location;
+            GLint _material_specular_exponent_location;
+            GLint _material_emissive_color_location;
+
             struct light_uniform
             {
-                GLint ambient_location;
-                GLint diffuse_location;
-                GLint specular_location;
+                GLint ambient_color_location;
+                GLint diffuse_color_location;
+                GLint specular_color_location;
                 GLint position_location;
                 GLint spot_direction_location;
                 GLint spot_exponent_location;
@@ -58,7 +64,9 @@ namespace fixie
                 GLint linear_attenuation_location;
                 GLint quadratic_attenuation_location;
             };
-            std::unordered_map<size_t, light_uniform> _light_locations;
+            std::vector<light_uniform> _light_locations;
+
+            GLint _scene_ambient_color_location;
 
             std::unordered_map<size_t, GLint> _clip_plane_locations;
         };
