@@ -5,16 +5,33 @@
 
 #include <functional>
 #include <cstddef>
+#include <array>
 
 namespace fixie
 {
-    struct color
+    class color
     {
-        GLfloat r, g, b, a;
-
+    public:
         color();
         color(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
         color(const GLfloat data[4]);
+
+        const GLfloat& r() const;
+        GLfloat& r();
+
+        const GLfloat& g() const;
+        GLfloat& g();
+
+        const GLfloat& b() const;
+        GLfloat& b();
+
+        const GLfloat& a() const;
+        GLfloat& a();
+
+        const GLfloat* data() const;
+
+    private:
+        std::array<GLfloat, 4> _data;
     };
 
     bool operator==(const color& a, const color& b);

@@ -183,7 +183,7 @@ namespace fixie
         {
             if (_cur_clear_state.clear_color() != state.clear_color())
             {
-                gl_call(_functions, gl_clear_color, state.clear_color().r, state.clear_color().g, state.clear_color().b, state.clear_color().a);
+                gl_call(_functions, gl_clear_color, state.clear_color().r(), state.clear_color().g(), state.clear_color().b(), state.clear_color().a());
                 _cur_clear_state.clear_color() = state.clear_color();
             }
 
