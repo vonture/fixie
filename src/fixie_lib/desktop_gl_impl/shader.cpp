@@ -453,28 +453,28 @@ namespace fixie
                 gl_call(_functions, gl_uniform_1i, uniform.sampler_location, static_cast<GLint>(i));
             }
 
-            gl_call(_functions, gl_uniform_4fv, _material_ambient_color_location, 1, state.front_material().ambient().data());
-            gl_call(_functions, gl_uniform_4fv, _material_diffuse_color_location, 1, state.front_material().diffuse().data());
-            gl_call(_functions, gl_uniform_4fv, _material_specular_color_location, 1, state.front_material().specular().data());
-            gl_call(_functions, gl_uniform_1f, _material_specular_exponent_location, state.front_material().specular_exponent());
-            gl_call(_functions, gl_uniform_4fv, _material_emissive_color_location, 1, state.front_material().emissive().data());
+            gl_call(_functions, gl_uniform_4fv, _material_ambient_color_location, 1, state.lighting_state().front_material().ambient().data());
+            gl_call(_functions, gl_uniform_4fv, _material_diffuse_color_location, 1, state.lighting_state().front_material().diffuse().data());
+            gl_call(_functions, gl_uniform_4fv, _material_specular_color_location, 1, state.lighting_state().front_material().specular().data());
+            gl_call(_functions, gl_uniform_1f, _material_specular_exponent_location, state.lighting_state().front_material().specular_exponent());
+            gl_call(_functions, gl_uniform_4fv, _material_emissive_color_location, 1, state.lighting_state().front_material().emissive().data());
 
             for (size_t i = 0; i < _light_locations.size(); i++)
             {
                 light_uniform& uniform = _light_locations[i];
-                gl_call(_functions, gl_uniform_4fv, uniform.ambient_color_location, 1, state.light(i).ambient().data());
-                gl_call(_functions, gl_uniform_4fv, uniform.diffuse_color_location, 1, state.light(i).diffuse().data());
-                gl_call(_functions, gl_uniform_4fv, uniform.specular_color_location, 1, state.light(i).specular().data());
-                gl_call(_functions, gl_uniform_4fv, uniform.position_location, 1, state.light(i).position().data());
-                gl_call(_functions, gl_uniform_3fv, uniform.spot_direction_location, 1, state.light(i).spot_direction().data());
-                gl_call(_functions, gl_uniform_1f, uniform.spot_exponent_location, state.light(i).spot_exponent());
-                gl_call(_functions, gl_uniform_1f, uniform.spot_cutoff_location, state.light(i).spot_cutoff());
-                gl_call(_functions, gl_uniform_1f, uniform.constant_attenuation_location, state.light(i).constant_attenuation());
-                gl_call(_functions, gl_uniform_1f, uniform.linear_attenuation_location, state.light(i).linear_attenuation());
-                gl_call(_functions, gl_uniform_1f, uniform.quadratic_attenuation_location, state.light(i).quadratic_attenuation());
+                gl_call(_functions, gl_uniform_4fv, uniform.ambient_color_location, 1, state.lighting_state().light(i).ambient().data());
+                gl_call(_functions, gl_uniform_4fv, uniform.diffuse_color_location, 1, state.lighting_state().light(i).diffuse().data());
+                gl_call(_functions, gl_uniform_4fv, uniform.specular_color_location, 1, state.lighting_state().light(i).specular().data());
+                gl_call(_functions, gl_uniform_4fv, uniform.position_location, 1, state.lighting_state().light(i).position().data());
+                gl_call(_functions, gl_uniform_3fv, uniform.spot_direction_location, 1, state.lighting_state().light(i).spot_direction().data());
+                gl_call(_functions, gl_uniform_1f, uniform.spot_exponent_location, state.lighting_state().light(i).spot_exponent());
+                gl_call(_functions, gl_uniform_1f, uniform.spot_cutoff_location, state.lighting_state().light(i).spot_cutoff());
+                gl_call(_functions, gl_uniform_1f, uniform.constant_attenuation_location, state.lighting_state().light(i).constant_attenuation());
+                gl_call(_functions, gl_uniform_1f, uniform.linear_attenuation_location, state.lighting_state().light(i).linear_attenuation());
+                gl_call(_functions, gl_uniform_1f, uniform.quadratic_attenuation_location, state.lighting_state().light(i).quadratic_attenuation());
             }
 
-            gl_call(_functions, gl_uniform_4fv, _scene_ambient_color_location, 1, state.light_model().ambient_color().data());
+            gl_call(_functions, gl_uniform_4fv, _scene_ambient_color_location, 1, state.lighting_state().light_model().ambient_color().data());
         }
 
         GLint shader::vertex_attribute_location() const

@@ -24,9 +24,9 @@ namespace fixie
             std::vector<material*> materials;
             switch (face)
             {
-            case GL_FRONT:          materials.push_back(&ctx->state().front_material());                                                     break;
-            case GL_BACK:                                                                materials.push_back(&ctx->state().back_material()); break;
-            case GL_FRONT_AND_BACK: materials.push_back(&ctx->state().front_material()); materials.push_back(&ctx->state().back_material()); break;
+            case GL_FRONT:          materials.push_back(&ctx->state().lighting_state().front_material());                                                                      break;
+            case GL_BACK:                                                                                 materials.push_back(&ctx->state().lighting_state().back_material()); break;
+            case GL_FRONT_AND_BACK: materials.push_back(&ctx->state().lighting_state().front_material()); materials.push_back(&ctx->state().lighting_state().back_material()); break;
             default:                throw invalid_enum_error("unknown face name.");
             }
 
@@ -128,7 +128,7 @@ namespace fixie
             {
                 throw invalid_enum_error(format("invalid light, must be between GL_LIGHT0 and GL_LIGHT%i.", max_lights - 1));
             }
-            light& light = ctx->state().light(l - GL_LIGHT0);
+            light& light = ctx->state().lighting_state().light(l - GL_LIGHT0);
 
             switch (pname)
             {
@@ -243,11 +243,11 @@ namespace fixie
                 {
                     throw invalid_enum_error("multi-valued parameter name, GL_LIGHT_MODEL_AMBIENT, passed to non-vector light model function.");
                 }
-                ctx->state().light_model().ambient_color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                ctx->state().lighting_state().light_model().ambient_color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
                 break;
 
             case GL_LIGHT_MODEL_TWO_SIDE:
-                ctx->state().light_model().two_sided_lighting() = (params.as_float(0) != 0.0f);
+                ctx->state().lighting_state().light_model().two_sided_lighting() = (params.as_float(0) != 0.0f);
                 break;
 
             default:
@@ -913,7 +913,7 @@ namespace fixie
         GLsizei max_lights = ctx->caps().max_lights();
         if (target >= GL_LIGHT0 && static_cast<GLsizei>(target - GL_LIGHT0) < max_lights)
         {
-            return ctx->state().light(target - GL_LIGHT0).enabled();
+            return ctx->state().lighting_state().light(target - GL_LIGHT0).enabled();
         }
 
         switch (target)
@@ -921,7 +921,7 @@ namespace fixie
         case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).enabled();
         case GL_SCISSOR_TEST: return ctx->state().rasterizer_state().scissor_test();
         case GL_DEPTH_TEST:   return ctx->state().depth_stencil_state().depth_test();
-        case GL_LIGHTING:     return ctx->state().lighting_enabled();
+        case GL_LIGHTING:     return ctx->state().lighting_state().enabled();
         default: throw invalid_enum_error("unknown target.");
         }
     }

@@ -11,9 +11,7 @@
 #include "fixie_lib/rasterizer_state.hpp"
 #include "fixie_lib/rectangle.hpp"
 #include "fixie_lib/range.hpp"
-#include "fixie_lib/material.hpp"
-#include "fixie_lib/light.hpp"
-#include "fixie_lib/light_model.hpp"
+#include "fixie_lib/lighting_state.hpp"
 #include "fixie_lib/color.hpp"
 #include "fixie_lib/clip_plane.hpp"
 #include "fixie_lib/vector.hpp"
@@ -40,20 +38,8 @@ namespace fixie
         const fixie::rasterizer_state rasterizer_state() const;
         fixie::rasterizer_state& rasterizer_state();
 
-        material& front_material();
-        const material& front_material() const;
-
-        material& back_material();
-        const material& back_material() const;
-
-        GLboolean& lighting_enabled();
-        const GLboolean& lighting_enabled() const;
-
-        fixie::light& light(size_t idx);
-        const fixie::light& light(size_t idx) const;
-
-        fixie::light_model& light_model();
-        const fixie::light_model& light_model() const;
+        const fixie::lighting_state lighting_state() const;
+        fixie::lighting_state& lighting_state();
 
         fixie::clip_plane& clip_plane(size_t idx);
         const fixie::clip_plane& clip_plane(size_t idx) const;
@@ -122,14 +108,7 @@ namespace fixie
         fixie::clear_state _clear_state;
         fixie::depth_stencil_state _depth_stencil_state;
         fixie::rasterizer_state _rasterizer_state;
-
-        material _front_material;
-        material _back_material;
-
-        GLboolean _lighting_enabled;
-        std::vector<fixie::light> _lights;
-
-        fixie::light_model _light_model;
+        fixie::lighting_state _lighting_state;
 
         std::vector<fixie::clip_plane> _clip_planes;
 

@@ -12,11 +12,7 @@ namespace fixie
         : _clear_state(get_default_clear_state())
         , _depth_stencil_state(get_default_depth_stencil_state())
         , _rasterizer_state(get_default_rasterizer_state())
-        , _front_material(get_default_material())
-        , _back_material(get_default_material())
-        , _lighting_enabled(GL_FALSE)
-        , _lights(caps.max_lights())
-        , _light_model(get_default_light_model())
+        , _lighting_state(get_default_lighting_state(caps))
         , _clip_planes(caps.max_clip_planes())
         , _active_texture_unit(0)
         , _matrix_mode(GL_MODELVIEW)
@@ -35,10 +31,6 @@ namespace fixie
         , _shade_model(GL_SMOOTH)
         , _error(GL_NO_ERROR)
     {
-        for (size_t i = 0; i < _lights.size(); ++i)
-        {
-            _lights[i] = get_default_light(i);
-        }
         std::generate(begin(_clip_planes), end(_clip_planes), get_default_clip_plane);
         std::generate(begin(_texture_environments), end(_texture_environments), get_default_texture_environment);
         std::generate(begin(_texcoord_attributes), end(_texcoord_attributes), get_default_texcoord_attribute);
@@ -74,54 +66,14 @@ namespace fixie
         return _rasterizer_state;
     }
 
-    material& state::front_material()
+    const fixie::lighting_state state::lighting_state() const
     {
-        return _front_material;
+        return _lighting_state;
     }
 
-    const material& state::front_material() const
+    fixie::lighting_state& state::lighting_state()
     {
-        return _front_material;
-    }
-
-    material& state::back_material()
-    {
-        return _back_material;
-    }
-
-    const material& state::back_material() const
-    {
-        return _back_material;
-    }
-
-    GLboolean& state::lighting_enabled()
-    {
-        return _lighting_enabled;
-    }
-
-    const GLboolean& state::lighting_enabled() const
-    {
-        return _lighting_enabled;
-    }
-
-    fixie::light& state::light(size_t idx)
-    {
-        return _lights[idx];
-    }
-
-    const fixie::light& state::light(size_t idx) const
-    {
-        return _lights[idx];
-    }
-
-    fixie::light_model& state::light_model()
-    {
-        return _light_model;
-    }
-
-    const fixie::light_model& state::light_model() const
-    {
-        return _light_model;
+        return _lighting_state;
     }
 
     fixie::clip_plane& state::clip_plane(size_t idx)
