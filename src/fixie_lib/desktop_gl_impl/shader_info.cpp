@@ -17,6 +17,7 @@ namespace fixie
             , _uses_clip_planes(caps.max_clip_planes())
             , _uses_lights(caps.max_lights())
             , _shade_model(state.shade_model())
+            , _two_sided_lighting(state.light_model().two_sided_lighting())
         {
             for (size_t i = 0; i < _texture_environments.size(); ++i)
             {
@@ -67,6 +68,11 @@ namespace fixie
             return _shade_model;
         }
 
+        GLboolean shader_info::two_sided_lighting() const
+        {
+            return _two_sided_lighting;
+        }
+
         bool operator==(const shader_info& a, const shader_info& b)
         {
             if (a.texture_unit_count() != b.texture_unit_count())
@@ -110,6 +116,11 @@ namespace fixie
                 return false;
             }
 
+            if (a.two_sided_lighting() != b.two_sided_lighting())
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -139,6 +150,7 @@ namespace std
         }
 
         fixie::hash_combine(seed, key.shade_model());
+        fixie::hash_combine(seed, key.two_sided_lighting());
 
         return seed;
     }
