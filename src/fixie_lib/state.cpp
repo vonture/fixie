@@ -14,7 +14,9 @@ namespace fixie
         , _rasterizer_state(get_default_rasterizer_state())
         , _front_material(get_default_material())
         , _back_material(get_default_material())
+        , _lighting_enabled(GL_FALSE)
         , _lights(caps.max_lights())
+        , _light_model(get_default_light_model())
         , _clip_planes(caps.max_clip_planes())
         , _active_texture_unit(0)
         , _matrix_mode(GL_MODELVIEW)
@@ -90,6 +92,16 @@ namespace fixie
     const material& state::back_material() const
     {
         return _back_material;
+    }
+
+    GLboolean& state::lighting_enabled()
+    {
+        return _lighting_enabled;
+    }
+
+    const GLboolean& state::lighting_enabled() const
+    {
+        return _lighting_enabled;
     }
 
     fixie::light& state::light(size_t idx)

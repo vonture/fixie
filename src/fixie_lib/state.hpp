@@ -46,6 +46,9 @@ namespace fixie
         material& back_material();
         const material& back_material() const;
 
+        GLboolean& lighting_enabled();
+        const GLboolean& lighting_enabled() const;
+
         fixie::light& light(size_t idx);
         const fixie::light& light(size_t idx) const;
 
@@ -123,6 +126,7 @@ namespace fixie
         material _front_material;
         material _back_material;
 
+        GLboolean _lighting_enabled;
         std::vector<fixie::light> _lights;
 
         fixie::light_model _light_model;

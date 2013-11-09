@@ -24,19 +24,20 @@ namespace fixie
             GLboolean uses_clip_plane(size_t n) const;
             size_t clip_plane_count() const;
 
+            GLboolean lighting_enabled() const;
+            GLboolean two_sided_lighting() const;
             GLboolean uses_light(size_t n) const;
             size_t light_count() const;
 
             GLenum shade_model() const;
 
-            GLboolean two_sided_lighting() const;
-
         private:
             std::vector<fixie::texture_environment> _texture_environments;
             std::vector<GLboolean> _uses_clip_planes;
+            GLboolean _lighting_enabled;
+            GLboolean _two_sided_lighting;
             std::vector<GLboolean> _uses_lights;
             GLenum _shade_model;
-            GLboolean _two_sided_lighting;
         };
 
         bool operator==(const shader_info& a, const shader_info& b);

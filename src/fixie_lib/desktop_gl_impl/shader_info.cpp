@@ -15,9 +15,10 @@ namespace fixie
         shader_info::shader_info(const state& state, const caps& caps)
             : _texture_environments(caps.max_texture_units())
             , _uses_clip_planes(caps.max_clip_planes())
+            , _lighting_enabled(state.lighting_enabled())
+            , _two_sided_lighting(state.light_model().two_sided_lighting())
             , _uses_lights(caps.max_lights())
             , _shade_model(state.shade_model())
-            , _two_sided_lighting(state.light_model().two_sided_lighting())
         {
             for (size_t i = 0; i < _texture_environments.size(); ++i)
             {
@@ -53,6 +54,16 @@ namespace fixie
             return _uses_clip_planes.size();
         }
 
+        GLboolean shader_info::lighting_enabled() const
+        {
+            return _lighting_enabled;
+        }
+
+        GLboolean shader_info::two_sided_lighting() const
+        {
+            return _two_sided_lighting;
+        }
+
         GLboolean shader_info::uses_light(size_t n) const
         {
             return _uses_lights[n];
@@ -66,11 +77,6 @@ namespace fixie
         GLenum shader_info::shade_model() const
         {
             return _shade_model;
-        }
-
-        GLboolean shader_info::two_sided_lighting() const
-        {
-            return _two_sided_lighting;
         }
 
         bool operator==(const shader_info& a, const shader_info& b)
@@ -99,24 +105,31 @@ namespace fixie
                 }
             }
 
-            if (a.light_count() != b.light_count())
+            if (a.lighting_enabled() != b.lighting_enabled())
             {
                 return false;
             }
-            for (size_t i = 0; i < a.light_count(); ++i)
+
+            if (a.lighting_enabled())
             {
-                if (a.uses_light(i) != b.uses_light(i))
+                if (a.two_sided_lighting() != b.two_sided_lighting())
                 {
                     return false;
+                }
+                if (a.light_count() != b.light_count())
+                {
+                    return false;
+                }
+                for (size_t i = 0; i < a.light_count(); ++i)
+                {
+                    if (a.uses_light(i) != b.uses_light(i))
+                    {
+                        return false;
+                    }
                 }
             }
 
             if (a.shade_model() != b.shade_model())
-            {
-                return false;
-            }
-
-            if (a.two_sided_lighting() != b.two_sided_lighting())
             {
                 return false;
             }
@@ -144,13 +157,17 @@ namespace std
             fixie::hash_combine(seed, key.uses_clip_plane(i));
         }
 
-        for (size_t i = 0; i < key.light_count(); ++i)
+        fixie::hash_combine(seed, key.lighting_enabled());
+        if (key.lighting_enabled())
         {
-            fixie::hash_combine(seed, key.uses_light(i));
+            fixie::hash_combine(seed, key.two_sided_lighting());
+            for (size_t i = 0; i < key.light_count(); ++i)
+            {
+                fixie::hash_combine(seed, key.uses_light(i));
+            }
         }
 
         fixie::hash_combine(seed, key.shade_model());
-        fixie::hash_combine(seed, key.two_sided_lighting());
 
         return seed;
     }

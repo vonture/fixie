@@ -69,6 +69,7 @@ int main(int argc, char** argv)
     sample_util::z(light.position) = -25.0f;
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
 
     while (!glfwWindowShouldClose(window))
     {
