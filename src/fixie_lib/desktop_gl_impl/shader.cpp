@@ -150,9 +150,9 @@ namespace fixie
             return format("sampler_%u", i);
         }
 
-        static std::string tab()
+        static std::string tab(size_t count)
         {
-            return "    ";
+            return std::string(count * 4, ' ');
         }
 
         static std::string generate_vertex_shader(const shader_info& info)
@@ -183,18 +183,18 @@ namespace fixie
             vertex_shader << std::endl;
             vertex_shader << "void main(void)" << std::endl;
             vertex_shader << "{" << std::endl;
-            vertex_shader << tab() << vertex_name(vertex_output) << " = " << model_view_transform_name() << " * " << vertex_name(vertex_input) << ";" << std::endl;
-            vertex_shader << tab() << normal_name(vertex_output) << " = mat3(" << model_view_transform_name() << ") * " << normal_name(vertex_input) << ";" << std::endl;
-            vertex_shader << tab() << color_name(vertex_output) << " = " << color_name(vertex_input) << ";" << std::endl;
+            vertex_shader << tab(1) << vertex_name(vertex_output) << " = " << model_view_transform_name() << " * " << vertex_name(vertex_input) << ";" << std::endl;
+            vertex_shader << tab(1) << normal_name(vertex_output) << " = mat3(" << model_view_transform_name() << ") * " << normal_name(vertex_input) << ";" << std::endl;
+            vertex_shader << tab(1) << color_name(vertex_output) << " = " << color_name(vertex_input) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 if (info.texture_environment(i).enabled())
                 {
-                    vertex_shader << tab() << tex_coord_name(vertex_output, i) << " = " << tex_coord_transform_name(i) << " * " << tex_coord_name(vertex_input, i) << ";" << std::endl;
+                    vertex_shader << tab(1) << tex_coord_name(vertex_output, i) << " = " << tex_coord_transform_name(i) << " * " << tex_coord_name(vertex_input, i) << ";" << std::endl;
                 }
             }
             vertex_shader << std::endl;
-            vertex_shader << tab() << "gl_Position = (" << projection_transform_name() << " * "<< model_view_transform_name() << ") * " << vertex_name(vertex_input) << ";" << std::endl;
+            vertex_shader << tab(1) << "gl_Position = (" << projection_transform_name() << " * "<< model_view_transform_name() << ") * " << vertex_name(vertex_input) << ";" << std::endl;
             vertex_shader << "}" << std::endl;
 
             return vertex_shader.str();
@@ -225,22 +225,22 @@ namespace fixie
             fragment_shader << "{" << std::endl;
 
             const std::string local_output_color_name = "result_color";
-            fragment_shader << tab() << "vec4 " << local_output_color_name << " = " << color_name(fragment_input) << ";" << std::endl;
+            fragment_shader << tab(1) << "vec4 " << local_output_color_name << " = " << color_name(fragment_input) << ";" << std::endl;
 
             const std::string texture_result_name = "texture_result";
-            fragment_shader << tab() << "vec4 " << texture_result_name << " = vec4(1.0, 1.0, 1.0, 1.0);" << std::endl;
+            fragment_shader << tab(1) << "vec4 " << texture_result_name << " = vec4(1.0, 1.0, 1.0, 1.0);" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 if (info.texture_environment(i).enabled())
                 {
                     const std::string texture_sample_name = format("texture_sample_%u", i);
-                    fragment_shader << tab() << "vec4 " << texture_sample_name << " = texture(" << sampler_name(i) << ", " << tex_coord_name(fragment_input, i) << ".xy);" << std::endl;
-                    fragment_shader << tab() << texture_result_name << " *= " << texture_sample_name << ";" << std::endl;
+                    fragment_shader << tab(1) << "vec4 " << texture_sample_name << " = texture(" << sampler_name(i) << ", " << tex_coord_name(fragment_input, i) << ".xy);" << std::endl;
+                    fragment_shader << tab(1) << texture_result_name << " *= " << texture_sample_name << ";" << std::endl;
                 }
             }
-            fragment_shader << tab() << local_output_color_name << " *= " << texture_result_name << ";" << std::endl;
+            fragment_shader << tab(1) << local_output_color_name << " *= " << texture_result_name << ";" << std::endl;
 
-            fragment_shader << tab() << color_name(fragment_output) << " = " << local_output_color_name << ";" << std::endl;
+            fragment_shader << tab(1) << color_name(fragment_output) << " = " << local_output_color_name << ";" << std::endl;
             fragment_shader << "}" << std::endl;
 
             return fragment_shader.str();
