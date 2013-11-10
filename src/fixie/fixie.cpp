@@ -12,6 +12,7 @@
 #include "fixie_lib/exceptions.hpp"
 #include "fixie_lib/util.hpp"
 #include "fixie_lib/math_util.hpp"
+#include "fixie_lib/enum_names.hpp"
 
 namespace fixie
 {
@@ -27,7 +28,7 @@ namespace fixie
             case GL_FRONT:          materials.push_back(&ctx->state().lighting_state().front_material());                                                                      break;
             case GL_BACK:                                                                                 materials.push_back(&ctx->state().lighting_state().back_material()); break;
             case GL_FRONT_AND_BACK: materials.push_back(&ctx->state().lighting_state().front_material()); materials.push_back(&ctx->state().lighting_state().back_material()); break;
-            default:                throw invalid_enum_error("unknown face name.");
+            default:                throw invalid_enum_error(format("invalid face name, %s.", get_gl_enum_name(face).c_str()));
             }
 
             switch (pname)
@@ -91,7 +92,7 @@ namespace fixie
             case GL_SHININESS:
                 if (params.as_float(0) < 0.0f || params.as_float(0) > 128.0f)
                 {
-                    throw invalid_value_error("shininess must be in the range [0, 128.0].");
+                    throw invalid_value_error(format("shininess must be in the range [0, 128.0], %g provided.", params.as_float(0)));
                 }
                 for (auto mat = begin(materials); mat != end(materials); mat++)
                 {
@@ -100,7 +101,7 @@ namespace fixie
                 break;
 
             default:
-                throw invalid_enum_error("unknown parameter name.");
+                throw invalid_enum_error(format("invalid material parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -126,7 +127,7 @@ namespace fixie
             GLsizei max_lights = ctx->caps().max_lights();
             if (l < GL_LIGHT0 || static_cast<GLsizei>(l - GL_LIGHT0) > max_lights)
             {
-                throw invalid_enum_error(format("invalid light, must be between GL_LIGHT0 and GL_LIGHT%i.", max_lights - 1));
+                throw invalid_enum_error(format("invalid light, must be between GL_LIGHT0 and GL_LIGHT%i, %s provided.", max_lights - 1, get_gl_enum_name(pname).c_str()));
             }
             light& light = ctx->state().lighting_state().light(l - GL_LIGHT0);
 
@@ -175,7 +176,7 @@ namespace fixie
             case GL_SPOT_EXPONENT:
                 if (params.as_float(0) < 0.0f || params.as_float(0) > 128.0f)
                 {
-                    throw invalid_value_error("spot light exponent must be in the range [0, 128.0].");
+                    throw invalid_value_error(format("spot light exponent must be in the range [0, 128.0], %g provided.", params.as_float(0)));
                 }
                 light.spot_exponent() = params.as_float(0);
                 break;
@@ -183,7 +184,7 @@ namespace fixie
             case GL_SPOT_CUTOFF:
                 if ((params.as_float(0) < 0.0f || params.as_float(0) > 128.0f) && params.as_float(0) != 180.0f)
                 {
-                    throw invalid_value_error("spot light cutoff angle must be in the range [0, 90.0] or 180.0.");
+                    throw invalid_value_error(format("spot light cutoff angle must be in the range [0, 90.0] or 180.0, %g provided.", params.as_float(0)));
                 }
                 light.spot_cutoff() = params.as_float(0);
                 break;
@@ -191,7 +192,7 @@ namespace fixie
             case GL_CONSTANT_ATTENUATION:
                 if (params.as_float(0) < 0.0f)
                 {
-                    throw invalid_value_error("spot light constant attenuation must be at least 0.0.");
+                    throw invalid_value_error(format("spot light constant attenuation must be at least 0.0, %g provided.", params.as_float(0)));
                 }
                 light.constant_attenuation() = params.as_float(0);
                 break;
@@ -199,7 +200,7 @@ namespace fixie
             case GL_LINEAR_ATTENUATION:
                 if (params.as_float(0) < 0.0f)
                 {
-                    throw invalid_value_error("spot light linear attenuation must be at least 0.0.");
+                    throw invalid_value_error(format("spot light linear attenuation must be at least 0.0, %g provided.", params.as_float(0)));
                 }
                 light.linear_attenuation() = params.as_float(0);
                 break;
@@ -207,13 +208,13 @@ namespace fixie
             case GL_QUADRATIC_ATTENUATION:
                 if (params.as_float(0) < 0.0f)
                 {
-                    throw invalid_value_error("spot light quadratic attenuation must be at least 0.0.");
+                    throw invalid_value_error(format("spot light quadratic attenuation must be at least 0.0, %g provided.", params.as_float(0)));
                 }
                 light.quadratic_attenuation() = params.as_float(0);
                 break;
 
             default:
-                throw invalid_enum_error("unknown parameter name.");
+                throw invalid_enum_error(format("invalid light parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -251,7 +252,7 @@ namespace fixie
                 break;
 
             default:
-                throw invalid_enum_error("unknown parameter name.");
+                throw invalid_enum_error(format("invalid light model parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -309,7 +310,7 @@ namespace fixie
                 break;
 
             default:
-                throw invalid_enum_error("unknown texture environment parameter name.");
+                throw invalid_enum_error(format("invalid texture environment parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
 
         }
@@ -362,7 +363,7 @@ namespace fixie
                 if (!vector_call)
                 {
                     throw invalid_enum_error("multi-valued texture environment parameter name, GL_TEXTURE_ENV_COLOR, passed to "
-                        "non-vector  texture environment function.");
+                                             "non-vector texture environment function.");
                 }
                 environment.color() = color(static_cast<GLfloat>(params[0]), static_cast<GLfloat>(params[1]), static_cast<GLfloat>(params[2]),
                                             static_cast<GLfloat>(params[3]));
@@ -382,7 +383,7 @@ namespace fixie
                 case GL_DOT3_RGBA:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment rgb combine function.");
+                    throw invalid_value_error(format("invalid texture environment rgb combine function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.combine_rgb() = params[0];
                 break;
@@ -399,7 +400,7 @@ namespace fixie
                 case GL_SUBTRACT:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment alpha combine function.");
+                    throw invalid_value_error(format("invalid texture environment alpha combine function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.combine_alpha() = params[0];
                 break;
@@ -413,7 +414,7 @@ namespace fixie
                 case GL_PREVIOUS:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment source 0 rgb function.");
+                    throw invalid_value_error(format("invalid texture environment source 0 rgb function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.source0_rgb() = params[0];
                 break;
@@ -427,7 +428,7 @@ namespace fixie
                 case GL_PREVIOUS:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment source 1 rgb function.");
+                    throw invalid_value_error(format("invalid texture environment source 1 rgb function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.source1_rgb() = params[0];
                 break;
@@ -441,7 +442,7 @@ namespace fixie
                 case GL_PREVIOUS:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment source 2 rgb function.");
+                    throw invalid_value_error(format("invalid texture environment source 2 rgb function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.source2_rgb() = params[0];
                 break;
@@ -455,7 +456,7 @@ namespace fixie
                 case GL_PREVIOUS:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment source 0 alpha function.");
+                    throw invalid_value_error(format("invalid texture environment source 0 alpha function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.source0_alpha() = params[0];
                 break;
@@ -469,7 +470,7 @@ namespace fixie
                 case GL_PREVIOUS:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment source 1 alpha function.");
+                    throw invalid_value_error(format("invalid texture environment source 1 alpha function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.source1_alpha() = params[0];
                 break;
@@ -483,7 +484,7 @@ namespace fixie
                 case GL_PREVIOUS:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment source 2 alpha function.");
+                    throw invalid_value_error(format("invalid texture environment source 2 alpha function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.source2_alpha() = params[0];
                 break;
@@ -497,7 +498,7 @@ namespace fixie
                 case GL_ONE_MINUS_SRC_ALPHA:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment operand 0 rgb function.");
+                    throw invalid_value_error(format("invalid texture environment operand 0 rgb function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.operand0_rgb() = params[0];
                 break;
@@ -511,7 +512,7 @@ namespace fixie
                 case GL_ONE_MINUS_SRC_ALPHA:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment operand 1 rgb function.");
+                    throw invalid_value_error(format("invalid texture environment operand 1 rgb function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.operand1_rgb() = params[0];
                 break;
@@ -525,7 +526,7 @@ namespace fixie
                 case GL_ONE_MINUS_SRC_ALPHA:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment operand 2 rgb unction.");
+                    throw invalid_value_error(format("invalid texture environment operand 2 rgb unction, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.operand2_rgb() = params[0];
                 break;
@@ -537,7 +538,7 @@ namespace fixie
                 case GL_ONE_MINUS_SRC_ALPHA:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment operand 0 alpha function.");
+                    throw invalid_value_error(format("invalid texture environment operand 0 alpha function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.operand0_alpha() = params[0];
                 break;
@@ -549,7 +550,7 @@ namespace fixie
                 case GL_ONE_MINUS_SRC_ALPHA:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment operand 1 alpha function.");
+                    throw invalid_value_error(format("invalid texture environment operand 1 alpha function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.operand1_alpha() = params[0];
                 break;
@@ -561,7 +562,7 @@ namespace fixie
                 case GL_ONE_MINUS_SRC_ALPHA:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture environment operand 2 alpha unction.");
+                    throw invalid_value_error(format("invalid texture environment operand 2 alpha function, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
                 environment.operand2_alpha() = params[0];
                 break;
@@ -583,7 +584,7 @@ namespace fixie
                 break;
 
             default:
-                throw invalid_enum_error("unknown texture environment parameter name.");
+                throw invalid_enum_error(format("invalid texture environment parameter name, %s", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -608,7 +609,7 @@ namespace fixie
 
             if (target != GL_TEXTURE_2D)
             {
-                throw invalid_enum_error("texture parameter target must be GL_TEXTURE_2D.");
+                throw invalid_enum_error(format("texture parameter target must be GL_TEXTURE_2D, %s provided.", get_gl_enum_name(target).c_str()));
             }
 
             std::shared_ptr<texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
@@ -622,7 +623,7 @@ namespace fixie
                 case GL_CLAMP_TO_EDGE:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture wrap s value.");
+                    throw invalid_value_error(format("invalid texture wrap s, %s.", get_gl_enum_name(static_cast<GLenum>(params.as_float(0))).c_str()));
                 }
 
                 if (texture)
@@ -638,7 +639,7 @@ namespace fixie
                 case GL_CLAMP_TO_EDGE:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture wrap t value.");
+                    throw invalid_value_error(format("invalid texture wrap t, %s.", get_gl_enum_name(static_cast<GLenum>(params.as_float(0))).c_str()));
                 }
 
                 if (texture)
@@ -658,7 +659,7 @@ namespace fixie
                 case GL_LINEAR:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture min filter value.");
+                    throw invalid_value_error(format("invalid texture min filter, %s.", get_gl_enum_name(static_cast<GLenum>(params.as_float(0))).c_str()));
                 }
 
                 if (texture)
@@ -674,7 +675,7 @@ namespace fixie
                 case GL_LINEAR:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture min filter value.");
+                    throw invalid_value_error(format("invalid texture mag filter, %s.", get_gl_enum_name(static_cast<GLenum>(params.as_float(0))).c_str()));
                 }
 
                 if (texture)
@@ -691,7 +692,7 @@ namespace fixie
                 break;
 
             default:
-                throw invalid_enum_error("unknown texture parameter name.");
+                throw invalid_enum_error(format("invalid texture parameter name, %s", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -716,7 +717,7 @@ namespace fixie
 
             if (target != GL_TEXTURE_2D)
             {
-                throw invalid_enum_error("texture parameter target target must be GL_TEXTURE_2D.");
+                throw invalid_enum_error(format("texture parameter target must be GL_TEXTURE_2D, %s provided.", get_gl_enum_name(target).c_str()));
             }
 
             std::shared_ptr<texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
@@ -730,7 +731,7 @@ namespace fixie
                 case GL_CLAMP_TO_EDGE:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture wrap s value.");
+                    throw invalid_value_error(format("invalid texture wrap s, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
 
                 if (texture)
@@ -746,7 +747,7 @@ namespace fixie
                 case GL_CLAMP_TO_EDGE:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture wrap t value.");
+                    throw invalid_value_error(format("invalid texture wrap t, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
 
                 if (texture)
@@ -766,7 +767,7 @@ namespace fixie
                 case GL_LINEAR:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture min filter value.");
+                    throw invalid_value_error(format("invalid texture min filter, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
 
                 if (texture)
@@ -782,7 +783,7 @@ namespace fixie
                 case GL_LINEAR:
                     break;
                 default:
-                    throw invalid_value_error("unknown texture min filter value.");
+                    throw invalid_value_error(format("invalid texture mag filter, %s.", get_gl_enum_name(params[0]).c_str()));
                 }
 
                 if (texture)
@@ -794,12 +795,12 @@ namespace fixie
             case GL_GENERATE_MIPMAP:
                 if (texture)
                 {
-                    texture->auto_generate_mipmap() = (params[0] != GL_FALSE);
+                    texture->auto_generate_mipmap() = (params[0] ? GL_TRUE : GL_FALSE);
                 }
                 break;
 
             default:
-                throw invalid_enum_error("unknown texture parameter name.");
+                throw invalid_enum_error(format("invalid texture parameter name, %s", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -825,7 +826,7 @@ namespace fixie
             GLsizei max_clip_planes = ctx->caps().max_clip_planes();
             if (p < GL_CLIP_PLANE0 || static_cast<GLsizei>(p - GL_CLIP_PLANE0) > max_clip_planes)
             {
-                throw invalid_enum_error(format("invalid clip plane, must be between GL_CLIP_PLANE0 and GL_CLIP_PLANE%i.", max_clip_planes - 1));
+                throw invalid_enum_error(format("invalid clip plane, must be between GL_CLIP_PLANE0 and GL_CLIP_PLANE%i, %s provided.", max_clip_planes - 1, get_gl_enum_name(p).c_str()));
             }
 
             ctx->state().clip_plane(p - GL_CLIP_PLANE0).equation() = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
@@ -867,7 +868,7 @@ namespace fixie
 
             default:
                 UNREACHABLE();
-                throw state_error("unknown matrix mode.");
+                throw state_error(format("invalid matrix mode, %s.", get_gl_enum_name(ctx->state().matrix_mode()).c_str()));
             }
 
             if (multiply)
@@ -922,7 +923,7 @@ namespace fixie
         case GL_SCISSOR_TEST: return ctx->state().rasterizer_state().scissor_test();
         case GL_DEPTH_TEST:   return ctx->state().depth_stencil_state().depth_test();
         case GL_LIGHTING:     return ctx->state().lighting_state().enabled();
-        default: throw invalid_enum_error("unknown target.");
+        default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
         }
     }
 
@@ -939,7 +940,7 @@ namespace fixie
             case GL_NORMAL_ARRAY:        attribute = &ctx->state().normal_attribute();                                       break;
             case GL_COLOR_ARRAY:         attribute = &ctx->state().color_attribute();                                        break;
             case GL_TEXTURE_COORD_ARRAY: attribute = &ctx->state().texcoord_attribute(ctx->state().active_client_texture()); break;
-            default: throw invalid_enum_error("unknown array.");
+            default: throw invalid_enum_error(format("invalid client state, %s.", get_gl_enum_name(array).c_str()));
             }
 
             attribute->enabled() = enabled ? GL_TRUE : GL_FALSE;
@@ -1263,7 +1264,8 @@ void FIXIE_APIENTRY glMultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLflo
         GLsizei max_texture_units = ctx->caps().max_texture_units();
         if (target < GL_TEXTURE0 || static_cast<GLsizei>(target - GL_TEXTURE0) > max_texture_units)
         {
-            throw fixie::invalid_enum_error(fixie::format("invalid texture target, must be between GL_TEXTURE0 and GL_TEXTURE%i.", max_texture_units - 1));
+            throw fixie::invalid_enum_error(fixie::format("invalid texture target, must be between GL_TEXTURE0 and GL_TEXTURE%i, %s provided.",
+                                                          max_texture_units - 1, fixie::get_gl_enum_name(target).c_str()));
         }
 
         fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(target - GL_TEXTURE0);
@@ -1401,7 +1403,8 @@ void FIXIE_APIENTRY glActiveTexture(GLenum texture)
         GLsizei max_texture_units = ctx->caps().max_texture_units();
         if (texture < GL_TEXTURE0 || static_cast<GLsizei>(texture - GL_TEXTURE0) > max_texture_units)
         {
-            throw fixie::invalid_enum_error(fixie::format("invalid texture unit, must be between GL_TEXTURE0 and GL_TEXTURE%i.", max_texture_units - 1));
+            throw fixie::invalid_enum_error(fixie::format("invalid texture target, must be between GL_TEXTURE0 and GL_TEXTURE%i, %s provided.",
+                                                          max_texture_units - 1, fixie::get_gl_enum_name(texture).c_str()));
         }
 
         ctx->state().active_texture_unit() = (texture - GL_TEXTURE0);
@@ -1516,7 +1519,7 @@ void FIXIE_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid *d
              break;
 
          default:
-             throw fixie::invalid_enum_error("unknown buffer target.");
+             throw fixie::invalid_enum_error(fixie::format("invalid buffer target, %s.", fixie::get_gl_enum_name(target).c_str()));
          }
 
          switch (usage)
@@ -1526,7 +1529,7 @@ void FIXIE_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid *d
              break;
 
          default:
-             throw fixie::invalid_enum_error("unknown buffer usage.");
+             throw fixie::invalid_enum_error(fixie::format("invalid buffer usage, %s.", fixie::get_gl_enum_name(usage).c_str()));
          }
 
          if (size < 0)
@@ -1572,7 +1575,7 @@ void FIXIE_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr s
             break;
 
         default:
-            throw fixie::invalid_enum_error("unknown buffer target.");
+            throw fixie::invalid_enum_error(fixie::format("invalid buffer target, %s.", fixie::get_gl_enum_name(target).c_str()));
         }
 
         if (size < 0)
@@ -1614,8 +1617,8 @@ void FIXIE_APIENTRY glClear(GLbitfield mask)
 
         if ((mask & ~(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)) != 0)
         {
-            throw fixie::invalid_value_error("clear mask must be a combination of GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT "
-                                             "and GL_STENCIL_BUFFER_BIT values.");
+            throw fixie::invalid_value_error(fixie::format("clear mask must be a combination of GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT "
+                                                           "and GL_STENCIL_BUFFER_BIT values, %0x%X provided.", mask));
         }
 
         ctx->clear(mask);
@@ -1707,7 +1710,8 @@ void FIXIE_APIENTRY glClientActiveTexture(GLenum texture)
         GLsizei max_texture_units = ctx->caps().max_texture_units();
         if (texture < GL_TEXTURE0 || static_cast<GLsizei>(texture - GL_TEXTURE0) > max_texture_units)
         {
-            throw fixie::invalid_enum_error(fixie::format("invalid texture unit, must be between GL_TEXTURE0 and GL_TEXTURE%i.", max_texture_units - 1));
+            throw fixie::invalid_enum_error(fixie::format("invalid texture target, must be between GL_TEXTURE0 and GL_TEXTURE%i, %s provided.",
+                                                          max_texture_units - 1, fixie::get_gl_enum_name(texture).c_str()));
         }
 
         ctx->state().active_client_texture() = texture - GL_TEXTURE0;
@@ -1867,7 +1871,7 @@ void FIXIE_APIENTRY glDeleteBuffers(GLsizei n, const GLuint *buffers)
 
         if (n < 0)
         {
-            throw fixie::invalid_value_error(fixie::format("invalid number of buffers given (%i), at least 0 required.", n));
+            throw fixie::invalid_value_error(fixie::format("invalid number of buffers, at least 0 required, %i provided.", n));
         }
 
         for (GLsizei i = 0; i < n; ++i)
@@ -1897,7 +1901,7 @@ void FIXIE_APIENTRY glDeleteTextures(GLsizei n, const GLuint *textures)
 
         if (n < 0)
         {
-            throw fixie::invalid_value_error(fixie::format("invalid number of textures given (%i), at least 0 required.", n));
+            throw fixie::invalid_value_error(fixie::format("invalid number of textures, at least 0 required, %i provided.", n));
         }
 
         for (GLsizei i = 0; i < n; ++i)
@@ -1994,7 +1998,7 @@ void FIXIE_APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
         case GL_TRIANGLES:
             break;
         default:
-            throw fixie::invalid_enum_error("unknown draw mode.");
+            throw fixie::invalid_enum_error(fixie::format("invalid draw mode, %s", fixie::get_gl_enum_name(mode).c_str()));
         }
 
         if (first < 0)
@@ -2040,7 +2044,7 @@ void FIXIE_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, cons
         case GL_TRIANGLES:
             break;
         default:
-            throw fixie::invalid_enum_error("unknown draw mode.");
+            throw fixie::invalid_enum_error(fixie::format("invalid draw mode, %s", fixie::get_gl_enum_name(mode).c_str()));
         }
 
         if (count < 0)
@@ -2190,7 +2194,7 @@ void FIXIE_APIENTRY glGenBuffers(GLsizei n, GLuint *buffers)
 
         if (n < 0)
         {
-            throw fixie::invalid_value_error(fixie::format("invalid number of buffers given (%i), at least 0 required.", n));
+            throw fixie::invalid_value_error(fixie::format("invalid number of buffers, at least 0 required, %i provided.", n));
         }
 
         for (GLsizei i = 0; i < n; ++i)
@@ -2247,7 +2251,7 @@ void FIXIE_APIENTRY glGenTextures(GLsizei n, GLuint *textures)
 
         if (n < 0)
         {
-            throw fixie::invalid_value_error(fixie::format("invalid number of textures given (%i), at least 0 required.", n));
+            throw fixie::invalid_value_error(fixie::format("invalid number of textures, at least 0 required, %i provided.", n));
         }
 
         for (GLsizei i = 0; i < n; ++i)
@@ -2355,7 +2359,7 @@ const GLubyte * FIXIE_APIENTRY glGetString(GLenum name)
         case GL_RENDERER:   return reinterpret_cast<const GLubyte*>(fixie::make_static(ctx->renderer_string()));
         case GL_VERSION:    return reinterpret_cast<const GLubyte*>(fixie::make_static(ctx->version_string()));
         case GL_EXTENSIONS: return reinterpret_cast<const GLubyte*>(fixie::make_static(ctx->extension_string()));
-        default:            throw fixie::invalid_enum_error("unknown string name.");
+        default:            throw fixie::invalid_enum_error(fixie::format("invalid string name, %s.", fixie::get_gl_enum_name(name).c_str()));
         }
     }
     catch (fixie::gl_error e)
@@ -2537,7 +2541,7 @@ void FIXIE_APIENTRY glMatrixMode(GLenum mode)
             break;
 
         default:
-            throw fixie::invalid_enum_error("unknown matrix mode.");
+            throw fixie::invalid_enum_error(fixie::format("invalid matrix mode, %s.", fixie::get_gl_enum_name(mode).c_str()));
         }
 
         ctx->state().matrix_mode() = mode;
@@ -2570,7 +2574,8 @@ void FIXIE_APIENTRY glMultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfix
         GLsizei max_texture_units = ctx->caps().max_texture_units();
         if (target < GL_TEXTURE0 || static_cast<GLsizei>(target - GL_TEXTURE0) > max_texture_units)
         {
-            throw fixie::invalid_enum_error(fixie::format("invalid texture target, must be between GL_TEXTURE0 and GL_TEXTURE%i.", max_texture_units - 1));
+            throw fixie::invalid_enum_error(fixie::format("invalid texture target, must be between GL_TEXTURE0 and GL_TEXTURE%i, %s provided.",
+                                                          max_texture_units - 1, fixie::get_gl_enum_name(target).c_str()));
         }
 
         fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(target - GL_TEXTURE0);
@@ -2627,7 +2632,7 @@ void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *p
         case GL_FLOAT:
             break;
         default:
-            throw fixie::invalid_enum_error("unknown normal pointer type.");
+            throw fixie::invalid_enum_error(fixie::format("invalid normal pointer type, %s.", fixie::get_gl_enum_name(type).c_str()));
         }
 
         if (stride < 0)
@@ -2795,7 +2800,7 @@ void FIXIE_APIENTRY glPushMatrix(void)
 
         if (stack->size() >= static_cast<size_t>(max_stack_depth))
         {
-            throw fixie::stack_overflow_error(fixie::format("the current matrix stack is at the maximum stack size (%i).", max_stack_depth));
+            throw fixie::stack_overflow_error(fixie::format("the current matrix stack is at the maximum stack size, %i.", max_stack_depth));
         }
 
         stack->push();
@@ -2912,7 +2917,7 @@ void FIXIE_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, c
         case GL_FLOAT:
             break;
         default:
-            throw fixie::invalid_enum_error("unknown texcoord pointer type.");
+            throw fixie::invalid_enum_error(fixie::format("invalid texcoord pointer type, %s.", fixie::get_gl_enum_name(type).c_str()));
         }
 
         if (stride < 0)
@@ -2967,12 +2972,9 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        switch (target)
+        if (target != GL_TEXTURE_2D)
         {
-        case GL_TEXTURE_2D:
-            break;
-        default:
-            throw fixie::invalid_enum_error("unkown texture target.");
+            throw fixie::invalid_enum_error(fixie::format("texture target must be GL_TEXTURE_2D, %s provided.", fixie::get_gl_enum_name(target).c_str()));
         }
 
         std::set<GLenum> valid_types;
@@ -2985,7 +2987,7 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
         case GL_RGBA:            valid_types.insert(GL_UNSIGNED_BYTE); valid_types.insert(GL_UNSIGNED_SHORT_4_4_4_4); valid_types.insert(GL_UNSIGNED_SHORT_5_5_5_1); break;
             break;
         default:
-            throw fixie::invalid_value_error("unknown internal format.");
+            throw fixie::invalid_value_error(fixie::format("invalid internal format, %s", fixie::get_gl_enum_name(internalformat).c_str()));
         }
 
         GLsizei max_texture_size = ctx->caps().max_texture_size();
@@ -3015,7 +3017,7 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
 
         if (valid_types.find(type) == end(valid_types))
         {
-            throw fixie::invalid_value_error("invalid type.");
+            throw fixie::invalid_value_error(fixie::format("invalid type, %s.", fixie::get_gl_enum_name(internalformat).c_str()));
         }
 
         std::shared_ptr<fixie::texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
@@ -3092,7 +3094,7 @@ void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, con
         case GL_FLOAT:
             break;
         default:
-            throw fixie::invalid_enum_error("unknown vertex pointer type.");
+            throw fixie::invalid_enum_error(fixie::format("invalid vertex pointer type, %s.", fixie::get_gl_enum_name(type).c_str()));
         }
 
         if (stride < 0)
