@@ -4,25 +4,7 @@
 #include <sstream>
 
 namespace sample_util
-    {
-    static bool begins_with(const std::string& input, const std::string& search_string)
-    {
-        if (input.size() < search_string.size())
-        {
-            return false;
-        }
-
-        for (size_t i = 0; i < search_string.size(); ++i)
-        {
-            if (input[i] != search_string[i])
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
+{
     template <typename vertex_type, typename output_iterator>
     static void copy_face_elements(const std::vector<vertex_type>& source, const std::vector<size_t>& indices, output_iterator output)
     {
@@ -153,23 +135,22 @@ namespace sample_util
         return result;
     }
 
-
-    static const std::string ambient_identifier = "Ka";
-    static const std::string diffuse_identifier = "Kd";
-    static const std::string specular_color_identifier = "Ks";
-    static const std::string specular_coefficient_identifier = "Ns";
-    static const std::string disolved_identifier = "d";
-    static const std::string transparency_identifier = "Tr";
-    static const std::string ambient_map_identifier = "map_Ka";
-    static const std::string diffuse_map_identifier = "map_Kd";
-    static const std::string specular_color_map_identifier = "map_Ks";
-    static const std::string alpha_map_identifier = "map_d";
-    static const std::string bump_identifier = "bump";
-    static const std::string bump_map_identifier = "map_bump";
-    static const std::string displacement_map_identifier = "disp";
-
     material load_material_from_file(const std::string& path)
     {
+        static const std::string ambient_identifier = "Ka";
+        static const std::string diffuse_identifier = "Kd";
+        static const std::string specular_color_identifier = "Ks";
+        static const std::string specular_coefficient_identifier = "Ns";
+        static const std::string disolved_identifier = "d";
+        static const std::string transparency_identifier = "Tr";
+        static const std::string ambient_map_identifier = "map_Ka";
+        static const std::string diffuse_map_identifier = "map_Kd";
+        static const std::string specular_color_map_identifier = "map_Ks";
+        static const std::string alpha_map_identifier = "map_d";
+        static const std::string bump_identifier = "bump";
+        static const std::string bump_map_identifier = "map_bump";
+        static const std::string displacement_map_identifier = "disp";
+
         material result;
 
         std::ifstream input_stream(path);
