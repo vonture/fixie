@@ -56,6 +56,8 @@ namespace fixie
 
             void sync_textures(const state& state);
 
+            void sync_draw_state(const state& state);
+
             static void initialize_caps(std::shared_ptr<const gl_functions> functions, fixie::caps& caps);
         };
     }

@@ -108,26 +108,14 @@ namespace fixie
 
         void context::draw_arrays(const state& state, GLenum mode, GLint first, GLsizei count)
         {
-            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps).lock();
-            shader->sync_state(state);
-            sync_vertex_attributes(state, shader);
-            sync_textures(state);
-
-            sync_depth_stencil_state(state.depth_stencil_state());
-            sync_rasterizer_state(state.rasterizer_state());
+            sync_draw_state(state);
 
             gl_call(_functions, gl_draw_arrays, mode, first, count);
         }
 
         void context::draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices)
         {
-            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps).lock();
-            shader->sync_state(state);
-            sync_vertex_attributes(state, shader);
-            sync_textures(state);
-
-            sync_depth_stencil_state(state.depth_stencil_state());
-            sync_rasterizer_state(state.rasterizer_state());
+            sync_draw_state(state);
 
             gl_call(_functions, gl_draw_elements, mode, count, type, indices);
         }
@@ -322,6 +310,17 @@ namespace fixie
                     }
                 }
             }
+        }
+
+        void context::sync_draw_state(const state& state)
+        {
+            std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps).lock();
+            shader->sync_state(state);
+            sync_vertex_attributes(state, shader);
+            sync_textures(state);
+
+            sync_depth_stencil_state(state.depth_stencil_state());
+            sync_rasterizer_state(state.rasterizer_state());
         }
 
         void context::initialize_caps(std::shared_ptr<const gl_functions> functions, fixie::caps& caps)
