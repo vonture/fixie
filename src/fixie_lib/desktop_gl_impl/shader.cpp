@@ -110,6 +110,37 @@ namespace fixie
             }
         }
 
+        static std::string type_qualifier_name(shader_type type)
+        {
+            if (shader_version() >= 130)
+            {
+                switch(type)
+                {
+                case vertex_input:      return "in";
+                case vertex_output:     return "out";
+                case fragment_input:    return "in";
+                case fragment_output:   return "out";
+                default: UNREACHABLE(); return "";
+                }
+            }
+            else
+            {
+                switch(type)
+                {
+                case vertex_input:      return "attribute";
+                case vertex_output:     return "varying";
+                case fragment_input:    return "varying";
+                case fragment_output:   return "";
+                default: UNREACHABLE(); return "";
+                }
+            }
+        }
+
+        static std::string uniform_qualifier_name()
+        {
+            return "uniform";
+        }
+
         static std::string vertex_name(shader_type type)
         {
             return format("position_%s", shader_type_name(type).c_str());
@@ -187,47 +218,47 @@ namespace fixie
 
         static std::string light_diffuse_color_name(size_t i)
         {
-            return format("light_%u_diffuse_color");
+            return format("light_%u_diffuse_color", i);
         }
 
         static std::string light_specular_color_name(size_t i)
         {
-            return format("light_%u_specular_color");
+            return format("light_%u_specular_color", i);
         }
 
         static std::string light_position_name(size_t i)
         {
-            return format("light_%u_position");
+            return format("light_%u_position", i);
         }
 
         static std::string light_direction_name(size_t i)
         {
-            return format("light_%u_direction");
+            return format("light_%u_direction", i);
         }
 
         static std::string light_spotlight_exponent_name(size_t i)
         {
-            return format("light_%u_spotlight_exponent");
+            return format("light_%u_spotlight_exponent", i);
         }
 
         static std::string light_spotlight_cutoff_name(size_t i)
         {
-            return format("light_%u_spotlight_cutoff");
+            return format("light_%u_spotlight_cutoff", i);
         }
 
         static std::string light_constant_attenuation_name(size_t i)
         {
-            return format("light_%u_constant_attenuation");
+            return format("light_%u_constant_attenuation", i);
         }
 
         static std::string light_linear_attenuation_name(size_t i)
         {
-            return format("light_%u_linear_attenuation");
+            return format("light_%u_linear_attenuation", i);
         }
 
         static std::string light_quadratic_attenuation_name(size_t i)
         {
-            return format("light_%u_quadratic_attenuation");
+            return format("light_%u_quadratic_attenuation", i);
         }
 
         static std::string tab(size_t count)
@@ -242,21 +273,21 @@ namespace fixie
             vertex_shader << "#version " << shader_version() << std::endl;
             vertex_shader << std::endl;
 
-            vertex_shader << "in vec4 " << vertex_name(vertex_input) << ";" << std::endl;
-            vertex_shader << "out vec4 " << vertex_name(vertex_output) << ";" << std::endl;
-            vertex_shader << "uniform mat4 " << model_view_transform_name() << ";" << std::endl;
-            vertex_shader << "uniform mat4 " << projection_transform_name() << ";" << std::endl;
-            vertex_shader << "in vec3 " << normal_name(vertex_input) << ";" << std::endl;
-            vertex_shader << "out vec3 " << normal_name(vertex_output) << ";" << std::endl;
-            vertex_shader << "in vec4 " << color_name(vertex_input) << ";" << std::endl;
-            vertex_shader << "out vec4 " << color_name(vertex_output) << ";" << std::endl;
+            vertex_shader << type_qualifier_name(vertex_input) << " vec4 " << vertex_name(vertex_input) << ";" << std::endl;
+            vertex_shader << type_qualifier_name(vertex_output)  << " vec4 " << vertex_name(vertex_output) << ";" << std::endl;
+            vertex_shader << uniform_qualifier_name() << " mat4 " << model_view_transform_name() << ";" << std::endl;
+            vertex_shader << uniform_qualifier_name() << " mat4 " << projection_transform_name() << ";" << std::endl;
+            vertex_shader << type_qualifier_name(vertex_input) << " vec3 " << normal_name(vertex_input) << ";" << std::endl;
+            vertex_shader << type_qualifier_name(vertex_output)  << " vec3 " << normal_name(vertex_output) << ";" << std::endl;
+            vertex_shader << type_qualifier_name(vertex_input) << " vec4 " << color_name(vertex_input) << ";" << std::endl;
+            vertex_shader << type_qualifier_name(vertex_output) << " vec4 " << color_name(vertex_output) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
                 if (info.texture_environment(i).enabled())
                 {
-                    vertex_shader << "in vec4 " << tex_coord_name(vertex_input, i) << ";" << std::endl;
-                    vertex_shader << "out vec4 " << tex_coord_name(vertex_output, i) << ";" << std::endl;
-                    vertex_shader << "uniform mat4 " << tex_coord_transform_name(i) << ";" << std::endl;
+                    vertex_shader << type_qualifier_name(vertex_input) << " vec4 " << tex_coord_name(vertex_input, i) << ";" << std::endl;
+                    vertex_shader << type_qualifier_name(vertex_output) << " vec4 " << tex_coord_name(vertex_output, i) << ";" << std::endl;
+                    vertex_shader << uniform_qualifier_name() << " mat4 " << tex_coord_transform_name(i) << ";" << std::endl;
                 }
             }
 
@@ -287,9 +318,9 @@ namespace fixie
             fragment_shader << "#version " << shader_version() << std::endl;
             fragment_shader << std::endl;
 
-            fragment_shader << "in vec4 " << vertex_name(fragment_input) << ";" << std::endl;
-            fragment_shader << "in vec3 " << normal_name(fragment_input) << ";" << std::endl;
-            fragment_shader << "in vec4 " << color_name(fragment_input) << ";" << std::endl;
+            fragment_shader << type_qualifier_name(fragment_input) << " vec4 " << vertex_name(fragment_input) << ";" << std::endl;
+            fragment_shader << type_qualifier_name(fragment_input) << " vec3 " << normal_name(fragment_input) << ";" << std::endl;
+            fragment_shader << type_qualifier_name(fragment_input) << " vec4 " << color_name(fragment_input) << ";" << std::endl;
             fragment_shader << std::endl;
 
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
@@ -297,43 +328,43 @@ namespace fixie
                 if (info.texture_environment(i).enabled())
                 {
                     fragment_shader << "in vec4 " << tex_coord_name(fragment_input, i) << ";" << std::endl;
-                    fragment_shader << "uniform sampler2D " << sampler_name(i) << ";" << std::endl;
+                    fragment_shader << uniform_qualifier_name() << " sampler2D " << sampler_name(i) << ";" << std::endl;
                     fragment_shader << std::endl;
                 }
             }
 
             if (info.lighting_enabled())
             {
-                fragment_shader << "uniform vec4 " << material_ambient_color_name() << ";" << std::endl;
-                fragment_shader << "uniform vec4 " << material_diffuse_color_name() << ";" << std::endl;
-                fragment_shader << "uniform vec4 " << material_specular_color_name() << ";" << std::endl;
-                fragment_shader << "uniform float " << material_specular_exponent_name() << ";" << std::endl;
-                fragment_shader << "uniform vec4 " << material_emissive_color_name() << ";" << std::endl;
+                fragment_shader << uniform_qualifier_name() << " vec4 " << material_ambient_color_name() << ";" << std::endl;
+                fragment_shader << uniform_qualifier_name() << " vec4 " << material_diffuse_color_name() << ";" << std::endl;
+                fragment_shader << uniform_qualifier_name() << " vec4 " << material_specular_color_name() << ";" << std::endl;
+                fragment_shader << uniform_qualifier_name() << " float " << material_specular_exponent_name() << ";" << std::endl;
+                fragment_shader << uniform_qualifier_name() << " vec4 " << material_emissive_color_name() << ";" << std::endl;
                 fragment_shader << std::endl;
 
                 for (size_t i = 0; i < info.light_count(); i++)
                 {
                     if (info.uses_light(i))
                     {
-                        fragment_shader << "uniform vec4 " << light_ambient_color_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform vec4 " << light_diffuse_color_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform vec4 " << light_specular_color_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform vec4 " << light_position_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform vec3 " << light_direction_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform float " << light_spotlight_exponent_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform float " << light_spotlight_cutoff_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform float " << light_constant_attenuation_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform float " << light_linear_attenuation_name(i) << ";" << std::endl;
-                        fragment_shader << "uniform float " << light_quadratic_attenuation_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " vec4 " << light_ambient_color_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " vec4 " << light_diffuse_color_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " vec4 " << light_specular_color_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " vec4 " << light_position_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " vec3 " << light_direction_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " float " << light_spotlight_exponent_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " float " << light_spotlight_cutoff_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " float " << light_constant_attenuation_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " float " << light_linear_attenuation_name(i) << ";" << std::endl;
+                        fragment_shader << uniform_qualifier_name() << " float " << light_quadratic_attenuation_name(i) << ";" << std::endl;
                         fragment_shader << std::endl;
                     }
                 }
 
-                fragment_shader << "uniform vec4 " << scene_ambient_color_name() << ";" << std::endl;
+                fragment_shader << uniform_qualifier_name() << " vec4 " << scene_ambient_color_name() << ";" << std::endl;
                 fragment_shader << std::endl;
             }
 
-            fragment_shader << "out vec4 " << color_name(fragment_output) << ";" << std::endl;
+            fragment_shader<< type_qualifier_name(fragment_output) << " vec4 " << color_name(fragment_output) << ";" << std::endl;
             fragment_shader << std::endl;
 
             fragment_shader << "void main(void)" << std::endl;
@@ -375,6 +406,44 @@ namespace fixie
                 {
                     if (info.uses_light(i))
                     {
+                        const std::string vertex_to_light_name = format("vertex_to_light_%u", i);
+                        fragment_shader << tab(1) << "vec4 " << vertex_to_light_name << " = " << light_position_name(i) << " - " << vertex_name(fragment_input) << ";" << std::endl;
+
+                        const std::string attenuation_name = format("light_%u_attenuation", i);
+                        if (info.uses_light_attenuation(i))
+                        {
+                            const std::string vertex_to_light_distance_name = format("vertex_to_light_%u_distance", i);
+                            fragment_shader << tab(1) << "float " << vertex_to_light_distance_name << " = length(" << vertex_to_light_name << ");" << std::endl;
+
+                            fragment_shader << tab(1) << "float " << attenuation_name << " = 1.0 / (" << 
+                                                                     light_constant_attenuation_name(i) << " + (" <<
+                                                                     light_linear_attenuation_name(i) << " * " << vertex_to_light_distance_name << ") + (" <<
+                                                                     light_quadratic_attenuation_name(i) << " * " << vertex_to_light_distance_name << " * " << vertex_to_light_distance_name << "));" << std::endl;
+                        }
+                        else
+                        {
+                            fragment_shader << tab(1) << "float " << attenuation_name << " = 1.0;" << std::endl;
+                        }
+
+                        const std::string spot_factor_name = format("light_%u_spot_factor", i);
+                        if (info.uses_spot_light(i))
+                        {
+                            const std::string light_to_vertex_direction_name = format("light_%u_to_vertex_direction", i);
+                            fragment_shader << tab(1) << "vec4 " << light_to_vertex_direction_name << " = normalize(-" << vertex_to_light_name << ");" << std::endl;
+
+                            const std::string light_to_vertex_angle_name = format("light_%u_to_vertex_angle", i);
+                            fragment_shader << tab(1) << "float " << light_to_vertex_angle_name << " = dot(" << light_to_vertex_direction_name << ", " << light_direction_name(i) << ");" << std::endl;
+
+                            fragment_shader << tab(1) << "float " << spot_factor_name << " = ( " << light_to_vertex_angle_name << " >= cos(" << light_spotlight_exponent_name(i) << ")) ? (" <<
+                                                                                                    "pow(" << light_to_vertex_angle_name << ", " << light_spotlight_exponent_name(i) << ")) : " <<
+                                                                                                    "0.0;" << std::endl;
+                        }
+                        else
+                        {
+                            fragment_shader << tab(1) << "float " << spot_factor_name << " = 1.0;" << std::endl;
+                        }
+
+                        fragment_shader << tab(1) << lighting_result_name << " += " << attenuation_name << " * " << spot_factor_name << ";" << std::endl;
                     }
                 }
                 fragment_shader << tab(1) << local_output_color_name << " *= " << lighting_result_name << ";" << std::endl;
@@ -448,33 +517,36 @@ namespace fixie
 
             for (size_t i = 0; i < _texcoord_locations.size(); i++)
             {
-                texcoord_uniform& uniform = _texcoord_locations[i];
+                const texcoord_uniform& uniform = _texcoord_locations[i];
                 gl_call(_functions, gl_uniform_matrix_4fv, uniform.texcoord_transform_location, 1, GL_FALSE, state.texture_matrix_stack(i).top_multiplied().data());
                 gl_call(_functions, gl_uniform_1i, uniform.sampler_location, static_cast<GLint>(i));
             }
 
-            gl_call(_functions, gl_uniform_4fv, _material_ambient_color_location, 1, state.lighting_state().front_material().ambient().data());
-            gl_call(_functions, gl_uniform_4fv, _material_diffuse_color_location, 1, state.lighting_state().front_material().diffuse().data());
-            gl_call(_functions, gl_uniform_4fv, _material_specular_color_location, 1, state.lighting_state().front_material().specular().data());
-            gl_call(_functions, gl_uniform_1f, _material_specular_exponent_location, state.lighting_state().front_material().specular_exponent());
-            gl_call(_functions, gl_uniform_4fv, _material_emissive_color_location, 1, state.lighting_state().front_material().emissive().data());
+            const material& material = state.lighting_state().front_material();
+            gl_call(_functions, gl_uniform_4fv, _material_ambient_color_location, 1, material.ambient().data());
+            gl_call(_functions, gl_uniform_4fv, _material_diffuse_color_location, 1, material.diffuse().data());
+            gl_call(_functions, gl_uniform_4fv, _material_specular_color_location, 1, material.specular().data());
+            gl_call(_functions, gl_uniform_1f, _material_specular_exponent_location, material.specular_exponent());
+            gl_call(_functions, gl_uniform_4fv, _material_emissive_color_location, 1, material.emissive().data());
 
             for (size_t i = 0; i < _light_locations.size(); i++)
             {
-                light_uniform& uniform = _light_locations[i];
-                gl_call(_functions, gl_uniform_4fv, uniform.ambient_color_location, 1, state.lighting_state().light(i).ambient().data());
-                gl_call(_functions, gl_uniform_4fv, uniform.diffuse_color_location, 1, state.lighting_state().light(i).diffuse().data());
-                gl_call(_functions, gl_uniform_4fv, uniform.specular_color_location, 1, state.lighting_state().light(i).specular().data());
-                gl_call(_functions, gl_uniform_4fv, uniform.position_location, 1, state.lighting_state().light(i).position().data());
-                gl_call(_functions, gl_uniform_3fv, uniform.spot_direction_location, 1, state.lighting_state().light(i).spot_direction().data());
-                gl_call(_functions, gl_uniform_1f, uniform.spot_exponent_location, state.lighting_state().light(i).spot_exponent());
-                gl_call(_functions, gl_uniform_1f, uniform.spot_cutoff_location, state.lighting_state().light(i).spot_cutoff());
-                gl_call(_functions, gl_uniform_1f, uniform.constant_attenuation_location, state.lighting_state().light(i).constant_attenuation());
-                gl_call(_functions, gl_uniform_1f, uniform.linear_attenuation_location, state.lighting_state().light(i).linear_attenuation());
-                gl_call(_functions, gl_uniform_1f, uniform.quadratic_attenuation_location, state.lighting_state().light(i).quadratic_attenuation());
+                const light_uniform& uniform = _light_locations[i];
+                const light& light = state.lighting_state().light(i);
+                gl_call(_functions, gl_uniform_4fv, uniform.ambient_color_location, 1, light.ambient().data());
+                gl_call(_functions, gl_uniform_4fv, uniform.diffuse_color_location, 1, light.diffuse().data());
+                gl_call(_functions, gl_uniform_4fv, uniform.specular_color_location, 1, light.specular().data());
+                gl_call(_functions, gl_uniform_4fv, uniform.position_location, 1, light.position().data());
+                gl_call(_functions, gl_uniform_3fv, uniform.spot_direction_location, 1, light.spot_direction().data());
+                gl_call(_functions, gl_uniform_1f, uniform.spot_exponent_location, light.spot_exponent());
+                gl_call(_functions, gl_uniform_1f, uniform.spot_cutoff_location, light.spot_cutoff());
+                gl_call(_functions, gl_uniform_1f, uniform.constant_attenuation_location, light.constant_attenuation());
+                gl_call(_functions, gl_uniform_1f, uniform.linear_attenuation_location, light.linear_attenuation());
+                gl_call(_functions, gl_uniform_1f, uniform.quadratic_attenuation_location, light.quadratic_attenuation());
             }
 
-            gl_call(_functions, gl_uniform_4fv, _scene_ambient_color_location, 1, state.lighting_state().light_model().ambient_color().data());
+            const light_model& light_model = state.lighting_state().light_model();
+            gl_call(_functions, gl_uniform_4fv, _scene_ambient_color_location, 1, light_model.ambient_color().data());
         }
 
         GLint shader::vertex_attribute_location() const

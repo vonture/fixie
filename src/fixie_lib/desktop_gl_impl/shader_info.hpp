@@ -27,6 +27,8 @@ namespace fixie
             GLboolean lighting_enabled() const;
             GLboolean two_sided_lighting() const;
             GLboolean uses_light(size_t n) const;
+            GLboolean uses_light_attenuation(size_t n) const;
+            GLboolean uses_spot_light(size_t n) const;
             size_t light_count() const;
 
             GLenum shade_model() const;
@@ -37,6 +39,8 @@ namespace fixie
             GLboolean _lighting_enabled;
             GLboolean _two_sided_lighting;
             std::vector<GLboolean> _uses_lights;
+            std::vector<GLboolean> _uses_light_attenuation;
+            std::vector<GLboolean> _uses_spot_lights;
             GLenum _shade_model;
         };
 

@@ -18,6 +18,8 @@ namespace fixie
             , _lighting_enabled(state.lighting_state().enabled())
             , _two_sided_lighting(state.lighting_state().light_model().two_sided_lighting())
             , _uses_lights(caps.max_lights())
+            , _uses_light_attenuation(caps.max_lights())
+            , _uses_spot_lights(caps.max_lights())
             , _shade_model(state.shade_model())
         {
             for (size_t i = 0; i < _texture_environments.size(); ++i)
@@ -31,6 +33,14 @@ namespace fixie
             for (size_t i = 0; i < _uses_lights.size(); ++i)
             {
                 _uses_lights[i] = state.lighting_state().light(i).enabled();
+            }
+            for (size_t i = 0; i < _uses_light_attenuation.size(); ++i)
+            {
+                _uses_light_attenuation[i] = state.lighting_state().light(i).position().w() != 0.0f;
+            }
+            for (size_t i = 0; i < _uses_spot_lights.size(); ++i)
+            {
+                _uses_spot_lights[i] = state.lighting_state().light(i).spot_cutoff() != 180.0f;
             }
         }
 
@@ -67,6 +77,16 @@ namespace fixie
         GLboolean shader_info::uses_light(size_t n) const
         {
             return _uses_lights[n];
+        }
+
+        GLboolean shader_info::uses_light_attenuation(size_t n) const
+        {
+            return _uses_light_attenuation[n];
+        }
+
+        GLboolean shader_info::uses_spot_light(size_t n) const
+        {
+            return _uses_spot_lights[n];
         }
 
         size_t shader_info::light_count() const
@@ -126,6 +146,14 @@ namespace fixie
                     {
                         return false;
                     }
+                    if (a.uses_light_attenuation(i) != b.uses_light_attenuation(i))
+                    {
+                        return false;
+                    }
+                    if (a.uses_spot_light(i) != b.uses_spot_light(i))
+                    {
+                        return false;
+                    }
                 }
             }
 
@@ -164,6 +192,8 @@ namespace std
             for (size_t i = 0; i < key.light_count(); ++i)
             {
                 fixie::hash_combine(seed, key.uses_light(i));
+                fixie::hash_combine(seed, key.uses_light_attenuation(i));
+                fixie::hash_combine(seed, key.uses_spot_light(i));
             }
         }
 
