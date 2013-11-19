@@ -5,6 +5,8 @@
 #include "fixie_lib/function_loader.hpp"
 #include "fixie_lib/exceptions.hpp"
 
+#include <assert.h>
+
 #define gl_call_throw(functions_ptr, name, ...) \
     ((functions_ptr)->name()(__VA_ARGS__)); \
     { \
@@ -34,6 +36,7 @@ namespace fixie
                     if (_##name == nullptr) \
                     { \
                         _##name = load_gl_function<return_type GL_APIENTRY ## args>(#gl_name); \
+                        assert(_##name != nullptr); \
                     } \
                     return _##name; \
                 } \
