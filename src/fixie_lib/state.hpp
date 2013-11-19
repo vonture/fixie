@@ -35,10 +35,10 @@ namespace fixie
         const fixie::depth_stencil_state& depth_stencil_state() const;
         fixie::depth_stencil_state& depth_stencil_state();
 
-        const fixie::rasterizer_state rasterizer_state() const;
+        const fixie::rasterizer_state& rasterizer_state() const;
         fixie::rasterizer_state& rasterizer_state();
 
-        const fixie::lighting_state lighting_state() const;
+        const fixie::lighting_state& lighting_state() const;
         fixie::lighting_state& lighting_state();
 
         fixie::clip_plane& clip_plane(size_t idx);

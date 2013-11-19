@@ -56,7 +56,7 @@ namespace fixie
         return _depth_stencil_state;
     }
 
-    const fixie::rasterizer_state state::rasterizer_state() const
+    const fixie::rasterizer_state& state::rasterizer_state() const
     {
         return _rasterizer_state;
     }
@@ -66,7 +66,7 @@ namespace fixie
         return _rasterizer_state;
     }
 
-    const fixie::lighting_state state::lighting_state() const
+    const fixie::lighting_state& state::lighting_state() const
     {
         return _lighting_state;
     }
