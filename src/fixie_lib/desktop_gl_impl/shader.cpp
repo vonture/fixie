@@ -54,8 +54,8 @@ namespace fixie
             }
             catch (...)
             {
-                functions->gl_delete_shader()(vertex_shader);
-                functions->gl_delete_shader()(fragment_shader);
+                gl_call_nothrow(functions, gl_delete_shader, vertex_shader);
+                gl_call_nothrow(functions, gl_delete_shader, fragment_shader);
                 throw;
             }
 
