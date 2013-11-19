@@ -11,7 +11,7 @@ namespace sample_util
         , diffuse(construct_array(0.0f, 0.0f, 0.0f, 1.0f))
         , specular(construct_array(0.0f, 0.0f, 0.0f, 1.0f))
         , position(construct_array(0.0f, 0.0f, 1.0f, 0.0f))
-        , spot_direction(construct_array(0.0f, 0.0f, -0.0f))
+        , spot_direction(construct_array(0.0f, 0.0f, -1.0f))
         , spot_exponent(0.0f)
         , spot_cutoff(180.0f)
         , constant_attenuation(0.0f)
