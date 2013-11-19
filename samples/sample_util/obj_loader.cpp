@@ -2,6 +2,8 @@
 
 #include <fstream>
 #include <sstream>
+#include <map>
+#include <functional>
 
 namespace sample_util
 {
@@ -137,20 +139,6 @@ namespace sample_util
 
     material load_material_from_file(const std::string& path)
     {
-        static const std::string ambient_identifier = "Ka";
-        static const std::string diffuse_identifier = "Kd";
-        static const std::string specular_color_identifier = "Ks";
-        static const std::string specular_coefficient_identifier = "Ns";
-        static const std::string disolved_identifier = "d";
-        static const std::string transparency_identifier = "Tr";
-        static const std::string ambient_map_identifier = "map_Ka";
-        static const std::string diffuse_map_identifier = "map_Kd";
-        static const std::string specular_color_map_identifier = "map_Ks";
-        static const std::string alpha_map_identifier = "map_d";
-        static const std::string bump_identifier = "bump";
-        static const std::string bump_map_identifier = "map_bump";
-        static const std::string displacement_map_identifier = "disp";
-
         material result;
 
         std::ifstream input_stream(path);
@@ -161,56 +149,33 @@ namespace sample_util
             throw std::runtime_error(err.str());
         }
 
-        size_t line_count = 0;
-        std::string line, identifier;
+        using namespace std::placeholders;
+        std::map< std::string, std::function<void (std::istringstream&)> > read_function_map;
+        read_function_map["Ka"] = std::bind(read_attribute<float, 3>, _1, result.ambient_color, 0);
+        read_function_map["Kd"] = std::bind(read_attribute<float, 3>, _1, result.diffuse_color, 0);
+        read_function_map["Ks"] = std::bind(read_attribute<float, 3>, _1, result.specular_color, 0);
+        read_function_map["Ns"] = std::bind(read_attribute<float>, _1, result.specular_coefficient);
+        read_function_map["d"] = std::bind(read_attribute<float>, _1, result.transparency);
+        read_function_map["Tr"] = std::bind(read_attribute<float>, _1, result.transparency);
+        read_function_map["map_Ka"] = std::bind(read_attribute<std::string>, _1, result.ambient_map_path);
+        read_function_map["map_Kd"] = std::bind(read_attribute<std::string>, _1, result.diffuse_map_path);
+        read_function_map["map_Ks"] = std::bind(read_attribute<std::string>, _1, result.specular_color_map_path);
+        read_function_map["map_d"] = std::bind(read_attribute<std::string>, _1, result.alpha_map_path);
+        read_function_map["bump"] = std::bind(read_attribute<std::string>, _1, result.bump_map_path);
+        read_function_map["map_bump"] = std::bind(read_attribute<std::string>, _1, result.bump_map_path);
+        read_function_map["disp"] = std::bind(read_attribute<std::string>, _1, result.displacement_map_path);
+
+        std::string line;
         while (std::getline(input_stream, line))
         {
             std::istringstream line_stream(line);
+            std::string identifier;
             line_stream >> identifier;
 
-            if (identifier == ambient_identifier)
+            auto read_func = read_function_map.find(identifier);
+            if (read_func != end(read_function_map))
             {
-                read_attribute(line_stream, result.ambient_color);
-            }
-            else if (identifier == diffuse_identifier)
-            {
-                read_attribute(line_stream, result.diffuse_color);
-            }
-            else if (identifier == specular_color_identifier)
-            {
-                read_attribute(line_stream, result.specular_color);
-            }
-            else if (identifier == specular_coefficient_identifier)
-            {
-                read_attribute(line_stream, result.specular_coefficient);
-            }
-            else if (identifier == disolved_identifier || identifier == transparency_identifier)
-            {
-                read_attribute(line_stream, result.transparency);
-            }
-            else if (identifier == ambient_map_identifier)
-            {
-                read_attribute(line_stream, result.ambient_map_path);
-            }
-            else if (identifier == diffuse_map_identifier)
-            {
-                read_attribute(line_stream, result.diffuse_map_path);
-            }
-            else if (identifier == alpha_map_identifier)
-            {
-                read_attribute(line_stream, result.alpha_map_path);
-            }
-            else if (identifier == bump_identifier || identifier == bump_map_identifier)
-            {
-                read_attribute(line_stream, result.bump_map_path);
-            }
-            else if (identifier == displacement_map_identifier)
-            {
-                read_attribute(line_stream, result.displacement_map_path);
-            }
-            else
-            {
-                // unsupported identifier
+                read_func->second(line_stream);
             }
         }
 
