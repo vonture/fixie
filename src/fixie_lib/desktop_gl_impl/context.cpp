@@ -1,6 +1,7 @@
 #include "fixie_lib/desktop_gl_impl/context.hpp"
 #include "fixie_lib/desktop_gl_impl/texture.hpp"
 #include "fixie_lib/desktop_gl_impl/buffer.hpp"
+#include "fixie_lib/desktop_gl_impl/exceptions.hpp"
 #include "fixie_lib/util.hpp"
 
 #include "fixie/fixie_gl_es.h"
@@ -22,6 +23,8 @@ namespace fixie
             , _shader_cache(_functions)
             , _cur_depth_stencil_state(get_default_depth_stencil_state())
             , _cur_clear_state(get_default_clear_state())
+            , _cur_rasterizer_state(get_default_rasterizer_state())
+            , _vao(0)
         {
             initialize_caps(_functions, _caps);
 
@@ -58,6 +61,18 @@ namespace fixie
                 gl_call(_functions, gl_debug_message_control_arb, GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM_ARB, 0, nullptr, GL_TRUE);
                 gl_call(_functions, gl_debug_message_callback_arb, debug_callback, nullptr);
             }
+
+            if (_major_version >= 3 || _extensions.find("GL_ARB_vertex_array_object") != end(_extensions))
+            {
+                // need to generate a vao to use so 0 it not bound
+                gl_call(_functions, gl_gen_vertex_arrays, 1, &_vao);
+                gl_call(_functions, gl_bind_vertex_array, _vao)
+            }
+        }
+
+        context::~context()
+        {
+            gl_call_nothrow(_functions, gl_delete_vertex_arrays, 1, &_vao);
         }
 
         const fixie::caps& context::caps()

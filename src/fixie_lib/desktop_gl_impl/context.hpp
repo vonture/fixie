@@ -15,6 +15,7 @@ namespace fixie
         {
         public:
             context();
+            virtual ~context();
 
             virtual const fixie::caps& caps() override;
             virtual const std::string& renderer_desc() override;
@@ -49,6 +50,7 @@ namespace fixie
             rasterizer_state _cur_rasterizer_state;
             void sync_rasterizer_state(const rasterizer_state& state);
 
+            GLuint _vao;
             void sync_vertex_attribute(const state& state, const vertex_attribute& attribute, GLuint location, GLboolean normalized);
             void sync_vertex_attributes(const state& state, std::weak_ptr<const shader> shader);
 

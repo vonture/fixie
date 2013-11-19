@@ -110,6 +110,11 @@ namespace fixie
             DECLARE_GL_FUNCTION(gl_enable_vertex_attrib_array, void, (GLuint index), glEnableVertexAttribArray);
             DECLARE_GL_FUNCTION(gl_disable_vertex_attrib_array, void, (GLuint index), glDisableVertexAttribArray);
 
+            DECLARE_GL_FUNCTION(gl_bind_vertex_array, void, (GLuint array), glBindVertexArray);
+            DECLARE_GL_FUNCTION(gl_delete_vertex_arrays, void, (GLsizei n, GLuint* arrays), glDeleteVertexArrays);
+            DECLARE_GL_FUNCTION(gl_gen_vertex_arrays, void, (GLsizei n, GLuint* arrays), glGenVertexArrays);
+            DECLARE_GL_FUNCTION(gl_is_vertex_array, GLboolean, (GLuint array), glIsVertexArray);
+
             DECLARE_GL_FUNCTION(gl_vertex_attrib_1f, void, (GLuint index, GLfloat v0), glVertexAttrib1f);
             DECLARE_GL_FUNCTION(gl_vertex_attrib_2f, void, (GLuint index, GLfloat v0, GLfloat v1), glVertexAttrib2f);
             DECLARE_GL_FUNCTION(gl_vertex_attrib_3f, void, (GLuint index, GLfloat v0, GLfloat v1, GLfloat v2), glVertexAttrib3f);
