@@ -30,6 +30,8 @@ GLuint make_model_vbo(const std::vector< std::array<GLfloat, n> >& vertices)
 
 LOAD_FIXIE_GL_FUNC(glLightfv);
 LOAD_FIXIE_GL_FUNC(glLightf);
+LOAD_FIXIE_GL_FUNC(glEnable);
+LOAD_FIXIE_GL_FUNC(glDisable);
 
 int main(int argc, char** argv)
 {
@@ -67,9 +69,12 @@ int main(int argc, char** argv)
     light.enabled = true;
     light.diffuse = sample_util::construct_array(1.0f, 1.0f, 0.0f, 1.0f);
     sample_util::z(light.position) = -25.0f;
+    sample_util::w(light.position) = 1.0f;
+    light.constant_attenuation = 0.0f;
+    light.linear_attenuation = 0.1f;
+    light.quadratic_attenuation = 0.01f;
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -106,10 +111,11 @@ int main(int argc, char** argv)
         glDisableClientState(GL_COLOR_ARRAY);
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-        light.enabled = true;
         sample_util::x(light.position) = sinf(time) * 25.0f;
         sample_util::y(light.position) = cosf(time) * 25.0f;
         sample_util::sync_light(GL_LIGHT0, light);
+
+        glEnable(GL_LIGHTING);
 
         glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(cube.vertices.size()));
 
@@ -129,8 +135,7 @@ int main(int argc, char** argv)
         glDisableClientState(GL_COLOR_ARRAY);
         glColor4f(sample_util::r(light.diffuse), sample_util::g(light.diffuse), sample_util::b(light.diffuse), sample_util::a(light.diffuse));
 
-        light.enabled = false;
-        sample_util::sync_light(GL_LIGHT0, light);
+        glDisable(GL_LIGHTING);
 
         glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(sphere.vertices.size()));
 
