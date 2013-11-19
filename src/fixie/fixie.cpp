@@ -971,7 +971,7 @@ fixie_context FIXIE_APIENTRY fixie_create_context()
         fixie::set_current_context(ctx.get());
         return ctx.get();
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
         return nullptr;
@@ -1014,7 +1014,7 @@ fixie_context FIXIE_APIENTRY fixie_get_context()
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         return ctx.get();
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
         return nullptr;
@@ -1050,11 +1050,11 @@ void FIXIE_APIENTRY glClearColor(GLclampf red, GLclampf green, GLclampf blue, GL
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().clear_state().clear_color() = fixie::color(red, green, blue, alpha);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1071,11 +1071,11 @@ void FIXIE_APIENTRY glClearDepthf(GLclampf depth)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().clear_state().clear_depth() = depth;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1099,11 +1099,11 @@ void FIXIE_APIENTRY glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat 
         fixie::vertex_attribute& attribute = ctx->state().color_attribute();
         attribute.generic_values() = fixie::vector4(red, green, blue, alpha);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1120,11 +1120,11 @@ void FIXIE_APIENTRY glDepthRangef(GLclampf zNear, GLclampf zFar)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().depth_stencil_state().depth_range() = fixie::range(zNear, zFar);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1170,7 +1170,7 @@ void FIXIE_APIENTRY glFrustumf(GLfloat left, GLfloat right, GLfloat bottom, GLfl
 
         fixie::set_matrix(fixie::matrix4::frustum(left, right, bottom, top, zNear, zFar), true);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
@@ -1271,11 +1271,11 @@ void FIXIE_APIENTRY glMultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLflo
         fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(target - GL_TEXTURE0);
         attribute.generic_values() = fixie::vector4(s, t, r, q);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1294,11 +1294,11 @@ void FIXIE_APIENTRY glNormal3f(GLfloat nx, GLfloat ny, GLfloat nz)
         fixie::vertex_attribute& attribute = ctx->state().normal_attribute();
         attribute.generic_values() = fixie::vector4(nx, ny, nz, 1.0f);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1329,7 +1329,7 @@ void FIXIE_APIENTRY glOrthof(GLfloat left, GLfloat right, GLfloat bottom, GLfloa
 
         fixie::set_matrix(fixie::matrix4::ortho(left, right, bottom, top, zNear, zFar), true);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
@@ -1409,11 +1409,11 @@ void FIXIE_APIENTRY glActiveTexture(GLenum texture)
 
         ctx->state().active_texture_unit() = (texture - GL_TEXTURE0);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1450,11 +1450,11 @@ void FIXIE_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
             throw fixie::invalid_enum_error("unknown buffer binding target.");
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1482,11 +1482,11 @@ void FIXIE_APIENTRY glBindTexture(GLenum target, GLuint texture)
             throw fixie::invalid_enum_error("unknown texture binding target.");
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1543,11 +1543,11 @@ void FIXIE_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid *d
              locked_buffer->set_data(size, data, usage);
          }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1595,11 +1595,11 @@ void FIXIE_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr s
             locked_buffer->set_sub_data(offset, size, data);
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1623,11 +1623,11 @@ void FIXIE_APIENTRY glClear(GLbitfield mask)
 
         ctx->clear(mask);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1645,11 +1645,11 @@ void FIXIE_APIENTRY glClearColorx(GLclampx red, GLclampx green, GLclampx blue, G
         ctx->state().clear_state().clear_color() = fixie::color(fixie::fixed_to_float(red), fixie::fixed_to_float(green),
                                                                 fixie::fixed_to_float(blue), fixie::fixed_to_float(alpha));
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1666,11 +1666,11 @@ void FIXIE_APIENTRY glClearDepthx(GLclampx depth)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().clear_state().clear_depth() = fixie::fixed_to_float(depth);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1687,11 +1687,11 @@ void FIXIE_APIENTRY glClearStencil(GLint s)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().clear_state().clear_stencil() = s;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1716,11 +1716,11 @@ void FIXIE_APIENTRY glClientActiveTexture(GLenum texture)
 
         ctx->state().active_client_texture() = texture - GL_TEXTURE0;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1746,11 +1746,11 @@ void FIXIE_APIENTRY glColor4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte
         GLfloat divisor = static_cast<GLfloat>(std::numeric_limits<GLubyte>::max());
         attribute.generic_values() = fixie::vector4(red / divisor, green / divisor, blue / divisor, alpha / divisor);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1769,11 +1769,11 @@ void FIXIE_APIENTRY glColor4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed 
         fixie::vertex_attribute& attribute = ctx->state().color_attribute();
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(red), fixie::fixed_to_float(green), fixie::fixed_to_float(blue), fixie::fixed_to_float(alpha));
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1824,11 +1824,11 @@ void FIXIE_APIENTRY glColorPointer(GLint size, GLenum type, GLsizei stride, cons
         attribute.pointer() = pointer;
         attribute.buffer() = ctx->state().bound_array_buffer();
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1879,11 +1879,11 @@ void FIXIE_APIENTRY glDeleteBuffers(GLsizei n, const GLuint *buffers)
             ctx->state().delete_buffer(buffers[i]);
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1909,11 +1909,11 @@ void FIXIE_APIENTRY glDeleteTextures(GLsizei n, const GLuint *textures)
             ctx->state().delete_texture(textures[i]);
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1940,11 +1940,11 @@ void FIXIE_APIENTRY glDepthRangex(GLclampx zNear, GLclampx zFar)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().depth_stencil_state().depth_range() = fixie::range(fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar));
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -1962,11 +1962,11 @@ void FIXIE_APIENTRY glDisable(GLenum cap)
         GLboolean& property = fixie::get_property(ctx, cap);
         property = GL_FALSE;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2013,11 +2013,11 @@ void FIXIE_APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
 
         ctx->draw_arrays(mode, first, count);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2063,11 +2063,11 @@ void FIXIE_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, cons
 
         ctx->draw_elements(mode, count, type, indices);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2085,11 +2085,11 @@ void FIXIE_APIENTRY glEnable(GLenum cap)
         GLboolean& property = fixie::get_property(ctx, cap);
         property = GL_TRUE;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2161,7 +2161,7 @@ void FIXIE_APIENTRY glFrustumx(GLfixed left, GLfixed right, GLfixed bottom, GLfi
                                                   fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
                           true);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
@@ -2229,11 +2229,11 @@ void FIXIE_APIENTRY glGenBuffers(GLsizei n, GLuint *buffers)
             throw;
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2286,11 +2286,11 @@ void FIXIE_APIENTRY glGenTextures(GLsizei n, GLuint *textures)
             throw;
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2310,7 +2310,7 @@ GLenum FIXIE_APIENTRY glGetError(void)
         ctx->state().error() = GL_NO_ERROR;
         return error;
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
         return GL_NO_ERROR;
@@ -2362,12 +2362,12 @@ const GLubyte * FIXIE_APIENTRY glGetString(GLenum name)
         default:            throw fixie::invalid_enum_error(fixie::format("invalid string name, %s.", fixie::get_gl_enum_name(name).c_str()));
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
         return nullptr;
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
         return nullptr;
@@ -2411,12 +2411,12 @@ GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         return (ctx->state().buffer(buffer).use_count() > 0) ? GL_TRUE : GL_FALSE;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
         return GL_FALSE;
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
         return GL_FALSE;
@@ -2436,12 +2436,12 @@ GLboolean FIXIE_APIENTRY glIsEnabled(GLenum cap)
         GLboolean& property = fixie::get_property(ctx, cap);
         return property;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
         return GL_FALSE;
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
         return GL_FALSE;
@@ -2460,12 +2460,12 @@ GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         return (ctx->state().texture(texture).use_count() > 0) ? GL_TRUE : GL_FALSE;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
         return GL_FALSE;
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
         return GL_FALSE;
@@ -2546,11 +2546,11 @@ void FIXIE_APIENTRY glMatrixMode(GLenum mode)
 
         ctx->state().matrix_mode() = mode;
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2581,11 +2581,11 @@ void FIXIE_APIENTRY glMultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfix
         fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(target - GL_TEXTURE0);
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(s), fixie::fixed_to_float(t), fixie::fixed_to_float(r), fixie::fixed_to_float(q));
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2604,11 +2604,11 @@ void FIXIE_APIENTRY glNormal3x(GLfixed nx, GLfixed ny, GLfixed nz)
         fixie::vertex_attribute& attribute = ctx->state().color_attribute();
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(nx), fixie::fixed_to_float(ny), fixie::fixed_to_float(nz), 1.0f);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2647,11 +2647,11 @@ void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *p
         attribute.pointer() = pointer;
         attribute.buffer() = ctx->state().bound_array_buffer();
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2687,7 +2687,7 @@ void FIXIE_APIENTRY glOrthox(GLfixed left, GLfixed right, GLfixed bottom, GLfixe
                                             fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
                           true);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
@@ -2754,11 +2754,11 @@ void FIXIE_APIENTRY glPopMatrix(void)
         }
         stack->pop();
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2805,11 +2805,11 @@ void FIXIE_APIENTRY glPushMatrix(void)
 
         stack->push();
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2859,11 +2859,11 @@ void FIXIE_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 
         ctx->state().rasterizer_state().scissor() = fixie::rectangle(x, y, width, height);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -2932,11 +2932,11 @@ void FIXIE_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, c
         attribute.pointer() = pointer;
         attribute.buffer() = ctx->state().bound_array_buffer();
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -3026,11 +3026,11 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
             texture->set_data(level, internalformat, width, height, format, type, pixels);
         }
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -3109,11 +3109,11 @@ void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, con
         attribute.pointer() = pointer;
         attribute.buffer() = ctx->state().bound_array_buffer();
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
@@ -3136,11 +3136,11 @@ void FIXIE_APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 
         ctx->state().rasterizer_state().viewport() = fixie::rectangle(x, y, width, height);
     }
-    catch (fixie::gl_error e)
+    catch (const fixie::gl_error& e)
     {
         fixie::log_gl_error(e);
     }
-    catch (fixie::context_error e)
+    catch (const fixie::context_error& e)
     {
         fixie::log_context_error(e);
     }
