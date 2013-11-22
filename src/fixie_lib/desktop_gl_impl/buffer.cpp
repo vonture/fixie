@@ -9,12 +9,12 @@ namespace fixie
             , _id(0)
             , _type(0)
         {
-            gl_call(_functions, gl_gen_buffers, 1, &_id);
+            gl_call(_functions, gen_buffers, 1, &_id);
         }
 
         buffer::~buffer()
         {
-            gl_call_nothrow(_functions, gl_delete_buffers, 1, &_id);
+            gl_call_nothrow(_functions, delete_buffers, 1, &_id);
         }
 
         GLuint buffer::id() const
@@ -29,14 +29,14 @@ namespace fixie
 
         void buffer::set_data(GLsizeiptr size, const GLvoid* data, GLenum usage)
         {
-            gl_call(_functions, gl_bind_buffer, _type, _id);
-            gl_call(_functions, gl_buffer_data, _type, size, data, usage);
+            gl_call(_functions, bind_buffer, _type, _id);
+            gl_call(_functions, buffer_data, _type, size, data, usage);
         }
 
         void buffer::set_sub_data(GLintptr offset, GLsizeiptr size, const GLvoid* data)
         {
-            gl_call(_functions, gl_bind_buffer, _type, _id);
-            gl_call(_functions, gl_buffer_sub_data, _type, offset, size, data);
+            gl_call(_functions, bind_buffer, _type, _id);
+            gl_call(_functions, buffer_sub_data, _type, offset, size, data);
         }
     }
 }
