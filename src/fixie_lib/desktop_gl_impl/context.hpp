@@ -6,6 +6,7 @@
 #include "fixie_lib/context.hpp"
 #include "fixie_lib/desktop_gl_impl/gl_functions.hpp"
 #include "fixie_lib/desktop_gl_impl/shader_cache.hpp"
+#include "fixie_lib/desktop_gl_impl/gl_version.hpp"
 
 namespace fixie
 {
@@ -31,14 +32,13 @@ namespace fixie
             virtual void clear(const state& state, GLbitfield mask) override;
 
         private:
-            fixie::caps _caps;
             std::shared_ptr<const gl_functions> _functions;
+            gl_version _version;
+            fixie::caps _caps;
             shader_cache _shader_cache;
 
             std::string _renderer_string;
 
-            GLuint _major_version;
-            GLuint _minor_version;
             std::unordered_set<std::string> _extensions;
 
             depth_stencil_state _cur_depth_stencil_state;
@@ -58,7 +58,8 @@ namespace fixie
 
             void sync_draw_state(const state& state);
 
-            static void initialize_caps(std::shared_ptr<const gl_functions> functions, fixie::caps& caps);
+            static gl_version initialize_version(std::shared_ptr<const gl_functions> functions);
+            static fixie::caps initialize_caps(std::shared_ptr<const gl_functions> functions, const gl_version version);
         };
     }
 }

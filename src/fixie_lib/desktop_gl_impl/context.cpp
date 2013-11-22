@@ -20,22 +20,18 @@ namespace fixie
 
         context::context()
             : _functions(std::make_shared<gl_functions>())
+            , _version(initialize_version(_functions))
+            , _caps(initialize_caps(_functions, _version))
             , _shader_cache(_functions)
             , _cur_depth_stencil_state(get_default_depth_stencil_state())
             , _cur_clear_state(get_default_clear_state())
             , _cur_rasterizer_state(get_default_rasterizer_state())
             , _vao(0)
         {
-            initialize_caps(_functions, _caps);
-
-            const GLubyte* gl_version_string = gl_call(_functions, get_string, GL_VERSION);
-            _major_version = gl_version_string[0] - '0';
-            _minor_version = gl_version_string[2] - '0';
-
             const GLubyte* gl_renderer_string = gl_call(_functions, get_string, GL_RENDERER);
             const GLubyte* gl_vendor_string = gl_call(_functions, get_string, GL_VENDOR);
 
-            if (_major_version >= 3)
+            if (_version >= gl_3_0 || _version >= gl_es_3_0)
             {
                 #define GL_NUM_EXTENSIONS 0x821D
 
@@ -53,16 +49,16 @@ namespace fixie
                 split(reinterpret_cast<const char*>(gl_extension_string), ' ', std::inserter(_extensions, _extensions.end()));
             }
 
-            _renderer_string = format("%s OpenGL %s", reinterpret_cast<const char*>(gl_renderer_string), reinterpret_cast<const char*>(gl_version_string));
+            _renderer_string = format("%s OpenGL %s", reinterpret_cast<const char*>(gl_renderer_string), _version.str().c_str());
 
-            if (_extensions.find("GL_KHR_debug") != end(_extensions))
+            if (_version >= gl_4_3 || _extensions.find("GL_KHR_debug") != end(_extensions))
             {
                 gl_call(_functions, enable, GL_DEBUG_OUTPUT_SYNCHRONOUS);
                 gl_call(_functions, debug_message_control, GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, nullptr, GL_TRUE);
                 gl_call(_functions, debug_message_callback, debug_callback, this);
             }
 
-            if (_major_version >= 3 || _extensions.find("GL_ARB_vertex_array_object") != end(_extensions))
+            if (_version >= gl_3_0 || _version >= gl_es_3_0 || _extensions.find("GL_ARB_vertex_array_object") != end(_extensions))
             {
                 // need to generate a vao to use so 0 it not bound
                 gl_call(_functions, gen_vertex_arrays, 1, &_vao);
@@ -323,8 +319,16 @@ namespace fixie
             sync_rasterizer_state(state.rasterizer_state());
         }
 
-        void context::initialize_caps(std::shared_ptr<const gl_functions> functions, fixie::caps& caps)
+        gl_version context::initialize_version(std::shared_ptr<const gl_functions> functions)
         {
+            const GLubyte* gl_version_string = gl_call(functions, get_string, GL_VERSION);
+            return gl_version(std::string(reinterpret_cast<const char*>(gl_version_string)));
+        }
+
+        fixie::caps context::initialize_caps(std::shared_ptr<const gl_functions> functions,  const gl_version version)
+        {
+            fixie::caps caps;
+
             caps.max_lights() = 8;
             caps.max_clip_planes() = 6;
             caps.max_model_view_stack_depth() = 1024;
@@ -366,31 +370,37 @@ namespace fixie
                 caps.insert_compressed_format(compressed_formats[i]);
             }
 
-            #define GL_FRAMEBUFFER 0x8D40
-            #define GL_FRONT_LEFT 0x0400
-            #define GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE 0x8212
-            #define GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE 0x8213
-            #define GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE 0x8214
-            #define GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE 0x8215
-            #define GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE 0x8216
-            #define GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE 0x8217
-            #define GL_DEPTH 0x1801
-            #define GL_STENCIL 0x1802
+            if (version >= gl_3_0 || version >= gl_es_3_0)
+            {
+                #define GL_FRAMEBUFFER 0x8D40
+                #define GL_FRONT_LEFT 0x0400
+                #define GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE 0x8212
+                #define GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE 0x8213
+                #define GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE 0x8214
+                #define GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE 0x8215
+                #define GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE 0x8216
+                #define GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE 0x8217
+                #define GL_DEPTH 0x1801
+                #define GL_STENCIL 0x1802
 
-            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE, &caps.red_bits());
-            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE, &caps.green_bits());
-            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE, &caps.blue_bits());
-            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, &caps.alpha_bits());
-            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_DEPTH, GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, &caps.depth_bits());
-            gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &caps.stencil_bits());
-            /*
-            gl_call(functions, get_integerv, GL_RED_BITS, &caps.red_bits());
-            gl_call(functions, get_integerv, GL_GREEN_BITS, &caps.green_bits());
-            gl_call(functions, get_integerv, GL_BLUE_BITS, &caps.blue_bits());
-            gl_call(functions, get_integerv, GL_ALPHA_BITS, &caps.alpha_bits());
-            gl_call(functions, get_integerv, GL_DEPTH_BITS, &caps.depth_bits());
-            gl_call(functions, get_integerv, GL_STENCIL_BITS, &caps.stencil_bits());
-            */
+                gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE, &caps.red_bits());
+                gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE, &caps.green_bits());
+                gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE, &caps.blue_bits());
+                gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, &caps.alpha_bits());
+                gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_DEPTH, GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, &caps.depth_bits());
+                gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &caps.stencil_bits());
+            }
+            else
+            {
+                gl_call(functions, get_integerv, GL_RED_BITS, &caps.red_bits());
+                gl_call(functions, get_integerv, GL_GREEN_BITS, &caps.green_bits());
+                gl_call(functions, get_integerv, GL_BLUE_BITS, &caps.blue_bits());
+                gl_call(functions, get_integerv, GL_ALPHA_BITS, &caps.alpha_bits());
+                gl_call(functions, get_integerv, GL_DEPTH_BITS, &caps.depth_bits());
+                gl_call(functions, get_integerv, GL_STENCIL_BITS, &caps.stencil_bits());
+            }
+
+            return caps;
         }
     }
 }
