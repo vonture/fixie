@@ -76,6 +76,11 @@ namespace fixie
     const gl_version gl_es_3_0 = gl_version(3, 0, open_gl_es);
     const gl_version gl_es_2_0 = gl_version(2, 0, open_gl_es);
 
+    static size_t get_comparable_version_number(const gl_version& version)
+    {
+        return (version.major() * 10) + version.minor();
+    }
+
     bool operator==(const gl_version& a, const gl_version& b)
     {
         return a.major() == b.major() && a.minor() == b.minor() && a.type() == b.type();
@@ -88,21 +93,21 @@ namespace fixie
 
     bool operator>=(const gl_version& a, const gl_version& b)
     {
-        return a.type() == b.type() && ((a.major() != b.major()) ? (a.major() >= b.major()) : (a.minor() >= b.minor()));
+        return a.type() == b.type() && get_comparable_version_number(a) >= get_comparable_version_number(b);
     }
 
     bool operator>(const gl_version& a, const gl_version& b)
     {
-        return a.type() == b.type() && ((a.major() != b.major()) ? (a.major() > b.major()) : (a.minor() > b.minor()));
+        return a.type() == b.type() && get_comparable_version_number(a) > get_comparable_version_number(b);
     }
 
     bool operator<=(const gl_version& a, const gl_version& b)
     {
-        return a.type() == b.type() && ((a.major() != b.major()) ? (a.major() <= b.major()) : (a.minor() <= b.minor()));
+        return a.type() == b.type() && get_comparable_version_number(a) <= get_comparable_version_number(b);
     }
 
     bool operator<(const gl_version& a, const gl_version& b)
     {
-        return a.type() == b.type() && ((a.major() != b.major()) ? (a.major() < b.major()) : (a.minor() < b.minor()));
+        return a.type() == b.type() && get_comparable_version_number(a) < get_comparable_version_number(b);
     }
 }
