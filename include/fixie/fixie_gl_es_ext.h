@@ -6,7 +6,7 @@
 
 /* $Revision: 20798 $ on $Date:: 2013-03-07 01:19:34 -0800 #$ */
 
-#include "fixie_platform.h"
+#include "fixie/fixie_platform.h"
 #include "fixie/fixie_gl_types.h"
 
 #ifdef __cplusplus

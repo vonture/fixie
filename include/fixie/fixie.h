@@ -1,7 +1,7 @@
 #ifndef _FIXIE_H_
 #define _FIXIE_H_
 
-#include "fixie_platform.h"
+#include "fixie/fixie_platform.h"
 
 #ifdef __cplusplus
 extern "C"
