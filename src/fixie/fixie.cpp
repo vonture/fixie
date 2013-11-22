@@ -3,6 +3,7 @@
 #include <set>
 
 #include "fixie/fixie.h"
+#include "fixie/fixie_ext.h"
 #include "fixie/fixie_gl_es.h"
 #include "fixie/fixie_gl_es_ext.h"
 
@@ -3148,6 +3149,57 @@ void FIXIE_APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
     {
         UNREACHABLE();
     }
+}
+
+void FIXIE_APIENTRY glDebugMessageControl(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glDebugMessageInsert(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *buf)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glDebugMessageCallback(GLDEBUGPROC callback, const void *userParam)
+{
+    UNIMPLEMENTED();
+}
+
+GLuint FIXIE_APIENTRY glGetDebugMessageLog(GLuint count, GLsizei bufsize, GLenum *sources, GLenum *types, GLuint *ids, GLenum *severities, GLsizei *lengths, GLchar *messageLog)
+{
+    UNIMPLEMENTED();
+    return 0;
+}
+
+void FIXIE_APIENTRY glPushDebugGroup(GLenum source, GLuint id, GLsizei length, const GLchar *message)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glPopDebugGroup(void)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glObjectLabel(GLenum identifier, GLuint name, GLsizei length, const GLchar *label)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glGetObjectLabel(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei *length, GLchar *label)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glObjectPtrLabel(const void *ptr, GLsizei length, const GLchar *label)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glGetObjectPtrLabel(const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label)
+{
+    UNIMPLEMENTED();
 }
 
 }

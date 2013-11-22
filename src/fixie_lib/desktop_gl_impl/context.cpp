@@ -12,8 +12,8 @@ namespace fixie
 {
     namespace desktop_gl_impl
     {
-        void GL_APIENTRY debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message,
-                                        const GLvoid* user_param)
+        void FIXIE_APIENTRY debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
+                                           const GLchar* message, GLvoid* user_aram)
         {
             log_message(source, type, id, severity, std::string(message));
         }
@@ -55,11 +55,11 @@ namespace fixie
 
             _renderer_string = format("%s OpenGL %s", reinterpret_cast<const char*>(gl_renderer_string), reinterpret_cast<const char*>(gl_version_string));
 
-            if (_extensions.find("GL_ARB_debug_output") != end(_extensions))
+            if (_extensions.find("GL_KHR_debug") != end(_extensions))
             {
-                gl_call(_functions, enable, GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
-                gl_call(_functions, debug_message_control_arb, GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM_ARB, 0, nullptr, GL_TRUE);
-                gl_call(_functions, debug_message_callback_arb, debug_callback, nullptr);
+                gl_call(_functions, enable, GL_DEBUG_OUTPUT_SYNCHRONOUS);
+                gl_call(_functions, debug_message_control, GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, nullptr, GL_TRUE);
+                gl_call(_functions, debug_message_callback, debug_callback, this);
             }
 
             if (_major_version >= 3 || _extensions.find("GL_ARB_vertex_array_object") != end(_extensions))

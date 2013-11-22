@@ -2,6 +2,7 @@
 #define _DESKTOP_GL_FUNCTIONS_HPP_
 
 #include "fixie/fixie_gl_types.h"
+#include "fixie/fixie_ext.h"
 #include "fixie_lib/function_loader.hpp"
 #include "fixie_lib/exceptions.hpp"
 
@@ -163,11 +164,8 @@ namespace fixie
             DECLARE_GL_FUNCTION(draw_arrays, void, (GLenum mode, GLint first, GLsizei count), glDrawArrays);
             DECLARE_GL_FUNCTION(draw_elements, void, (GLenum mode, GLsizei count, GLenum type, const GLvoid* indices), glDrawElements);
 
-            typedef void (GL_APIENTRY *DEBUGPROCARB)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const GLvoid* userParam);
-            DECLARE_GL_FUNCTION(debug_message_control_arb, void, (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled), glDebugMessageControlARB);
-            DECLARE_GL_FUNCTION(debug_message_insert_arb, void, (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* buf), glDebugMessageInsertARB);
-            DECLARE_GL_FUNCTION(debug_message_callback_arb, void, (DEBUGPROCARB callback, const GLvoid* userParam), glDebugMessageCallbackARB);
-            DECLARE_GL_FUNCTION(debug_message_log_arb, void, (GLuint count, GLsizei bufSize, GLenum* sources, GLenum* types, GLuint* ids, GLenum* severities, GLsizei* lengths, GLchar* messageLog), glGetDebugMessageLogARB);
+            DECLARE_GL_FUNCTION(debug_message_control, void, (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled), glDebugMessageControl);
+            DECLARE_GL_FUNCTION(debug_message_callback, void, (GLDEBUGPROC callback, const GLvoid* userParam), glDebugMessageCallback);
         };
 
         #undef DECLARE_GL_FUNCTION
