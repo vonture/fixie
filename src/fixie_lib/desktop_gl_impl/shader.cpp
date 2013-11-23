@@ -374,11 +374,11 @@ namespace fixie
             fragment_shader << tab(1) << "vec3 " << local_normal_name << " = ";
             if (info.two_sided_lighting())
             {
-                fragment_shader << "gl_FrontFacing ? " << normal_name(fragment_input) << " : -" << normal_name(fragment_input) << ";" << std::endl;
+                fragment_shader << "normalize(gl_FrontFacing ? " << normal_name(fragment_input) << " : -" << normal_name(fragment_input) << ");" << std::endl;
             }
             else
             {
-                fragment_shader << normal_name(fragment_input) << ";" << std::endl;
+                fragment_shader << "normalize(" << normal_name(fragment_input) << ");" << std::endl;
             }
 
             const std::string local_output_color_name = "result_color";
@@ -401,13 +401,16 @@ namespace fixie
             if (info.lighting_enabled())
             {
                 const std::string lighting_result_name = "lighting_result";
-                fragment_shader << tab(1) << "vec4 " << lighting_result_name << " = " << material_emissive_color_name() << " + " << material_ambient_color_name() << " * " << scene_ambient_color_name() << ";" << std::endl;
+                fragment_shader << tab(1) << "vec3 " << lighting_result_name << " = " << material_emissive_color_name() << ".rgb + " << material_ambient_color_name() << ".rgb * " << scene_ambient_color_name() << ".rgb;" << std::endl;
                 for (size_t i = 0; i < info.light_count(); i++)
                 {
                     if (info.uses_light(i))
                     {
                         const std::string vertex_to_light_name = format("vertex_to_light_%u", i);
-                        fragment_shader << tab(1) << "vec4 " << vertex_to_light_name << " = " << light_position_name(i) << " - " << vertex_name(fragment_input) << ";" << std::endl;
+                        fragment_shader << tab(1) << "vec3 " << vertex_to_light_name << " = " << light_position_name(i) << ".xyz - " << vertex_name(fragment_input) << ".xyz;" << std::endl;
+
+                        const std::string vertex_to_light_direction_name = format("vertex_to_light_%u_direction", i);
+                        fragment_shader << tab(1) << "vec3 " << vertex_to_light_direction_name << " = normalize(" << vertex_to_light_name << ");" << std::endl;
 
                         const std::string attenuation_name = format("light_%u_attenuation", i);
                         if (info.uses_light_attenuation(i))
@@ -429,7 +432,7 @@ namespace fixie
                         if (info.uses_spot_light(i))
                         {
                             const std::string light_to_vertex_direction_name = format("light_%u_to_vertex_direction", i);
-                            fragment_shader << tab(1) << "vec4 " << light_to_vertex_direction_name << " = normalize(-" << vertex_to_light_name << ");" << std::endl;
+                            fragment_shader << tab(1) << "vec3 " << light_to_vertex_direction_name << " = -" << vertex_to_light_direction_name << ";" << std::endl;
 
                             const std::string light_to_vertex_angle_name = format("light_%u_to_vertex_angle", i);
                             fragment_shader << tab(1) << "float " << light_to_vertex_angle_name << " = dot(" << light_to_vertex_direction_name << ", " << light_direction_name(i) << ");" << std::endl;
@@ -443,10 +446,23 @@ namespace fixie
                             fragment_shader << tab(1) << "float " << spot_factor_name << " = 1.0;" << std::endl;
                         }
 
-                        fragment_shader << tab(1) << lighting_result_name << " += " << attenuation_name << " * " << spot_factor_name << ";" << std::endl;
+                        const std::string light_ambient_component_name = format("light_%u_ambient_component", i);
+                        fragment_shader << tab(1) << "vec3 " << light_ambient_component_name << " = " << material_ambient_color_name() << ".rgb * " << light_ambient_color_name(i) << ".rgb;" << std::endl;
+
+                        const std::string normal_dot_vertex_to_light_name = format("normal_dot_vertex_to_light_%u", i);
+                        fragment_shader << tab(1) << "float " << normal_dot_vertex_to_light_name << " = clamp(dot(" << local_normal_name << ", " << vertex_to_light_direction_name << "), 0.0, 1.0);" << std::endl;
+
+                        const std::string light_diffuse_component_name = format("light_%u_diffuse_component", i);
+                        fragment_shader << tab(1) << "vec3 " << light_diffuse_component_name << " = " << normal_dot_vertex_to_light_name << " * " << material_diffuse_color_name() << ".rgb * " << light_diffuse_color_name(i) << ".rgb;" << std::endl;
+
+                        const std::string light_specular_component_name = format("light_%u_specular_component", i);
+                        //fragment_shader << tab(1) << "vec3 " << light_specular_component_name << " = float(" << normal_dot_vertex_to_light_name << " != 0.0) * pow(dot(" << local_normal_name << ", " << vertex_to_light_direction_name << " + vec3(0.0, 0.0, 1.0)), " << material_specular_exponent_name() << ") * " << material_specular_color_name() << ".rgb * " << light_specular_color_name(i) << ".rgb;" << std::endl;
+                        fragment_shader << tab(1) << "vec3 " << light_specular_component_name << " = vec3(0.0);" << std::endl;
+
+                        fragment_shader << tab(1) << lighting_result_name << " += " << attenuation_name << " * " << spot_factor_name << " * (" << light_ambient_component_name << " + " << light_diffuse_component_name << " + " << light_specular_component_name << ");" << std::endl;
                     }
                 }
-                fragment_shader << tab(1) << local_output_color_name << " *= " << lighting_result_name << ";" << std::endl;
+                fragment_shader << tab(1) << local_output_color_name << " *= vec4(" << lighting_result_name << ", " << material_diffuse_color_name() << ".a);" << std::endl;
                 fragment_shader << std::endl;
             }
 
