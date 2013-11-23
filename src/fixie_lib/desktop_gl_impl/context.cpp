@@ -171,7 +171,7 @@ namespace fixie
                 _cur_depth_stencil_state.stencil_pass_depth_pass_operation() != state.stencil_pass_depth_pass_operation())
             {
                 gl_call(_functions, stencil_op, state.stencil_fail_operation(), state.stencil_pass_depth_fail_operation(),
-                                                   state.stencil_pass_depth_pass_operation());
+                                                state.stencil_pass_depth_pass_operation());
                 _cur_depth_stencil_state.stencil_fail_operation() = state.stencil_fail_operation();
                 _cur_depth_stencil_state.stencil_pass_depth_fail_operation() = state.stencil_pass_depth_fail_operation();
                 _cur_depth_stencil_state.stencil_pass_depth_pass_operation() = state.stencil_pass_depth_pass_operation();
