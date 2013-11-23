@@ -15,7 +15,7 @@ namespace sample_util
         std::vector<float3> normals;
     };
 
-    struct material
+    struct model_material
     {
         float3 ambient_color;
         float3 diffuse_color;
@@ -32,7 +32,7 @@ namespace sample_util
     };
 
     model load_model_from_file(const std::string& path);
-    material load_material_from_file(const std::string& path);
+    model_material load_material_from_file(const std::string& path);
 }
 
 #endif // _OBJ_LOADER_HPP_

@@ -137,9 +137,9 @@ namespace sample_util
         return result;
     }
 
-    material load_material_from_file(const std::string& path)
+    model_material load_material_from_file(const std::string& path)
     {
-        material result;
+        model_material result;
 
         std::ifstream input_stream(path);
         if (!input_stream)

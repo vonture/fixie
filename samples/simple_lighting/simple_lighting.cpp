@@ -8,8 +8,11 @@
 #include "sample_util/transformations.hpp"
 #include "sample_util/vectors.hpp"
 #include "sample_util/lighting.hpp"
+#include "sample_util/material.hpp"
+#include "sample_util/random.hpp"
 
 #include <algorithm>
+#include <functional>
 
 #define LOAD_FIXIE_GL_FUNC(name) \
     namespace \
@@ -28,8 +31,82 @@ GLuint make_model_vbo(const std::vector< std::array<GLfloat, n> >& vertices)
     return vbo;
 }
 
+struct light_info
+{
+    sample_util::light light;
+    sample_util::float3 rotation_rates;
+    sample_util::float3 rotation_radius;
+};
+
+void initialize_random_light(light_info& light)
+{
+    light.light.enabled = true;
+
+    light.light.ambient = sample_util::construct_array(sample_util::random_between(0.0f, 0.1f),
+                                                       sample_util::random_between(0.0f, 0.1f),
+                                                       sample_util::random_between(0.0f, 0.1f),
+                                                       1.0f);
+
+    light.light.diffuse = sample_util::construct_array(sample_util::random_between(0.0f, 1.0f),
+                                                       sample_util::random_between(0.0f, 1.0f),
+                                                       sample_util::random_between(0.0f, 1.0f),
+                                                       1.0f);
+
+    light.light.specular = sample_util::construct_array(sample_util::random_between(0.0f, 1.0f),
+                                                        sample_util::random_between(0.0f, 1.0f),
+                                                        sample_util::random_between(0.0f, 1.0f),
+                                                        1.0f);
+
+    sample_util::x(light.rotation_rates) = sample_util::random_between(-2.0f, 2.0f);
+    sample_util::y(light.rotation_rates) = sample_util::random_between(-2.0f, 2.0f);
+    sample_util::z(light.rotation_rates) = sample_util::random_between(-2.0f, 2.0f);
+    sample_util::x(light.rotation_radius) = sample_util::random_between(15.0f, 30.0f);
+    sample_util::y(light.rotation_radius) = sample_util::random_between(15.0f, 30.0f);
+    sample_util::z(light.rotation_radius) = sample_util::random_between(15.0f, 30.0f);
+}
+
+void update_light(float time, light_info& light)
+{
+    sample_util::x(light.light.position) = sinf(time * sample_util::x(light.rotation_rates)) * sample_util::x(light.rotation_radius);
+    sample_util::y(light.light.position) = sinf(time * sample_util::y(light.rotation_rates)) * sample_util::y(light.rotation_radius);
+    sample_util::z(light.light.position) = sinf(time * sample_util::z(light.rotation_rates)) * sample_util::z(light.rotation_radius);
+}
+
+void apply_light(size_t index, const light_info& light)
+{
+    sample_util::sync_light(GL_LIGHT0 + index, light.light);
+}
+
+void draw_light_model(const sample_util::model& light_model, const light_info& light)
+{
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    float sphere_scale = 1.0f;
+    glScalef(sphere_scale, sphere_scale, sphere_scale);
+    glTranslatef(sample_util::x(light.light.position), sample_util::y(light.light.position), sample_util::z(light.light.position));
+
+    glColor4f(sample_util::r(light.light.diffuse),sample_util::g(light.light.diffuse), sample_util::b(light.light.diffuse),
+              sample_util::a(light.light.diffuse));
+
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(light_model.vertices.size()));
+}
+
+template <typename iterator_type, typename func_type>
+func_type indexed_for_each(iterator_type first, iterator_type last, func_type func)
+{
+    for (size_t i = 0; first != last; ++first)
+    {
+        func(i++, *first);
+    }
+
+    return func;
+}
+
 LOAD_FIXIE_GL_FUNC(glLightfv);
 LOAD_FIXIE_GL_FUNC(glLightf);
+LOAD_FIXIE_GL_FUNC(glMaterialfv);
+LOAD_FIXIE_GL_FUNC(glMaterialf);
 LOAD_FIXIE_GL_FUNC(glEnable);
 LOAD_FIXIE_GL_FUNC(glDisable);
 
@@ -49,30 +126,21 @@ int main(int argc, char** argv)
 
     glfwMakeContextCurrent(window);
 
-    sample_util::model cube = sample_util::load_model_from_file("cube.obj");
-
     sample_util::float4 min_bound, max_bound;
-    sample_util::bounds(begin(cube.vertices), end(cube.vertices), min_bound, max_bound);
-    float cube_radius = sample_util::distance(min_bound, max_bound) * 0.5f;
 
-    GLuint cube_position_vbo = make_model_vbo(cube.vertices);
-    GLuint cube_normal_vbo = make_model_vbo(cube.normals);
+    sample_util::model teapot = sample_util::load_model_from_file("teapot.obj");
+    sample_util::bounds(begin(teapot.vertices), end(teapot.vertices), min_bound, max_bound);
+    float teapot_radius = sample_util::distance(min_bound, max_bound) * 0.5f;
+    sample_util::material teapot_material;
+
+    GLuint teapot_position_vbo = make_model_vbo(teapot.vertices);
+    GLuint teapot_normal_vbo = make_model_vbo(teapot.normals);
 
     sample_util::model sphere = sample_util::load_model_from_file("sphere.obj");
-
-    sample_util::bounds(begin(cube.vertices), end(cube.vertices), min_bound, max_bound);
-    float sphere_radius = sample_util::distance(min_bound, max_bound) * 0.5f;
-
     GLuint sphere_position_vbo = make_model_vbo(sphere.vertices);
 
-    sample_util::light light;
-    light.enabled = true;
-    light.diffuse = sample_util::construct_array(1.0f, 1.0f, 0.0f, 1.0f);
-    sample_util::z(light.position) = -25.0f;
-    sample_util::w(light.position) = 1.0f;
-    light.constant_attenuation = 0.0f;
-    light.linear_attenuation = 0.1f;
-    light.quadratic_attenuation = 0.01f;
+    std::vector<light_info> lights(8);
+    std::for_each(begin(lights), end(lights), initialize_random_light);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -95,36 +163,32 @@ int main(int argc, char** argv)
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        float cube_scale = 10.0f / cube_radius;
+        float cube_scale = 10.0f / teapot_radius;
         glScalef(cube_scale, cube_scale, cube_scale);
         glRotatef(time * 50.f, 0.0f, 1.0f, 0.0f);
         glTranslatef(0.0f, 0.0f, sinf(time) * 25.0f);
 
         glEnableClientState(GL_VERTEX_ARRAY);
-        glBindBuffer(GL_ARRAY_BUFFER, cube_position_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, teapot_position_vbo);
         glVertexPointer(4, GL_FLOAT, 0, 0);
 
         glEnableClientState(GL_NORMAL_ARRAY);
-        glBindBuffer(GL_ARRAY_BUFFER, cube_normal_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, teapot_normal_vbo);
         glNormalPointer(GL_FLOAT, 0, 0);
 
         glDisableClientState(GL_COLOR_ARRAY);
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-        sample_util::x(light.position) = sinf(time) * 25.0f;
-        sample_util::y(light.position) = cosf(time) * 25.0f;
-        sample_util::sync_light(GL_LIGHT0, light);
+        sample_util::sync_material(GL_FRONT_AND_BACK, teapot_material);
+
+        std::for_each(begin(lights), end(lights), std::bind(update_light, time, std::placeholders::_1));
+        indexed_for_each(begin(lights), end(lights), apply_light);
 
         glEnable(GL_LIGHTING);
 
-        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(cube.vertices.size()));
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(teapot.vertices.size()));
 
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        float sphere_scale = 2.0f / sphere_radius;
-        glScalef(sphere_scale, sphere_scale, sphere_scale);
-        glTranslatef(sample_util::x(light.position), sample_util::y(light.position), sample_util::z(light.position));
+        glDisable(GL_LIGHTING);
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, sphere_position_vbo);
@@ -133,11 +197,10 @@ int main(int argc, char** argv)
         glDisableClientState(GL_NORMAL_ARRAY);
 
         glDisableClientState(GL_COLOR_ARRAY);
-        glColor4f(sample_util::r(light.diffuse), sample_util::g(light.diffuse), sample_util::b(light.diffuse), sample_util::a(light.diffuse));
 
-        glDisable(GL_LIGHTING);
+        glMatrixMode(GL_MODELVIEW);
 
-        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(sphere.vertices.size()));
+        std::for_each(begin(lights), end(lights), std::bind(draw_light_model, sphere, std::placeholders::_1));
 
         glfwSwapBuffers(window);
         glfwPollEvents();
