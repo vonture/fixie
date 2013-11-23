@@ -51,7 +51,7 @@ namespace fixie
             void sync_rasterizer_state(const rasterizer_state& state);
 
             GLuint _vao;
-            void sync_vertex_attribute(const state& state, const vertex_attribute& attribute, GLuint location, GLboolean normalized);
+            void sync_vertex_attribute(const state& state, const vertex_attribute& attribute, GLint location, GLboolean normalized);
             void sync_vertex_attributes(const state& state, std::weak_ptr<const shader> shader);
 
             void sync_textures(const state& state);
