@@ -23,12 +23,12 @@ namespace fixie
 
     color& material::diffuse()
     {
-        return _specular;
+        return _diffuse;
     }
 
     const color& material::diffuse() const
     {
-        return _specular;
+        return _diffuse;
     }
 
     color& material::specular()
