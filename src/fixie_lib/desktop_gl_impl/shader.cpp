@@ -402,6 +402,7 @@ namespace fixie
             {
                 const std::string lighting_result_name = "lighting_result";
                 fragment_shader << tab(1) << "vec3 " << lighting_result_name << " = " << material_emissive_color_name() << ".rgb + " << material_ambient_color_name() << ".rgb * " << scene_ambient_color_name() << ".rgb;" << std::endl;
+                fragment_shader << std::endl;
                 for (size_t i = 0; i < info.light_count(); i++)
                 {
                     if (info.uses_light(i))
@@ -418,10 +419,12 @@ namespace fixie
                             const std::string vertex_to_light_distance_name = format("vertex_to_light_%u_distance", i);
                             fragment_shader << tab(1) << "float " << vertex_to_light_distance_name << " = length(" << vertex_to_light_name << ");" << std::endl;
 
-                            fragment_shader << tab(1) << "float " << attenuation_name << " = 1.0 / (" << 
+                            const float attenuation_epsilon = 0.00001f;
+                            fragment_shader << tab(1) << "float " << attenuation_name << " = 1.0 / max(" <<
                                                                      light_constant_attenuation_name(i) << " + (" <<
                                                                      light_linear_attenuation_name(i) << " * " << vertex_to_light_distance_name << ") + (" <<
-                                                                     light_quadratic_attenuation_name(i) << " * " << vertex_to_light_distance_name << " * " << vertex_to_light_distance_name << "));" << std::endl;
+                                                                     light_quadratic_attenuation_name(i) << " * " << vertex_to_light_distance_name << " * " << vertex_to_light_distance_name << "), " <<
+                                                                     attenuation_epsilon << ");" << std::endl;
                         }
                         else
                         {
@@ -456,10 +459,11 @@ namespace fixie
                         fragment_shader << tab(1) << "vec3 " << light_diffuse_component_name << " = " << normal_dot_vertex_to_light_name << " * " << material_diffuse_color_name() << ".rgb * " << light_diffuse_color_name(i) << ".rgb;" << std::endl;
 
                         const std::string light_specular_component_name = format("light_%u_specular_component", i);
-                        //fragment_shader << tab(1) << "vec3 " << light_specular_component_name << " = float(" << normal_dot_vertex_to_light_name << " != 0.0) * pow(dot(" << local_normal_name << ", " << vertex_to_light_direction_name << " + vec3(0.0, 0.0, 1.0)), " << material_specular_exponent_name() << ") * " << material_specular_color_name() << ".rgb * " << light_specular_color_name(i) << ".rgb;" << std::endl;
-                        fragment_shader << tab(1) << "vec3 " << light_specular_component_name << " = vec3(0.0);" << std::endl;
+                        const float specular_epsilon = 0.00001f;
+                        fragment_shader << tab(1) << "vec3 " << light_specular_component_name << " = float(" << normal_dot_vertex_to_light_name << " != 0.0) * pow(clamp(dot(" << local_normal_name << ", " << vertex_to_light_direction_name << " + vec3(0.0, 0.0, 1.0)), " << specular_epsilon <<", 1.0), " << material_specular_exponent_name() << ") * " << material_specular_color_name() << ".rgb * " << light_specular_color_name(i) << ".rgb;" << std::endl;
 
                         fragment_shader << tab(1) << lighting_result_name << " += " << attenuation_name << " * " << spot_factor_name << " * (" << light_ambient_component_name << " + " << light_diffuse_component_name << " + " << light_specular_component_name << ");" << std::endl;
+                        fragment_shader << std::endl;
                     }
                 }
                 fragment_shader << tab(1) << local_output_color_name << " *= vec4(" << lighting_result_name << ", " << material_diffuse_color_name() << ".a);" << std::endl;
