@@ -40,7 +40,7 @@ namespace fixie
         case GL_DEBUG_SOURCE_API:             source_text = "api";             break;
         case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   source_text = "windows";         break;
         case GL_DEBUG_SOURCE_SHADER_COMPILER: source_text = "shader compiler"; break;
-        case GL_DEBUG_SOURCE_THIRD_PARTY:     source_text = "third Party";     break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:     source_text = "third party";     break;
         case GL_DEBUG_SOURCE_APPLICATION:     source_text = "application";     break;
         case GL_DEBUG_SOURCE_OTHER:           source_text = "other";           break;
         default:                              source_text = "unknown";         break;
