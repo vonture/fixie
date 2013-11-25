@@ -16,6 +16,7 @@ namespace fixie
             virtual void initialize_state(fixie::state& state) override;
 
             virtual std::unique_ptr<texture_impl> create_texture() override;
+            virtual std::unique_ptr<framebuffer_impl> create_default_framebuffer() override;
             virtual std::unique_ptr<framebuffer_impl> create_framebuffer() override;
             virtual std::unique_ptr<buffer_impl> create_buffer() override;
 

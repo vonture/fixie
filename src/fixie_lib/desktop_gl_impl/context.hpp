@@ -24,6 +24,7 @@ namespace fixie
             virtual void initialize_state(fixie::state& state) override;
 
             virtual std::unique_ptr<texture_impl> create_texture() override;
+            virtual std::unique_ptr<framebuffer_impl> create_default_framebuffer() override;
             virtual std::unique_ptr<framebuffer_impl> create_framebuffer() override;
             virtual std::unique_ptr<buffer_impl> create_buffer() override;
 
@@ -56,6 +57,8 @@ namespace fixie
             void sync_vertex_attributes(const state& state, std::weak_ptr<const shader> shader);
 
             void sync_textures(const state& state);
+
+            void sync_framebuffer(const state& state);
 
             void sync_draw_state(const state& state);
 

@@ -13,6 +13,8 @@ namespace fixie
 {
     namespace desktop_gl_impl
     {
+        #define GL_FRAMEBUFFER 0x8D40
+
         void FIXIE_APIENTRY debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
                                            const GLchar* message, GLvoid* user_aram)
         {
@@ -101,6 +103,11 @@ namespace fixie
             return std::unique_ptr<texture_impl>(new texture(_functions));
         }
 
+        std::unique_ptr<framebuffer_impl> context::create_default_framebuffer()
+        {
+            return std::unique_ptr<framebuffer_impl>(new framebuffer(_functions));
+        }
+
         std::unique_ptr<framebuffer_impl> context::create_framebuffer()
         {
             return std::unique_ptr<framebuffer_impl>(new framebuffer(_functions));
@@ -129,6 +136,7 @@ namespace fixie
         {
             sync_clear_state(state.clear_state());
             sync_rasterizer_state(state.rasterizer_state());
+            sync_framebuffer(state);
             gl_call(_functions, clear, mask);
         }
 
@@ -301,13 +309,23 @@ namespace fixie
             }
         }
 
+        void context::sync_framebuffer(const state& state)
+        {
+            std::shared_ptr<const fixie::framebuffer> bound_framebuffer = state.bound_draw_framebuffer().lock();
+            std::shared_ptr<const fixie::framebuffer_impl> bound_framebuffer_impl = bound_framebuffer ? bound_framebuffer->impl().lock() : nullptr;
+            std::shared_ptr<const framebuffer> desktop_framebuffer = std::dynamic_pointer_cast<const framebuffer>(bound_framebuffer_impl);
+            GLuint framebuffer_id = desktop_framebuffer ? desktop_framebuffer->id() : 0;
+
+            gl_call(_functions, bind_framebuffer, GL_FRAMEBUFFER, framebuffer_id);
+        }
+
         void context::sync_draw_state(const state& state)
         {
             std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps).lock();
             shader->sync_state(state);
             sync_vertex_attributes(state, shader);
             sync_textures(state);
-
+            sync_framebuffer(state);
             sync_depth_stencil_state(state.depth_stencil_state());
             sync_rasterizer_state(state.rasterizer_state());
         }
@@ -365,7 +383,6 @@ namespace fixie
 
             if (version >= gl_3_0 || version >= gl_es_3_0)
             {
-                #define GL_FRAMEBUFFER 0x8D40
                 #define GL_FRONT_LEFT 0x0400
                 #define GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE 0x8212
                 #define GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE 0x8213

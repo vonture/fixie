@@ -28,6 +28,11 @@ namespace fixie
             return std::unique_ptr<texture_impl>(new texture());
         }
 
+        std::unique_ptr<framebuffer_impl> context::create_default_framebuffer()
+        {
+            return std::unique_ptr<framebuffer_impl>(new framebuffer());
+        }
+
         std::unique_ptr<framebuffer_impl> context::create_framebuffer()
         {
             return std::unique_ptr<framebuffer_impl>(new framebuffer());

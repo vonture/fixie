@@ -12,7 +12,7 @@ namespace fixie
 {
     context::context(std::shared_ptr<context_impl> impl)
         : _impl(impl)
-        , _state(impl->caps())
+        , _state(impl->caps(), std::unique_ptr<fixie::framebuffer>(new fixie::framebuffer(std::move(impl->create_default_framebuffer()))))
     {
         _impl->initialize_state(_state);
         _version_string = format("OpenGL ES-%s %u.%u", "CM", 1, 1);
@@ -26,6 +26,13 @@ namespace fixie
         std::unique_ptr<texture_impl> impl = _impl->create_texture();
         std::unique_ptr<fixie::texture> texture = std::unique_ptr<fixie::texture>(new fixie::texture(std::move(impl)));
         return _state.insert_texture(std::move(texture));
+    }
+
+    GLuint context::create_framebuffer()
+    {
+        std::unique_ptr<framebuffer_impl> impl = _impl->create_framebuffer();
+        std::unique_ptr<fixie::framebuffer> framebuffer = std::unique_ptr<fixie::framebuffer>(new fixie::framebuffer(std::move(impl)));
+        return _state.insert_framebuffer(std::move(framebuffer));
     }
 
     GLuint context::create_buffer()

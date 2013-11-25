@@ -8,7 +8,7 @@
 
 namespace fixie
 {
-    state::state(const caps& caps)
+    state::state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_framebuffer)
         : _clear_state(get_default_clear_state())
         , _depth_stencil_state(get_default_depth_stencil_state())
         , _rasterizer_state(get_default_rasterizer_state())
@@ -20,6 +20,9 @@ namespace fixie
         , _next_texture_id(1)
         , _bound_textures(caps.max_texture_units())
         , _texture_environments(caps.max_texture_units())
+        , _next_framebuffer_id(1)
+        , _bound_draw_framebuffer()
+        , _bound_read_framebuffer()
         , _next_buffer_id(1)
         , _bound_array_buffer()
         , _bound_element_array_buffer()
@@ -31,6 +34,9 @@ namespace fixie
         , _shade_model(GL_SMOOTH)
         , _error(GL_NO_ERROR)
     {
+        _framebuffers.insert(std::make_pair(0, std::move(default_framebuffer)));
+        bind_draw_framebuffer(this->default_framebuffer());
+        bind_read_framebuffer(this->default_framebuffer());
         std::generate(begin(_clip_planes), end(_clip_planes), get_default_clip_plane);
         std::generate(begin(_texture_environments), end(_texture_environments), get_default_texture_environment);
         std::generate(begin(_texcoord_attributes), end(_texcoord_attributes), get_default_texcoord_attribute);
@@ -187,6 +193,74 @@ namespace fixie
     const fixie::texture_environment& state::texture_environment(size_t unit) const
     {
         return _texture_environments[unit];
+    }
+
+    GLuint state::insert_framebuffer(std::unique_ptr<fixie::framebuffer> framebuffer)
+    {
+        GLuint id = _next_framebuffer_id++;
+        _framebuffers[id] = std::move(framebuffer);
+        return id;
+    }
+
+    void state::delete_framebuffer(GLuint id)
+    {
+        auto iter = _framebuffers.find(id);
+        if (iter != end(_framebuffers) && id != 0)
+        {
+            _framebuffers.erase(iter);
+        }
+    }
+
+    std::weak_ptr<fixie::framebuffer> state::framebuffer(GLuint id)
+    {
+        auto iter = _framebuffers.find(id);
+        return (iter != end(_framebuffers)) ? iter->second : std::weak_ptr<fixie::framebuffer>();
+    }
+
+    std::weak_ptr<const fixie::framebuffer> state::framebuffer(GLuint id) const
+    {
+        auto iter = _framebuffers.find(id);
+        return (iter != end(_framebuffers)) ? iter->second : std::weak_ptr<fixie::framebuffer>();
+    }
+
+    std::weak_ptr<fixie::framebuffer> state::default_framebuffer()
+    {
+        return framebuffer(0);
+    }
+
+    std::weak_ptr<const fixie::framebuffer> state::default_framebuffer() const
+    {
+        return framebuffer(0);
+    }
+
+    void state::bind_draw_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer)
+    {
+        _bound_draw_framebuffer = framebuffer.expired() ? default_framebuffer() : framebuffer;
+    }
+
+    std::weak_ptr<const fixie::framebuffer> state::bound_draw_framebuffer() const
+    {
+        return _bound_draw_framebuffer;
+    }
+
+    std::weak_ptr<fixie::framebuffer> state::bound_draw_framebuffer()
+    {
+        return _bound_draw_framebuffer;
+    }
+
+    void state::bind_read_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer)
+    {
+        _bound_read_framebuffer = framebuffer.expired() ? default_framebuffer() : framebuffer;
+    }
+
+    std::weak_ptr<const fixie::framebuffer> state::bound_read_framebuffer() const
+    {
+        return _bound_read_framebuffer;
+    }
+
+    std::weak_ptr<fixie::framebuffer> state::bound_read_framebuffer()
+    {
+        return _bound_read_framebuffer;
     }
 
     GLuint state::insert_buffer(std::unique_ptr<fixie::buffer> buffer)

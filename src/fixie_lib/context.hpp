@@ -20,6 +20,7 @@ namespace fixie
         virtual void initialize_state(fixie::state& state) = 0;
 
         virtual std::unique_ptr<texture_impl> create_texture() = 0;
+        virtual std::unique_ptr<framebuffer_impl> create_default_framebuffer() = 0;
         virtual std::unique_ptr<framebuffer_impl> create_framebuffer() = 0;
         virtual std::unique_ptr<buffer_impl> create_buffer() = 0;
 
@@ -35,6 +36,7 @@ namespace fixie
         context(std::shared_ptr<context_impl> impl);
 
         GLuint create_texture();
+        GLuint create_framebuffer();
         GLuint create_buffer();
 
         fixie::state& state();

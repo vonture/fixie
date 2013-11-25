@@ -28,7 +28,7 @@ namespace fixie
     class state
     {
     public:
-        state(const caps& caps);
+        state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_framebuffer);
 
         const fixie::clear_state& clear_state() const;
         fixie::clear_state& clear_state();
@@ -68,8 +68,24 @@ namespace fixie
         void bind_texture(std::weak_ptr<fixie::texture> texture, size_t unit);
         std::weak_ptr<const fixie::texture> bound_texture(size_t unit) const;
         std::weak_ptr<fixie::texture> bound_texture(size_t unit);
+
         fixie::texture_environment& texture_environment(size_t unit);
         const fixie::texture_environment& texture_environment(size_t unit) const;
+
+        GLuint insert_framebuffer(std::unique_ptr<fixie::framebuffer> framebuffer);
+        void delete_framebuffer(GLuint id);
+        std::weak_ptr<fixie::framebuffer> framebuffer(GLuint id);
+        std::weak_ptr<const fixie::framebuffer> framebuffer(GLuint id) const;
+        std::weak_ptr<fixie::framebuffer> default_framebuffer();
+        std::weak_ptr<const fixie::framebuffer> default_framebuffer() const;
+
+        void bind_draw_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer);
+        std::weak_ptr<const fixie::framebuffer> bound_draw_framebuffer() const;
+        std::weak_ptr<fixie::framebuffer> bound_draw_framebuffer();
+
+        void bind_read_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer);
+        std::weak_ptr<const fixie::framebuffer> bound_read_framebuffer() const;
+        std::weak_ptr<fixie::framebuffer> bound_read_framebuffer();
 
         GLuint insert_buffer(std::unique_ptr<fixie::buffer> buffer);
         void delete_buffer(GLuint id);
@@ -125,6 +141,11 @@ namespace fixie
         std::unordered_map< GLuint, std::shared_ptr<fixie::texture> > _textures;
         std::vector< std::weak_ptr<fixie::texture> > _bound_textures;
         std::vector<fixie::texture_environment> _texture_environments;
+
+        GLuint _next_framebuffer_id;
+        std::unordered_map< GLuint, std::shared_ptr<fixie::framebuffer> > _framebuffers;
+        std::weak_ptr<fixie::framebuffer> _bound_draw_framebuffer;
+        std::weak_ptr<fixie::framebuffer> _bound_read_framebuffer;
 
         GLuint _next_buffer_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::buffer> > _buffers;
