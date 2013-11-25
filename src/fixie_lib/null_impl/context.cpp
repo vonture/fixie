@@ -1,5 +1,6 @@
 #include "fixie_lib/null_impl/context.hpp"
 #include "fixie_lib/null_impl/texture.hpp"
+#include "fixie_lib/null_impl/framebuffer.hpp"
 #include "fixie_lib/null_impl/buffer.hpp"
 
 namespace fixie
@@ -25,6 +26,11 @@ namespace fixie
         std::unique_ptr<texture_impl> context::create_texture()
         {
             return std::unique_ptr<texture_impl>(new texture());
+        }
+
+        std::unique_ptr<framebuffer_impl> context::create_framebuffer()
+        {
+            return std::unique_ptr<framebuffer_impl>(new framebuffer());
         }
 
         std::unique_ptr<buffer_impl> context::create_buffer()

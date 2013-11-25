@@ -19,6 +19,7 @@
 #include "fixie_lib/matrix_stack.hpp"
 #include "fixie_lib/texture.hpp"
 #include "fixie_lib/buffer.hpp"
+#include "fixie_lib/framebuffer.hpp"
 #include "fixie_lib/vertex_attribute.hpp"
 #include "fixie_lib/texture_environment.hpp"
 
