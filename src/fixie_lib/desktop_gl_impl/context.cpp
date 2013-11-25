@@ -417,5 +417,10 @@ namespace fixie
         {
             gl_call(_functions, flush);
         }
+
+        void context::finish()
+        {
+            gl_call(_functions, finish);
+        }
     }
 }

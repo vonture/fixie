@@ -58,5 +58,9 @@ namespace fixie
         void context::flush()
         {
         }
+
+        void context::finish()
+        {
+        }
     }
 }

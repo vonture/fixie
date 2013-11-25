@@ -2124,7 +2124,19 @@ void FIXIE_APIENTRY glFinish(void)
 
 void FIXIE_APIENTRY glFlush(void)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->flush();
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glFogx(GLenum pname, GLfixed param)

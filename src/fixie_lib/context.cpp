@@ -106,6 +106,11 @@ namespace fixie
     {
         _impl->flush();
     }
+
+    void context::finish()
+    {
+        _impl->finish();
+    }
 }
 
 #include "null_impl/context.hpp"

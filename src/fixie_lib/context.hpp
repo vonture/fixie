@@ -30,6 +30,7 @@ namespace fixie
         virtual void clear(const state& state, GLbitfield mask) = 0;
 
         virtual void flush() = 0;
+        virtual void finish() = 0;
     };
 
     class context : public noncopyable
@@ -57,6 +58,7 @@ namespace fixie
         void clear(GLbitfield mask);
 
         void flush();
+        void finish();
 
         fixie::log& log();
         const fixie::log& log() const;

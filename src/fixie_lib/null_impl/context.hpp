@@ -26,6 +26,7 @@ namespace fixie
             virtual void clear(const state& state, GLbitfield mask) override;
 
             virtual void flush() override;
+            virtual void finish() override;
         };
     }
 }
