@@ -85,10 +85,10 @@ namespace fixie
             DECLARE_GL_FUNCTION(tex_parameter_fv, void, (GLenum target, GLenum pname, const GLfloat* params), glTexParameterfv);
             DECLARE_GL_FUNCTION(generate_mipmap, void, (GLenum target), glGenerateMipmap);
 
-            DECLARE_GL_FUNCTION(get_integerv, void, (GLenum pname, GLint *params), glGetIntegerv);
-            DECLARE_GL_FUNCTION(get_floatv, void, (GLenum pname, GLfloat *params), glGetFloatv);
+            DECLARE_GL_FUNCTION(get_integer_v, void, (GLenum pname, GLint *params), glGetIntegerv);
+            DECLARE_GL_FUNCTION(get_float_v, void, (GLenum pname, GLfloat *params), glGetFloatv);
             DECLARE_GL_FUNCTION(get_string, GLubyte*, (GLenum name), glGetString);
-            DECLARE_GL_FUNCTION(get_stringi, GLubyte*, (GLenum name, GLuint index), glGetStringi);
+            DECLARE_GL_FUNCTION(get_string_i, GLubyte*, (GLenum name, GLuint index), glGetStringi);
             DECLARE_GL_FUNCTION(get_error, GLenum, (), glGetError);
             DECLARE_GL_FUNCTION(get_framebuffer_attachment_parameter_iv, void, (GLenum target, GLenum attachment, GLenum pname, GLint* params), glGetFramebufferAttachmentParameteriv);
 

@@ -37,10 +37,10 @@ namespace fixie
                 #define GL_NUM_EXTENSIONS 0x821D
 
                 GLint num_extensions;
-                gl_call(_functions, get_integerv, GL_NUM_EXTENSIONS, &num_extensions);
+                gl_call(_functions, get_integer_v, GL_NUM_EXTENSIONS, &num_extensions);
                 for (GLint i = 0; i < num_extensions; i++)
                 {
-                    const GLubyte* extension_name = gl_call(_functions, get_stringi, GL_EXTENSIONS, i);
+                    const GLubyte* extension_name = gl_call(_functions, get_string_i, GL_EXTENSIONS, i);
                     _extensions.insert(reinterpret_cast<const char*>(extension_name));
                 }
             }
@@ -88,11 +88,11 @@ namespace fixie
         void context::initialize_state(fixie::state& state)
         {
             GLint viewport_values[4];
-            gl_call(_functions, get_integerv, GL_VIEWPORT, viewport_values);
+            gl_call(_functions, get_integer_v, GL_VIEWPORT, viewport_values);
             state.rasterizer_state().viewport() = rectangle(viewport_values[0], viewport_values[1], viewport_values[2], viewport_values[3]);
 
             GLint scissor_values[4];
-            gl_call(_functions, get_integerv, GL_SCISSOR_BOX, scissor_values);
+            gl_call(_functions, get_integer_v, GL_SCISSOR_BOX, scissor_values);
             state.rasterizer_state().scissor() = rectangle(scissor_values[0], scissor_values[1], scissor_values[2], scissor_values[3]);
         }
 
@@ -327,37 +327,37 @@ namespace fixie
             caps.max_model_view_stack_depth() = 1024;
             caps.max_projection_stack_depth() = 1024;
             caps.max_texture_stack_depth() = 1024;
-            gl_call(functions, get_integerv, GL_SUBPIXEL_BITS, &caps.subpixel_bits());
-            gl_call(functions, get_integerv, GL_MAX_TEXTURE_SIZE, &caps.max_texture_size());
+            gl_call(functions, get_integer_v, GL_SUBPIXEL_BITS, &caps.subpixel_bits());
+            gl_call(functions, get_integer_v, GL_MAX_TEXTURE_SIZE, &caps.max_texture_size());
 
             GLint max_viewport_dims[2];
-            gl_call(functions, get_integerv, GL_MAX_VIEWPORT_DIMS, max_viewport_dims);
+            gl_call(functions, get_integer_v, GL_MAX_VIEWPORT_DIMS, max_viewport_dims);
             caps.max_viewport_width() = max_viewport_dims[0];
             caps.max_viewport_height() = max_viewport_dims[1];
 
             #define GL_POINT_SIZE_RANGE 0x0B12
             GLfloat point_point_size_range_values[2];
-            gl_call(functions, get_floatv, GL_POINT_SIZE_RANGE, point_point_size_range_values);
+            gl_call(functions, get_float_v, GL_POINT_SIZE_RANGE, point_point_size_range_values);
             caps.aliased_point_size_range() = range(point_point_size_range_values[0], point_point_size_range_values[1]);
             caps.smooth_point_size_range() = range(point_point_size_range_values[0], point_point_size_range_values[1]);
 
             GLfloat aliased_line_width_range_values[2];
-            gl_call(functions, get_floatv, GL_ALIASED_LINE_WIDTH_RANGE, aliased_line_width_range_values);
+            gl_call(functions, get_float_v, GL_ALIASED_LINE_WIDTH_RANGE, aliased_line_width_range_values);
             caps.aliased_line_width_range() = range(aliased_line_width_range_values[0], aliased_line_width_range_values[1]);
 
             GLfloat smooth_line_width_range_values[2];
-            gl_call(functions, get_floatv, GL_SMOOTH_LINE_WIDTH_RANGE, smooth_line_width_range_values);
+            gl_call(functions, get_float_v, GL_SMOOTH_LINE_WIDTH_RANGE, smooth_line_width_range_values);
             caps.smooth_line_width_range() = range(smooth_line_width_range_values[0], smooth_line_width_range_values[1]);
 
-            gl_call(functions, get_integerv, GL_MAX_TEXTURE_UNITS, &caps.max_texture_units());
-            gl_call(functions, get_integerv, GL_SAMPLE_BUFFERS, &caps.sample_buffers());
-            gl_call(functions, get_integerv, GL_SAMPLES, &caps.samples());
+            gl_call(functions, get_integer_v, GL_MAX_TEXTURE_UNITS, &caps.max_texture_units());
+            gl_call(functions, get_integer_v, GL_SAMPLE_BUFFERS, &caps.sample_buffers());
+            gl_call(functions, get_integer_v, GL_SAMPLES, &caps.samples());
 
             GLint compressed_format_count;
-            gl_call(functions, get_integerv, GL_NUM_COMPRESSED_TEXTURE_FORMATS, &compressed_format_count);
+            gl_call(functions, get_integer_v, GL_NUM_COMPRESSED_TEXTURE_FORMATS, &compressed_format_count);
 
             std::vector<GLint> compressed_formats(compressed_format_count);
-            gl_call(functions, get_integerv, GL_COMPRESSED_TEXTURE_FORMATS, compressed_formats.data());
+            gl_call(functions, get_integer_v, GL_COMPRESSED_TEXTURE_FORMATS, compressed_formats.data());
             for (GLint i = 0; i < compressed_format_count; ++i)
             {
                 caps.insert_compressed_format(compressed_formats[i]);
@@ -385,12 +385,12 @@ namespace fixie
             }
             else
             {
-                gl_call(functions, get_integerv, GL_RED_BITS, &caps.red_bits());
-                gl_call(functions, get_integerv, GL_GREEN_BITS, &caps.green_bits());
-                gl_call(functions, get_integerv, GL_BLUE_BITS, &caps.blue_bits());
-                gl_call(functions, get_integerv, GL_ALPHA_BITS, &caps.alpha_bits());
-                gl_call(functions, get_integerv, GL_DEPTH_BITS, &caps.depth_bits());
-                gl_call(functions, get_integerv, GL_STENCIL_BITS, &caps.stencil_bits());
+                gl_call(functions, get_integer_v, GL_RED_BITS, &caps.red_bits());
+                gl_call(functions, get_integer_v, GL_GREEN_BITS, &caps.green_bits());
+                gl_call(functions, get_integer_v, GL_BLUE_BITS, &caps.blue_bits());
+                gl_call(functions, get_integer_v, GL_ALPHA_BITS, &caps.alpha_bits());
+                gl_call(functions, get_integer_v, GL_DEPTH_BITS, &caps.depth_bits());
+                gl_call(functions, get_integer_v, GL_STENCIL_BITS, &caps.stencil_bits());
             }
 
             return caps;
