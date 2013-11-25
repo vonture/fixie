@@ -85,12 +85,27 @@ namespace fixie
             DECLARE_GL_FUNCTION(tex_parameter_fv, void, (GLenum target, GLenum pname, const GLfloat* params), glTexParameterfv);
             DECLARE_GL_FUNCTION(generate_mipmap, void, (GLenum target), glGenerateMipmap);
 
+            DECLARE_GL_FUNCTION(is_renderbuffer, GLboolean, (GLuint renderbuffer), glIsRenderbuffer);
+            DECLARE_GL_FUNCTION(bind_renderbuffer, void, (GLenum target, GLuint renderbuffer), glBindRenderbuffer);
+            DECLARE_GL_FUNCTION(delete_renderbuffers, void, (GLsizei n, const GLuint* renderbuffers), glDeleteRenderbuffers);
+            DECLARE_GL_FUNCTION(gen_renderbuffers, void, (GLsizei n, GLuint* renderbuffers), glGenRenderbuffers);
+            DECLARE_GL_FUNCTION(renderbuffer_storage, void, (GLenum target, GLenum internalformat, GLsizei width, GLsizei height), glRenderbufferStorage);
+            DECLARE_GL_FUNCTION(get_renderbuffer_parameter_iv, void, (GLenum target, GLenum pname, GLint* params), glGetRenderbufferParameteriv);
+
+            DECLARE_GL_FUNCTION(is_framebuffer, GLboolean, (GLuint framebuffer), glIsFramebuffer);
+            DECLARE_GL_FUNCTION(bind_framebuffer, void, (GLenum target, GLuint framebuffer), glBindFramebuffer);
+            DECLARE_GL_FUNCTION(delete_framebuffers, void, (GLsizei n, const GLuint* framebuffers), glDeleteFramebuffers);
+            DECLARE_GL_FUNCTION(gen_framebuffers, void, (GLsizei n, GLuint* framebuffers), glGenFramebuffers);
+            DECLARE_GL_FUNCTION(check_framebuffer_status, GLenum, (GLenum target), glCheckFramebufferStatus);
+            DECLARE_GL_FUNCTION(framebuffer_renderbuffer, void, (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer), glFramebufferRenderbuffer);
+            DECLARE_GL_FUNCTION(framebuffer_texture_2d, void, (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level), glFramebufferTexture2D);
+            DECLARE_GL_FUNCTION(get_framebuffer_attachment_parameter_iv, void, (GLenum target, GLenum attachment, GLenum pname, GLint* params), glGetFramebufferAttachmentParameteriv);
+
             DECLARE_GL_FUNCTION(get_integer_v, void, (GLenum pname, GLint *params), glGetIntegerv);
             DECLARE_GL_FUNCTION(get_float_v, void, (GLenum pname, GLfloat *params), glGetFloatv);
             DECLARE_GL_FUNCTION(get_string, GLubyte*, (GLenum name), glGetString);
             DECLARE_GL_FUNCTION(get_string_i, GLubyte*, (GLenum name, GLuint index), glGetStringi);
             DECLARE_GL_FUNCTION(get_error, GLenum, (), glGetError);
-            DECLARE_GL_FUNCTION(get_framebuffer_attachment_parameter_iv, void, (GLenum target, GLenum attachment, GLenum pname, GLint* params), glGetFramebufferAttachmentParameteriv);
 
             DECLARE_GL_FUNCTION(create_shader, GLuint, (GLenum shader_type), glCreateShader);
             DECLARE_GL_FUNCTION(delete_shader, void, (GLuint shader), glDeleteShader);
@@ -163,6 +178,8 @@ namespace fixie
 
             DECLARE_GL_FUNCTION(draw_arrays, void, (GLenum mode, GLint first, GLsizei count), glDrawArrays);
             DECLARE_GL_FUNCTION(draw_elements, void, (GLenum mode, GLsizei count, GLenum type, const GLvoid* indices), glDrawElements);
+
+            DECLARE_GL_FUNCTION(read_pixels, void, (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels), glReadPixels);
 
             DECLARE_GL_FUNCTION(debug_message_control, void, (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled), glDebugMessageControl);
             DECLARE_GL_FUNCTION(debug_message_callback, void, (GLDEBUGPROC callback, const GLvoid* userParam), glDebugMessageCallback);

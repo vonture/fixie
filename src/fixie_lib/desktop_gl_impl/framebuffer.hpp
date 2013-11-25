@@ -26,9 +26,20 @@ namespace fixie
 
             virtual GLenum status() const override;
 
+        protected:
+            framebuffer(GLuint id, std::shared_ptr<const gl_functions> functions);
+
         private:
             std::shared_ptr<const gl_functions> _functions;
             GLuint _id;
+        };
+
+        class default_framebuffer : public framebuffer
+        {
+        public:
+            explicit default_framebuffer(std::shared_ptr<const gl_functions> functions);
+
+            virtual GLenum status() const override;
         };
     }
 }

@@ -105,7 +105,7 @@ namespace fixie
 
         std::unique_ptr<framebuffer_impl> context::create_default_framebuffer()
         {
-            return std::unique_ptr<framebuffer_impl>(new framebuffer(_functions));
+            return std::unique_ptr<framebuffer_impl>(new default_framebuffer(_functions));
         }
 
         std::unique_ptr<framebuffer_impl> context::create_framebuffer()
