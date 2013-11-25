@@ -7,7 +7,7 @@ namespace sample_util
 {
     static bool seed_random()
     {
-        srand(time(nullptr));
+        srand(static_cast<unsigned int>(time(nullptr)));
         return true;
     }
 
