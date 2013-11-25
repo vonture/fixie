@@ -90,6 +90,11 @@ namespace fixie
         return _mips[mip].height;
     }
 
+    GLenum texture::mip_level_internal_format(size_t mip) const
+    {
+        return _mips[mip].internal_format;
+    }
+
     GLboolean texture::complete() const
     {
         if (_mips.size() == 0)
@@ -232,5 +237,4 @@ namespace fixie
             _mips[i].height = std::max(_mips[0].height, 1);
         }
     }
-
 }

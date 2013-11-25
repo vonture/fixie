@@ -44,6 +44,7 @@ namespace fixie
         size_t mip_levels() const;
         GLsizei mip_level_width(size_t mip) const;
         GLsizei mip_level_height(size_t mip) const;
+        GLenum mip_level_internal_format(size_t mip) const;
         GLboolean complete() const;
 
         std::weak_ptr<texture_impl> impl();
