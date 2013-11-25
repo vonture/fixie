@@ -28,6 +28,8 @@ namespace fixie
         virtual void draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices) = 0;
 
         virtual void clear(const state& state, GLbitfield mask) = 0;
+
+        virtual void flush() = 0;
     };
 
     class context : public noncopyable
@@ -53,6 +55,8 @@ namespace fixie
         void draw_elements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices);
 
         void clear(GLbitfield mask);
+
+        void flush();
 
         fixie::log& log();
         const fixie::log& log() const;

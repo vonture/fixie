@@ -412,5 +412,10 @@ namespace fixie
 
             return caps;
         }
+
+        void context::flush()
+        {
+            gl_call(_functions, flush);
+        }
     }
 }

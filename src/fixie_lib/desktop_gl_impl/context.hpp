@@ -33,6 +33,8 @@ namespace fixie
 
             virtual void clear(const state& state, GLbitfield mask) override;
 
+            virtual void flush() override;
+
         private:
             std::shared_ptr<const gl_functions> _functions;
             gl_version _version;

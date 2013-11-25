@@ -54,5 +54,9 @@ namespace fixie
         void context::clear(const state& state, GLbitfield mask)
         {
         }
+
+        void context::flush()
+        {
+        }
     }
 }

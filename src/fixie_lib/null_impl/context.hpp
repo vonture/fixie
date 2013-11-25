@@ -24,6 +24,8 @@ namespace fixie
             virtual void draw_elements(const state& state, GLenum mode, GLsizei count, GLenum type, const GLvoid* indices) override;
 
             virtual void clear(const state& state, GLbitfield mask) override;
+
+            virtual void flush() override;
         };
     }
 }

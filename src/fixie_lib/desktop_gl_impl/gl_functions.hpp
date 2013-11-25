@@ -181,6 +181,8 @@ namespace fixie
 
             DECLARE_GL_FUNCTION(read_pixels, void, (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels), glReadPixels);
 
+            DECLARE_GL_FUNCTION(flush, void, (void), glFlush);
+
             DECLARE_GL_FUNCTION(debug_message_control, void, (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled), glDebugMessageControl);
             DECLARE_GL_FUNCTION(debug_message_callback, void, (GLDEBUGPROC callback, const GLvoid* userParam), glDebugMessageCallback);
         };

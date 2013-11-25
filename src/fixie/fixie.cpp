@@ -2107,7 +2107,19 @@ void FIXIE_APIENTRY glEnableClientState(GLenum array)
 
 void FIXIE_APIENTRY glFinish(void)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->finish();
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glFlush(void)
