@@ -68,7 +68,10 @@ namespace fixie
 
         context::~context()
         {
-            gl_call_nothrow(_functions, delete_vertex_arrays, 1, &_vao);
+            if (_vao != 0)
+            {
+                gl_call_nothrow(_functions, delete_vertex_arrays, 1, &_vao);
+            }
         }
 
         const fixie::caps& context::caps()
