@@ -11,8 +11,8 @@ namespace fixie
         class buffer : public fixie::buffer_impl
         {
         public:
-            buffer(std::shared_ptr<const gl_functions> functions);
-            ~buffer();
+            explicit buffer(std::shared_ptr<const gl_functions> functions);
+            virtual ~buffer();
 
             GLuint id() const;
 

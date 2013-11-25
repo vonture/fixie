@@ -11,8 +11,8 @@ namespace fixie
         class texture : public fixie::texture_impl
         {
         public:
-            texture(std::shared_ptr<const gl_functions> functions);
-            ~texture();
+            explicit texture(std::shared_ptr<const gl_functions> functions);
+            virtual ~texture();
 
             GLuint id() const;
 
