@@ -2822,7 +2822,48 @@ void FIXIE_APIENTRY glPushMatrix(void)
 
 void FIXIE_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        std::shared_ptr<fixie::framebuffer> framebuffer = ctx->state().bound_read_framebuffer().lock();
+        if (framebuffer == nullptr)
+        {
+            throw fixie::state_error("null read framebuffer.");
+        }
+
+        if (width < 0 || height < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("read pixels width and height must be at least 0, %i and %i provided.",
+                                                           width, height));
+        }
+
+        if (format != GL_RGBA || format != framebuffer->preferred_read_format())
+        {
+            throw fixie::invalid_operation_error(fixie::format("read pixels format must be GL_RGBA or IMPLEMENTATION_COLOR_READ_FORMAT, "
+                                                               "%s provided.", fixie::get_gl_enum_name(format)));
+        }
+
+        if (type != GL_UNSIGNED_BYTE || type != framebuffer->preferred_read_type())
+        {
+            throw fixie::invalid_operation_error(fixie::format("read pixels type must be GL_UNSIGNED_BYTE or IMPLEMENTATION_COLOR_READ_TYPE, "
+                                                               "%s provided.", fixie::get_gl_enum_name(type)));
+        }
+
+        framebuffer->read_pixels(x, y, width, height, format, type, pixels);
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glRotatex(GLfixed angle, GLfixed x, GLfixed y, GLfixed z)
