@@ -1,4 +1,5 @@
 #include "fixie_lib/lighting_state.hpp"
+#include "fixie_lib/util.hpp"
 
 #include "fixie/fixie_gl_es.h"
 
@@ -66,15 +67,11 @@ namespace fixie
     lighting_state get_default_lighting_state(const caps& caps)
     {
         lighting_state state(caps.max_lights());
-
         state.enabled() = GL_FALSE;
         state.front_material() = get_default_material();
         state.back_material() = get_default_material();
         state.light_model() = get_default_light_model();
-        for (size_t i = 0; i < static_cast<size_t>(caps.max_lights()); ++i)
-        {
-            state.light(i) = get_default_light(i);
-        }
+        for_each_n(0, caps.max_lights(), [&](size_t i){ state.light(i) = get_default_light(i); });
 
         return state;
     }
