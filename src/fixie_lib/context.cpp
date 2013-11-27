@@ -208,13 +208,13 @@ namespace fixie
             current_context->state().error() = error.error_code();
         }
 
-        log_message(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_ERROR, error.error_code(), GL_DEBUG_SEVERITY_HIGH,
+        log_message(GL_DEBUG_SOURCE_API_KHR, GL_DEBUG_TYPE_ERROR_KHR, error.error_code(), GL_DEBUG_SEVERITY_HIGH_KHR,
                     format("%s: %s", error.error_code_description().c_str(), error.error_msg().c_str()));
     }
 
     void log_context_error(const context_error& error)
     {
-        log_message(GL_DEBUG_SOURCE_THIRD_PARTY, GL_DEBUG_TYPE_ERROR, GL_DEBUG_SEVERITY_HIGH, 0, error.error_msg());
+        log_message(GL_DEBUG_SOURCE_THIRD_PARTY_KHR, GL_DEBUG_TYPE_ERROR_KHR, GL_DEBUG_SEVERITY_HIGH_KHR, 0, error.error_msg());
     }
 
     void log_message(GLenum source, GLenum type, GLuint id, GLenum severity, const std::string& msg)

@@ -37,35 +37,35 @@ namespace fixie
         std::string source_text;
         switch (source)
         {
-        case GL_DEBUG_SOURCE_API:             source_text = "api";             break;
-        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   source_text = "windows";         break;
-        case GL_DEBUG_SOURCE_SHADER_COMPILER: source_text = "shader compiler"; break;
-        case GL_DEBUG_SOURCE_THIRD_PARTY:     source_text = "third party";     break;
-        case GL_DEBUG_SOURCE_APPLICATION:     source_text = "application";     break;
-        case GL_DEBUG_SOURCE_OTHER:           source_text = "other";           break;
-        default:                              source_text = "unknown";         break;
+        case GL_DEBUG_SOURCE_API_KHR:             source_text = "api";             break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM_KHR:   source_text = "windows";         break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER_KHR: source_text = "shader compiler"; break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY_KHR:     source_text = "third party";     break;
+        case GL_DEBUG_SOURCE_APPLICATION_KHR:     source_text = "application";     break;
+        case GL_DEBUG_SOURCE_OTHER_KHR:           source_text = "other";           break;
+        default:                                  source_text = "unknown";         break;
         }
 
         std::string type_text;
         switch (type)
         {
-        case GL_DEBUG_TYPE_ERROR:               type_text = "error";               break;
-        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: type_text = "deprecated behavior"; break;
-        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  type_text = "undefined behavior";  break;
-        case GL_DEBUG_TYPE_PORTABILITY:         type_text = "portability";         break;
-        case GL_DEBUG_TYPE_PERFORMANCE:         type_text = "performance";         break;
-        case GL_DEBUG_TYPE_OTHER:               type_text = "other";               break;
-        default:                                type_text = "unknown";             break;
+        case GL_DEBUG_TYPE_ERROR_KHR:               type_text = "error";               break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_KHR: type_text = "deprecated behavior"; break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_KHR:  type_text = "undefined behavior";  break;
+        case GL_DEBUG_TYPE_PORTABILITY_KHR:         type_text = "portability";         break;
+        case GL_DEBUG_TYPE_PERFORMANCE_KHR:         type_text = "performance";         break;
+        case GL_DEBUG_TYPE_OTHER_KHR:               type_text = "other";               break;
+        default:                                    type_text = "unknown";             break;
         }
-        std::ostream& output_stream = (type == GL_DEBUG_TYPE_ERROR) ? std::cerr : std::clog;
+        std::ostream& output_stream = (type == GL_DEBUG_TYPE_ERROR_KHR) ? std::cerr : std::clog;
 
         std::string severity_text;
         switch (severity)
         {
-        case GL_DEBUG_SEVERITY_HIGH:   severity_text = "high";    break;
-        case GL_DEBUG_SEVERITY_MEDIUM: severity_text = "medium";  break;
-        case GL_DEBUG_SEVERITY_LOW:    severity_text = "low";     break;
-        default:                       severity_text = "unknown"; break;
+        case GL_DEBUG_SEVERITY_HIGH_KHR:   severity_text = "high";    break;
+        case GL_DEBUG_SEVERITY_MEDIUM_KHR: severity_text = "medium";  break;
+        case GL_DEBUG_SEVERITY_LOW_KHR:    severity_text = "low";     break;
+        default:                           severity_text = "unknown"; break;
         }
 
         output_stream << "fixie debug message: " << std::endl;

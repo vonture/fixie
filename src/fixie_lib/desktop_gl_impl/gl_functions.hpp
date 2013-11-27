@@ -185,7 +185,7 @@ namespace fixie
             DECLARE_GL_FUNCTION(finish, void, (void), glFinish);
 
             DECLARE_GL_FUNCTION(debug_message_control, void, (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled), glDebugMessageControl);
-            DECLARE_GL_FUNCTION(debug_message_callback, void, (GLDEBUGPROC callback, const GLvoid* userParam), glDebugMessageCallback);
+            DECLARE_GL_FUNCTION(debug_message_callback, void, (GLDEBUGPROCKHR callback, const GLvoid* userParam), glDebugMessageCallback);
         };
 
         #undef DECLARE_GL_FUNCTION

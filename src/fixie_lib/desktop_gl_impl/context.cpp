@@ -56,8 +56,8 @@ namespace fixie
 
             if (_version >= gl_4_3 || _extensions.find("GL_KHR_debug") != end(_extensions))
             {
-                gl_call(_functions, enable, GL_DEBUG_OUTPUT_SYNCHRONOUS);
-                gl_call(_functions, debug_message_control, GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM, 0, nullptr, GL_TRUE);
+                gl_call(_functions, enable, GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR);
+                gl_call(_functions, debug_message_control, GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_MEDIUM_KHR, 0, nullptr, GL_TRUE);
                 gl_call(_functions, debug_message_callback, debug_callback, this);
             }
 
