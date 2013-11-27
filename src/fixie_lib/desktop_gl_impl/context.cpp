@@ -244,7 +244,7 @@ namespace fixie
             }
         }
 
-        void context::sync_vertex_attribute(const state& state, const vertex_attribute& attribute, GLint location, GLboolean normalized)
+        void context::sync_vertex_attribute(const vertex_attribute& attribute, GLint location, GLboolean normalized)
         {
             if (location != -1)
             {
@@ -270,18 +270,18 @@ namespace fixie
             }
         }
 
-        void context::sync_vertex_attributes(const state& state, std::weak_ptr<const shader> shader)
+        void context::sync_vertex_attributes(std::weak_ptr<const fixie::vertex_array> vertex_array, std::weak_ptr<const shader> shader)
         {
             std::shared_ptr<const desktop_gl_impl::shader> locked_shader = shader.lock();
             assert(locked_shader != nullptr);
 
-            sync_vertex_attribute(state, state.vertex_attribute(), locked_shader->vertex_attribute_location(), GL_FALSE);
-            sync_vertex_attribute(state, state.color_attribute(), locked_shader->color_attribute_location(), GL_TRUE);
-            sync_vertex_attribute(state, state.normal_attribute(), locked_shader->normal_attribute_location(), GL_TRUE);
-            for (size_t i = 0; i < static_cast<size_t>(_caps.max_texture_units()); ++i)
-            {
-                sync_vertex_attribute(state, state.texcoord_attribute(i), locked_shader->texcoord_attribute_location(i), GL_TRUE);
-            }
+            std::shared_ptr<const fixie::vertex_array> locked_vertex_array = vertex_array.lock();
+            assert(locked_vertex_array != nullptr);
+
+            sync_vertex_attribute(locked_vertex_array->vertex_attribute(), locked_shader->vertex_attribute_location(), GL_FALSE);
+            sync_vertex_attribute(locked_vertex_array->color_attribute(), locked_shader->color_attribute_location(), GL_TRUE);
+            sync_vertex_attribute(locked_vertex_array->normal_attribute(), locked_shader->normal_attribute_location(), GL_TRUE);
+            for_each_n(0, _caps.max_texture_units(), [&](size_t i) { sync_vertex_attribute(locked_vertex_array->texcoord_attribute(i), locked_shader->texcoord_attribute_location(i), GL_TRUE); });
         }
 
         void context::sync_textures(const state& state)
@@ -323,7 +323,7 @@ namespace fixie
         {
             std::shared_ptr<shader> shader = _shader_cache.get_shader(state, _caps).lock();
             shader->sync_state(state);
-            sync_vertex_attributes(state, shader);
+            sync_vertex_attributes(state.bound_vertex_array(), shader);
             sync_textures(state);
             sync_framebuffer(state);
             sync_depth_stencil_state(state.depth_stencil_state());

@@ -20,7 +20,7 @@
 #include "fixie_lib/texture.hpp"
 #include "fixie_lib/buffer.hpp"
 #include "fixie_lib/framebuffer.hpp"
-#include "fixie_lib/vertex_attribute.hpp"
+#include "fixie_lib/vertex_array.hpp"
 #include "fixie_lib/texture_environment.hpp"
 
 namespace fixie
@@ -28,7 +28,7 @@ namespace fixie
     class state
     {
     public:
-        state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_framebuffer);
+        state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_fbo, std::unique_ptr<fixie::vertex_array> default_vao);
 
         const fixie::clear_state& clear_state() const;
         fixie::clear_state& clear_state();
@@ -100,20 +100,19 @@ namespace fixie
         std::weak_ptr<const fixie::buffer> bound_element_array_buffer() const;
         std::weak_ptr<fixie::buffer> bound_element_array_buffer();
 
-        fixie::vertex_attribute& vertex_attribute();
-        const fixie::vertex_attribute& vertex_attribute() const;
+        GLuint insert_vertex_array(std::unique_ptr<fixie::vertex_array> vao);
+        void delete_vertex_array(GLuint id);
+        std::weak_ptr<fixie::vertex_array> vertex_array(GLuint id);
+        std::weak_ptr<const fixie::vertex_array> vertex_array(GLuint id) const;
+        std::weak_ptr<fixie::vertex_array> default_vertex_array();
+        std::weak_ptr<const fixie::vertex_array> default_vertex_array() const;
 
-        fixie::vertex_attribute& normal_attribute();
-        const fixie::vertex_attribute& normal_attribute() const;
-
-        fixie::vertex_attribute& color_attribute();
-        const fixie::vertex_attribute& color_attribute() const;
+        void bind_vertex_array(std::weak_ptr<fixie::vertex_array> vao);
+        std::weak_ptr<const fixie::vertex_array> bound_vertex_array() const;
+        std::weak_ptr<fixie::vertex_array> bound_vertex_array();
 
         size_t& active_client_texture();
         const size_t& active_client_texture() const;
-
-        fixie::vertex_attribute& texcoord_attribute(size_t unit);
-        const fixie::vertex_attribute& texcoord_attribute(size_t unit) const;
 
         GLenum& shade_model();
         const GLenum& shade_model() const;
@@ -152,11 +151,11 @@ namespace fixie
         std::weak_ptr<fixie::buffer> _bound_array_buffer;
         std::weak_ptr<fixie::buffer> _bound_element_array_buffer;
 
-        fixie::vertex_attribute _vertex_attribute;
-        fixie::vertex_attribute _normal_attribute;
-        fixie::vertex_attribute _color_attribute;
+        GLuint _next_vertex_array_id;
+        std::unordered_map< GLuint, std::shared_ptr<fixie::vertex_array> > _vertex_arrays;
+        std::weak_ptr<fixie::vertex_array> _bound_vertex_array;
+
         size_t _active_client_texture;
-        std::vector<fixie::vertex_attribute> _texcoord_attributes;
 
         GLenum _shade_model;
 

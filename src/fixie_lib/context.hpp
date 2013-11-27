@@ -41,6 +41,7 @@ namespace fixie
         GLuint create_texture();
         GLuint create_framebuffer();
         GLuint create_buffer();
+        GLuint create_vertex_array();
 
         fixie::state& state();
         const fixie::state& state() const;

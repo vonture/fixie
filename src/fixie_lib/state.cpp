@@ -8,7 +8,7 @@
 
 namespace fixie
 {
-    state::state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_framebuffer)
+    state::state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_fbo, std::unique_ptr<fixie::vertex_array> default_vao)
         : _clear_state(get_default_clear_state())
         , _depth_stencil_state(get_default_depth_stencil_state())
         , _rasterizer_state(get_default_rasterizer_state())
@@ -26,20 +26,21 @@ namespace fixie
         , _next_buffer_id(1)
         , _bound_array_buffer()
         , _bound_element_array_buffer()
+        , _next_vertex_array_id(1)
+        , _bound_vertex_array()
         , _active_client_texture(0)
-        , _vertex_attribute(get_default_vertex_attribute())
-        , _normal_attribute(get_default_normal_attribute())
-        , _color_attribute(get_default_color_attribute())
-        , _texcoord_attributes(caps.max_texture_units())
         , _shade_model(GL_SMOOTH)
         , _error(GL_NO_ERROR)
     {
-        _framebuffers.insert(std::make_pair(0, std::move(default_framebuffer)));
-        bind_draw_framebuffer(this->default_framebuffer());
-        bind_read_framebuffer(this->default_framebuffer());
+        _framebuffers.insert(std::make_pair(0, std::move(default_fbo)));
+        bind_draw_framebuffer(default_framebuffer());
+        bind_read_framebuffer(default_framebuffer());
+
+        _vertex_arrays.insert(std::make_pair(0, std::move(default_vao)));
+        bind_vertex_array(default_vertex_array());
+
         std::generate(begin(_clip_planes), end(_clip_planes), get_default_clip_plane);
         std::generate(begin(_texture_environments), end(_texture_environments), get_default_texture_environment);
-        std::generate(begin(_texcoord_attributes), end(_texcoord_attributes), get_default_texcoord_attribute);
     }
 
     const fixie::clear_state& state::clear_state() const
@@ -240,27 +241,27 @@ namespace fixie
 
     std::weak_ptr<const fixie::framebuffer> state::bound_draw_framebuffer() const
     {
-        return _bound_draw_framebuffer;
+        return _bound_draw_framebuffer.expired() ? default_framebuffer() : _bound_draw_framebuffer;
     }
 
     std::weak_ptr<fixie::framebuffer> state::bound_draw_framebuffer()
     {
-        return _bound_draw_framebuffer;
+        return _bound_draw_framebuffer.expired() ? default_framebuffer() : _bound_draw_framebuffer;
     }
 
     void state::bind_read_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer)
     {
-        _bound_read_framebuffer = framebuffer.expired() ? default_framebuffer() : framebuffer;
+        _bound_read_framebuffer = framebuffer;
     }
 
     std::weak_ptr<const fixie::framebuffer> state::bound_read_framebuffer() const
     {
-        return _bound_read_framebuffer;
+        return _bound_read_framebuffer.expired() ? default_framebuffer() : _bound_read_framebuffer;
     }
 
     std::weak_ptr<fixie::framebuffer> state::bound_read_framebuffer()
     {
-        return _bound_read_framebuffer;
+        return _bound_read_framebuffer.expired() ? default_framebuffer() : _bound_read_framebuffer;
     }
 
     GLuint state::insert_buffer(std::unique_ptr<fixie::buffer> buffer)
@@ -341,54 +342,62 @@ namespace fixie
         return _bound_element_array_buffer;
     }
 
-    fixie::vertex_attribute& state::vertex_attribute()
+    GLuint state::insert_vertex_array(std::unique_ptr<fixie::vertex_array> vao)
     {
-        return _vertex_attribute;
+        GLuint id = _next_vertex_array_id++;
+        _vertex_arrays[id] = std::move(vao);
+        return id;
     }
 
-    const fixie::vertex_attribute& state::vertex_attribute() const
+    void state::delete_vertex_array(GLuint id)
     {
-        return _vertex_attribute;
+        auto iter = _vertex_arrays.find(id);
+        if (iter != end(_vertex_arrays) && id != 0)
+        {
+            _vertex_arrays.erase(iter);
+        }
     }
 
-    fixie::vertex_attribute& state::normal_attribute()
+    std::weak_ptr<fixie::vertex_array> state::vertex_array(GLuint id)
     {
-        return _normal_attribute;
+        auto iter = _vertex_arrays.find(id);
+        return (iter != end(_vertex_arrays)) ? iter->second : nullptr;
     }
 
-    const fixie::vertex_attribute& state::normal_attribute() const
+    std::weak_ptr<const fixie::vertex_array> state::vertex_array(GLuint id) const
     {
-        return _normal_attribute;
+        auto iter = _vertex_arrays.find(id);
+        return (iter != end(_vertex_arrays)) ? iter->second : nullptr;
     }
 
-    fixie::vertex_attribute& state::color_attribute()
+    std::weak_ptr<fixie::vertex_array> state::default_vertex_array()
     {
-        return _color_attribute;
+        return vertex_array(0);
     }
 
-    const fixie::vertex_attribute& state::color_attribute() const
+    std::weak_ptr<const fixie::vertex_array> state::default_vertex_array() const
     {
-        return _color_attribute;
+        return vertex_array(0);
+    }
+
+    void state::bind_vertex_array(std::weak_ptr<fixie::vertex_array> vao)
+    {
+        _bound_vertex_array = vao;
+    }
+
+    std::weak_ptr<const fixie::vertex_array> state::bound_vertex_array() const
+    {
+        return _bound_vertex_array.expired() ? default_vertex_array() : _bound_vertex_array;
+    }
+
+    std::weak_ptr<fixie::vertex_array> state::bound_vertex_array()
+    {
+        return _bound_vertex_array.expired() ? default_vertex_array() : _bound_vertex_array;
     }
 
     size_t& state::active_client_texture()
     {
         return _active_client_texture;
-    }
-
-    const size_t& state::active_client_texture() const
-    {
-        return _active_client_texture;
-    }
-
-    fixie::vertex_attribute& state::texcoord_attribute(size_t unit)
-    {
-        return _texcoord_attributes[unit];
-    }
-
-    const fixie::vertex_attribute& state::texcoord_attribute(size_t unit) const
-    {
-        return _texcoord_attributes[unit];
     }
 
     GLenum& state::shade_model()

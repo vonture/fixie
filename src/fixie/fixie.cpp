@@ -934,13 +934,19 @@ namespace fixie
         {
             std::shared_ptr<context> ctx = get_current_context();
 
+            std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+            if (vertex_array == nullptr)
+            {
+                throw fixie::state_error("null vertex array bound.");
+            }
+
             vertex_attribute* attribute = nullptr;
             switch (array)
             {
-            case GL_VERTEX_ARRAY:        attribute = &ctx->state().vertex_attribute();                                       break;
-            case GL_NORMAL_ARRAY:        attribute = &ctx->state().normal_attribute();                                       break;
-            case GL_COLOR_ARRAY:         attribute = &ctx->state().color_attribute();                                        break;
-            case GL_TEXTURE_COORD_ARRAY: attribute = &ctx->state().texcoord_attribute(ctx->state().active_client_texture()); break;
+            case GL_VERTEX_ARRAY:        attribute = &vertex_array->vertex_attribute();                                       break;
+            case GL_NORMAL_ARRAY:        attribute = &vertex_array->normal_attribute();                                       break;
+            case GL_COLOR_ARRAY:         attribute = &vertex_array->color_attribute();                                        break;
+            case GL_TEXTURE_COORD_ARRAY: attribute = &vertex_array->texcoord_attribute(ctx->state().active_client_texture()); break;
             default: throw invalid_enum_error(format("invalid client state, %s.", get_gl_enum_name(array).c_str()));
             }
 
@@ -1097,7 +1103,13 @@ void FIXIE_APIENTRY glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat 
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->color_attribute();
         attribute.generic_values() = fixie::vector4(red, green, blue, alpha);
     }
     catch (const fixie::gl_error& e)
@@ -1269,7 +1281,13 @@ void FIXIE_APIENTRY glMultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLflo
                                                           max_texture_units - 1, fixie::get_gl_enum_name(target).c_str()));
         }
 
-        fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(target - GL_TEXTURE0);
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->texcoord_attribute(target - GL_TEXTURE0);
         attribute.generic_values() = fixie::vector4(s, t, r, q);
     }
     catch (const fixie::gl_error& e)
@@ -1292,7 +1310,13 @@ void FIXIE_APIENTRY glNormal3f(GLfloat nx, GLfloat ny, GLfloat nz)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::vertex_attribute& attribute = ctx->state().normal_attribute();
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->normal_attribute();
         attribute.generic_values() = fixie::vector4(nx, ny, nz, 1.0f);
     }
     catch (const fixie::gl_error& e)
@@ -1742,7 +1766,13 @@ void FIXIE_APIENTRY glColor4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->color_attribute();
 
         GLfloat divisor = static_cast<GLfloat>(std::numeric_limits<GLubyte>::max());
         attribute.generic_values() = fixie::vector4(red / divisor, green / divisor, blue / divisor, alpha / divisor);
@@ -1767,7 +1797,13 @@ void FIXIE_APIENTRY glColor4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed 
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->color_attribute();
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(red), fixie::fixed_to_float(green), fixie::fixed_to_float(blue), fixie::fixed_to_float(alpha));
     }
     catch (const fixie::gl_error& e)
@@ -1818,7 +1854,13 @@ void FIXIE_APIENTRY glColorPointer(GLint size, GLenum type, GLsizei stride, cons
             throw fixie::invalid_value_error(fixie::format("color stride cannot be negative, %i provided.", stride));
         }
 
-        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->color_attribute();
         attribute.size() = size;
         attribute.type() = type;
         attribute.stride() = stride;
@@ -2603,7 +2645,13 @@ void FIXIE_APIENTRY glMultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfix
                                                           max_texture_units - 1, fixie::get_gl_enum_name(target).c_str()));
         }
 
-        fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(target - GL_TEXTURE0);
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->texcoord_attribute(target - GL_TEXTURE0);
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(s), fixie::fixed_to_float(t), fixie::fixed_to_float(r), fixie::fixed_to_float(q));
     }
     catch (const fixie::gl_error& e)
@@ -2626,7 +2674,13 @@ void FIXIE_APIENTRY glNormal3x(GLfixed nx, GLfixed ny, GLfixed nz)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        fixie::vertex_attribute& attribute = ctx->state().color_attribute();
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->color_attribute();
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(nx), fixie::fixed_to_float(ny), fixie::fixed_to_float(nz), 1.0f);
     }
     catch (const fixie::gl_error& e)
@@ -2665,7 +2719,13 @@ void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *p
             throw fixie::invalid_value_error(fixie::format("normal stride cannot be negative, %i provided.", stride));
         }
 
-        fixie::vertex_attribute& attribute = ctx->state().normal_attribute();
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->normal_attribute();
         attribute.size() = 3;
         attribute.type() = type;
         attribute.stride() = stride;
@@ -2991,7 +3051,13 @@ void FIXIE_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, c
             throw fixie::invalid_value_error(fixie::format("texcoord stride cannot be negative, %i provided.", stride));
         }
 
-        fixie::vertex_attribute& attribute = ctx->state().texcoord_attribute(ctx->state().active_client_texture());
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->texcoord_attribute(ctx->state().active_client_texture());
         attribute.size() = size;
         attribute.type() = type;
         attribute.stride() = stride;
@@ -3168,7 +3234,13 @@ void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, con
             throw fixie::invalid_value_error(fixie::format("vertex stride cannot be negative, %i provided.", stride));
         }
 
-        fixie::vertex_attribute& attribute = ctx->state().vertex_attribute();
+        std::shared_ptr<fixie::vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+        if (vertex_array == nullptr)
+        {
+            throw fixie::state_error("null vertex array bound.");
+        }
+
+        fixie::vertex_attribute& attribute = vertex_array->vertex_attribute();
         attribute.size() = size;
         attribute.type() = type;
         attribute.stride() = stride;
