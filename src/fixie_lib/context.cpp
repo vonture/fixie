@@ -127,6 +127,7 @@ namespace fixie
         auto insert_if = [&](GLboolean cond, const std::string& extension){ extension_set.insert(std::move(extension)); };
 
         insert_if(caps.supports_framebuffer_objects(), "GL_OES_framebuffer_object");
+        insert_if(caps.supports_vertex_array_objects(), "GL_OES_vertex_array_object");
 
         return extension_set;
     }

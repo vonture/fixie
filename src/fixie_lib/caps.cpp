@@ -277,4 +277,14 @@ namespace fixie
     {
         return _supports_framebuffer_objects;
     }
+
+    GLboolean& caps::supports_vertex_array_objects()
+    {
+        return _supports_vertex_array_objects;
+    }
+
+    const GLboolean& caps::supports_vertex_array_objects() const
+    {
+        return _supports_vertex_array_objects;
+    }
 }

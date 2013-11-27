@@ -92,4 +92,25 @@ void FIXIE_APIENTRY glGenerateMipmapOES(GLenum target)
     UNIMPLEMENTED();
 }
 
+void FIXIE_APIENTRY glBindVertexArrayOES(GLuint array)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glDeleteVertexArraysOES(GLsizei n, const GLuint *arrays)
+{
+    UNIMPLEMENTED();
+}
+
+void FIXIE_APIENTRY glGenVertexArraysOES(GLsizei n, GLuint *arrays)
+{
+    UNIMPLEMENTED();
+}
+
+GLboolean FIXIE_APIENTRY glIsVertexArrayOES(GLuint array)
+{
+    UNIMPLEMENTED();
+    return GL_FALSE;
+}
+
 }

@@ -87,6 +87,9 @@ namespace fixie
         GLboolean& supports_framebuffer_objects();
         const GLboolean& supports_framebuffer_objects() const;
 
+        GLboolean& supports_vertex_array_objects();
+        const GLboolean& supports_vertex_array_objects() const;
+
     private:
         GLsizei _max_lights;
         GLsizei _max_clip_planes;
@@ -114,6 +117,7 @@ namespace fixie
 
         // extensions
         GLboolean _supports_framebuffer_objects;
+        GLboolean _supports_vertex_array_objects;
     };
 }
 
