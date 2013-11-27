@@ -2,6 +2,7 @@
 #define _FIXIE_CONTEXT_HPP_
 
 #include <memory>
+#include <unordered_set>
 
 #include "fixie_lib/exceptions.hpp"
 #include "fixie_lib/state.hpp"
@@ -65,12 +66,16 @@ namespace fixie
         const fixie::log& log() const;
 
     private:
+        static std::unordered_set<std::string> initialize_extensions(const fixie::caps& caps);
+        static std::string build_extension_string(std::unordered_set<std::string> extensions);
+
         std::shared_ptr<context_impl> _impl;
         fixie::state _state;
 
         std::string _version_string;
         std::string _renderer_string;
         std::string _vendor_string;
+        std::unordered_set<std::string> _extensions;
         std::string _extension_string;
 
         fixie::log _log;

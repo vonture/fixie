@@ -15,12 +15,13 @@ namespace fixie
         , _state(impl->caps(),
                  std::unique_ptr<fixie::framebuffer>(new fixie::framebuffer(std::move(impl->create_default_framebuffer()))),
                  std::unique_ptr<fixie::vertex_array>(new fixie::vertex_array(get_default_vertex_array(impl->caps()))))
+        , _version_string(format("OpenGL ES-%s %u.%u", "CM", 1, 1))
+        , _renderer_string(format("fixie (%s)", _impl->renderer_desc().c_str()))
+        , _vendor_string("vonture")
+        , _extensions(initialize_extensions(impl->caps()))
+        , _extension_string(build_extension_string(_extensions))
     {
         _impl->initialize_state(_state);
-        _version_string = format("OpenGL ES-%s %u.%u", "CM", 1, 1);
-        _renderer_string = format("fixie (%s)", _impl->renderer_desc().c_str());
-        _vendor_string = format("vonture");
-        _extension_string = format("");
     }
 
     GLuint context::create_texture()
@@ -118,6 +119,23 @@ namespace fixie
     void context::finish()
     {
         _impl->finish();
+    }
+
+    std::unordered_set<std::string> context::initialize_extensions(const fixie::caps& caps)
+    {
+        std::unordered_set<std::string> extension_set;
+        auto insert_if = [&](GLboolean cond, const std::string& extension){ extension_set.insert(std::move(extension)); };
+
+        insert_if(caps.supports_framebuffer_objects(), "GL_OES_framebuffer_object");
+
+        return extension_set;
+    }
+
+    std::string context::build_extension_string(std::unordered_set<std::string> extensions)
+    {
+        std::ostringstream stream;
+        std::for_each(begin(extensions), end(extensions), [&](const std::string& extension){ stream << extension << " "; });
+        return stream.str();
     }
 }
 

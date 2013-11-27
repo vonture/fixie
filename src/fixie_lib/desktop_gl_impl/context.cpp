@@ -399,6 +399,8 @@ namespace fixie
                 gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_FRONT_LEFT, GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, &caps.alpha_bits());
                 gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_DEPTH, GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE, &caps.depth_bits());
                 gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &caps.stencil_bits());
+
+                caps.supports_framebuffer_objects() = GL_TRUE;
             }
             else
             {
@@ -408,6 +410,8 @@ namespace fixie
                 gl_call(functions, get_integer_v, GL_ALPHA_BITS, &caps.alpha_bits());
                 gl_call(functions, get_integer_v, GL_DEPTH_BITS, &caps.depth_bits());
                 gl_call(functions, get_integer_v, GL_STENCIL_BITS, &caps.stencil_bits());
+
+                caps.supports_framebuffer_objects() = GL_FALSE;
             }
 
             return caps;

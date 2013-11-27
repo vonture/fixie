@@ -267,4 +267,14 @@ namespace fixie
     {
         return _stencil_bits;
     }
+
+    GLboolean& caps::supports_framebuffer_objects()
+    {
+        return _supports_framebuffer_objects;
+    }
+
+    const GLboolean& caps::supports_framebuffer_objects() const
+    {
+        return _supports_framebuffer_objects;
+    }
 }

@@ -84,6 +84,9 @@ namespace fixie
         GLsizei& stencil_bits();
         const GLsizei& stencil_bits() const;
 
+        GLboolean& supports_framebuffer_objects();
+        const GLboolean& supports_framebuffer_objects() const;
+
     private:
         GLsizei _max_lights;
         GLsizei _max_clip_planes;
@@ -108,6 +111,9 @@ namespace fixie
         GLsizei _alpha_bits;
         GLsizei _depth_bits;
         GLsizei _stencil_bits;
+
+        // extensions
+        GLboolean _supports_framebuffer_objects;
     };
 }
 
