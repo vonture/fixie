@@ -130,16 +130,6 @@ namespace fixie
         return true;
     }
 
-    std::weak_ptr<texture_impl> texture::impl()
-    {
-        return _impl;
-    }
-
-    std::weak_ptr<const texture_impl> texture::impl() const
-    {
-        return _impl;
-    }
-
     void texture::set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
     {
         _impl->set_data(level, internal_format, width, height, format, type, pixels);
@@ -221,20 +211,30 @@ namespace fixie
         }
     }
 
-    size_t texture::required_mip_levels(GLsizei width, GLsizei height) const
-    {
-        return log2(std::max(width, height));
-    }
-
     void texture::generate_mipmaps()
     {
         _impl->generate_mipmaps();
-        _mips.resize(required_mip_levels(_mips[0].width, _mips[0].height));
+        _mips.resize(required_mip_levels(mip_level_width(0), mip_level_height(0)));
         for (size_t i = 0; i < _mips.size(); i++)
         {
             _mips[i].internal_format = _mips[0].internal_format;
-            _mips[i].width = std::max(_mips[0].width, 1);
-            _mips[i].height = std::max(_mips[0].height, 1);
+            _mips[i].width = std::max(mip_level_width(0) >> i, 1);
+            _mips[i].height = std::max(mip_level_height(0) >> i, 1);
         }
+    }
+
+    std::weak_ptr<texture_impl> texture::impl()
+    {
+        return _impl;
+    }
+
+    std::weak_ptr<const texture_impl> texture::impl() const
+    {
+        return _impl;
+    }
+
+    size_t texture::required_mip_levels(GLsizei width, GLsizei height) const
+    {
+        return log2(std::max(width, height));
     }
 }

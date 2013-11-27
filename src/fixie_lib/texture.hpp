@@ -47,15 +47,17 @@ namespace fixie
         GLenum mip_level_internal_format(size_t mip) const;
         GLboolean complete() const;
 
-        std::weak_ptr<texture_impl> impl();
-        std::weak_ptr<const texture_impl> impl() const;
-
         void set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels);
         void set_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels);
         void set_compressed_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLsizei image_size, const GLvoid *data);
         void set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei image_size, const GLvoid *data);
         void copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::weak_ptr<const texture> source);
         void copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::weak_ptr<const texture> source);
+
+        void generate_mipmaps();
+
+        std::weak_ptr<texture_impl> impl();
+        std::weak_ptr<const texture_impl> impl() const;
 
     private:
         GLenum _wrap_s;
@@ -75,7 +77,6 @@ namespace fixie
         std::vector<mip_info> _mips;
 
         size_t required_mip_levels(GLsizei width, GLsizei height) const;
-        void generate_mipmaps();
 
         std::shared_ptr<texture_impl> _impl;
     };
