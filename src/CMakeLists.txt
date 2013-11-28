@@ -42,4 +42,4 @@ target_link_libraries(${FIXIE_PROJECT_NAME}
 
 add_dependencies(${FIXIE_PROJECT_NAME} ${FIXIE_LIB_PROJECT_NAME})
 
-add_definitions(-DFIXIE_EXPORT)
+add_definitions(-DFIXIE_EXPORT -DGL_GLEXT_PROTOTYPES)

@@ -788,7 +788,7 @@ typedef void (FIXIE_APIENTRYP PFNGLGENERATEMIPMAPOESPROC) (GLenum target);
 #ifndef GL_OES_mapbuffer
 #define GL_OES_mapbuffer 1
 #ifdef GL_GLEXT_PROTOTYPES
-FIXIE_API void* FIXIE_APIENTRY glMapBufferOES (GLenum target, GLenum access);
+FIXIE_API void *FIXIE_APIENTRY glMapBufferOES (GLenum target, GLenum access);
 FIXIE_API GLboolean FIXIE_APIENTRY glUnmapBufferOES (GLenum target);
 FIXIE_API void FIXIE_APIENTRY glGetBufferPointervOES (GLenum target, GLenum pname, GLvoid ** params);
 #endif
@@ -1035,7 +1035,7 @@ typedef void (FIXIE_APIENTRYP PFNGLDISCARDFRAMEBUFFEREXTPROC) (GLenum target, GL
 #ifndef GL_EXT_map_buffer_range
 #define GL_EXT_map_buffer_range 1
 #ifdef GL_GLEXT_PROTOTYPES
-FIXIE_API void FIXIE_APIENTRY *glMapBufferRangeEXT (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
+FIXIE_API void *FIXIE_APIENTRY glMapBufferRangeEXT (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 FIXIE_API void FIXIE_APIENTRY glFlushMappedBufferRangeEXT (GLenum target, GLintptr offset, GLsizeiptr length);
 #endif
 typedef void* (FIXIE_APIENTRYP PFNGLMAPBUFFERRANGEEXTPROC) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);

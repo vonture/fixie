@@ -2188,29 +2188,17 @@ void FIXIE_APIENTRY glGenBuffers(GLsizei n, GLuint *buffers)
             throw fixie::invalid_value_error(fixie::format("invalid number of buffers, at least 0 required, %i provided.", n));
         }
 
-        for (GLsizei i = 0; i < n; ++i)
-        {
-            buffers[i] = 0;
-        }
+        std::fill(buffers, buffers + n, 0);
 
         try
         {
-            for (GLsizei i = 0; i < n; ++i)
-            {
-                buffers[i] = ctx->create_buffer();
-            }
+            std::generate_n(buffers, n, [&](){ return ctx->create_buffer(); });
         }
         catch (...)
         {
             try
             {
-                for (GLsizei i = 0; i < n; ++i)
-                {
-                    if (buffers[i])
-                    {
-                        ctx->state().delete_buffer(buffers[i]);
-                    }
-                }
+                std::for_each(buffers, buffers + n, [&](GLuint buf){ if (buf) { ctx->state().delete_buffer(buf); } });
             }
             catch (...)
             {
@@ -2245,29 +2233,17 @@ void FIXIE_APIENTRY glGenTextures(GLsizei n, GLuint *textures)
             throw fixie::invalid_value_error(fixie::format("invalid number of textures, at least 0 required, %i provided.", n));
         }
 
-        for (GLsizei i = 0; i < n; ++i)
-        {
-            textures[i] = 0;
-        }
+        std::fill(textures, textures + n, 0);
 
         try
         {
-            for (GLsizei i = 0; i < n; ++i)
-            {
-                textures[i] = ctx->create_texture();
-            }
+            std::generate_n(textures, n, [&](){ return ctx->create_texture(); });
         }
         catch (...)
         {
             try
             {
-                for (GLsizei i = 0; i < n; ++i)
-                {
-                    if (textures[i])
-                    {
-                        ctx->state().delete_texture(textures[i]);
-                    }
-                }
+                std::for_each(textures, textures + n, [&](GLuint tex){ if (tex) { ctx->state().delete_texture(tex); } });
             }
             catch (...)
             {
