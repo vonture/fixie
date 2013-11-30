@@ -105,4 +105,11 @@ namespace fixie
         std::hash<hash_type> hasher;
         seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
+
+    template <typename dest_type, typename source_type>
+    dest_type bit_cast(const source_type& source)
+    {
+        static_assert(sizeof(dest_type) >= sizeof(source_type), "can only bit_cast to larger types.");
+        return *reinterpret_cast<const dest_type*>(&source);
+    }
 }

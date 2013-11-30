@@ -22,6 +22,9 @@ namespace fixie
 
     template <typename hash_type>
     void hash_combine(std::size_t& seed, const hash_type& v);
+
+    template <typename dest_type, typename source_type>
+    dest_type bit_cast(const source_type& source);
 }
 
 #include "util.inl"
