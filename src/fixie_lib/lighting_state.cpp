@@ -67,6 +67,7 @@ namespace fixie
     lighting_state get_default_lighting_state(const caps& caps)
     {
         lighting_state state(caps.max_lights());
+
         state.enabled() = GL_FALSE;
         state.front_material() = get_default_material();
         state.back_material() = get_default_material();

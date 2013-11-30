@@ -22,26 +22,11 @@ namespace fixie
             , _uses_spot_lights(caps.max_lights())
             , _shade_model(state.shade_model())
         {
-            for (size_t i = 0; i < _texture_environments.size(); ++i)
-            {
-                _texture_environments[i] = state.texture_environment(i);
-            }
-            for (size_t i = 0; i < _uses_clip_planes.size(); ++i)
-            {
-                _uses_clip_planes[i] = state.clip_plane(i).enabled();
-            }
-            for (size_t i = 0; i < _uses_lights.size(); ++i)
-            {
-                _uses_lights[i] = state.lighting_state().light(i).enabled();
-            }
-            for (size_t i = 0; i < _uses_light_attenuation.size(); ++i)
-            {
-                _uses_light_attenuation[i] = state.lighting_state().light(i).position().w() != 0.0f;
-            }
-            for (size_t i = 0; i < _uses_spot_lights.size(); ++i)
-            {
-                _uses_spot_lights[i] = state.lighting_state().light(i).spot_cutoff() != 180.0f;
-            }
+            for_each_n(0U, _texture_environments.size(), [&](size_t i){ _texture_environments[i] = state.texture_environment(i); });
+            for_each_n(0U, _uses_clip_planes.size(), [&](size_t i){ _uses_clip_planes[i] = state.clip_plane(i).enabled(); });
+            for_each_n(0U, _uses_lights.size(), [&](size_t i){ _uses_lights[i] = state.lighting_state().light(i).enabled(); });
+            for_each_n(0U, _uses_light_attenuation.size(), [&](size_t i){ _uses_light_attenuation[i] = state.lighting_state().light(i).position().w() != 0.0f; });
+            for_each_n(0U, _uses_spot_lights.size(), [&](size_t i){ _uses_spot_lights[i] = state.lighting_state().light(i).spot_cutoff() != 180.0f; });
         }
 
         const fixie::texture_environment& shader_info::texture_environment(size_t n) const
@@ -101,68 +86,17 @@ namespace fixie
 
         bool operator==(const shader_info& a, const shader_info& b)
         {
-            if (a.texture_unit_count() != b.texture_unit_count())
-            {
-                return false;
-            }
-            for (size_t i = 0; i < a.texture_unit_count(); ++i)
-            {
-                if (a.texture_environment(i) != b.texture_environment(i))
-                {
-                    return false;
-                }
-            }
-
-            if (a.clip_plane_count() != b.clip_plane_count())
-            {
-                return false;
-            }
-            for (size_t i = 0; i < a.clip_plane_count(); ++i)
-            {
-                if (a.uses_clip_plane(i) != b.uses_clip_plane(i))
-                {
-                    return false;
-                }
-            }
-
-            if (a.lighting_enabled() != b.lighting_enabled())
-            {
-                return false;
-            }
-
-            if (a.lighting_enabled())
-            {
-                if (a.two_sided_lighting() != b.two_sided_lighting())
-                {
-                    return false;
-                }
-                if (a.light_count() != b.light_count())
-                {
-                    return false;
-                }
-                for (size_t i = 0; i < a.light_count(); ++i)
-                {
-                    if (a.uses_light(i) != b.uses_light(i))
-                    {
-                        return false;
-                    }
-                    if (a.uses_light_attenuation(i) != b.uses_light_attenuation(i))
-                    {
-                        return false;
-                    }
-                    if (a.uses_spot_light(i) != b.uses_spot_light(i))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            if (a.shade_model() != b.shade_model())
-            {
-                return false;
-            }
-
-            return true;
+            return a.texture_unit_count() == b.texture_unit_count() &&
+                   equal_n(0U, a.texture_unit_count(), [&](size_t i){ return a.texture_environment(i) == b.texture_environment(i); }) &&
+                   a.clip_plane_count() == b.clip_plane_count() &&
+                   equal_n(0U, a.clip_plane_count(), [&](size_t i){ return a.uses_clip_plane(i) == b.uses_clip_plane(i); }) &&
+                   a.lighting_enabled() == b.lighting_enabled() &&
+                   a.two_sided_lighting() == b.two_sided_lighting() &&
+                   a.light_count() == b.light_count() &&
+                   equal_n(0U, a.light_count(), [&](size_t i){ return a.uses_light(i) == b.uses_light(i) &&
+                                                                      a.uses_light_attenuation(i) == b.uses_light_attenuation(i) &&
+                                                                      a.uses_spot_light(i) == b.uses_spot_light(i); }) &&
+                   a.shade_model() == b.shade_model();
         }
 
         bool operator!=(const shader_info& a, const shader_info& b)
@@ -179,24 +113,12 @@ namespace std
         size_t seed = 0;
 
         fixie::hash_combine(seed, key.texture_unit_count());
-
-        for (size_t i = 0; i < key.clip_plane_count(); ++i)
-        {
-            fixie::hash_combine(seed, key.uses_clip_plane(i));
-        }
-
+        fixie::for_each_n(0U, key.clip_plane_count(), [&](size_t i){ fixie::hash_combine(seed, key.uses_clip_plane(i)); });
         fixie::hash_combine(seed, key.lighting_enabled());
-        if (key.lighting_enabled())
-        {
-            fixie::hash_combine(seed, key.two_sided_lighting());
-            for (size_t i = 0; i < key.light_count(); ++i)
-            {
-                fixie::hash_combine(seed, key.uses_light(i));
-                fixie::hash_combine(seed, key.uses_light_attenuation(i));
-                fixie::hash_combine(seed, key.uses_spot_light(i));
-            }
-        }
-
+        fixie::hash_combine(seed, key.two_sided_lighting());
+        fixie::for_each_n(0U, key.light_count(), [&](size_t i){ fixie::hash_combine(seed, key.uses_light(i));
+                                                                fixie::hash_combine(seed, key.uses_light_attenuation(i));
+                                                                fixie::hash_combine(seed, key.uses_spot_light(i)); });
         fixie::hash_combine(seed, key.shade_model());
 
         return seed;
