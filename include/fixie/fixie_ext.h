@@ -4,6 +4,10 @@
 #include "fixie/fixie_platform.h"
 #include "fixie/fixie_gl_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef GL_KHR_debug
 typedef void (FIXIE_APIENTRYP GLDEBUGPROCKHR)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, GLvoid *userParam);
 #define GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR                         0x8242
@@ -74,6 +78,10 @@ typedef void (FIXIE_APIENTRYP PFNGLGETOBJECTLABELKHRPROC) (GLenum identifier, GL
 typedef void (FIXIE_APIENTRYP PFNGLOBJECTPTRLABELKHRPROC) (const void *ptr, GLsizei length, const GLchar *label);
 typedef void (FIXIE_APIENTRYP PFNGLGETOBJECTPTRLABELKHRPROC) (const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label);
 typedef void (FIXIE_APIENTRYP PFNGLGETPOINTERVKHRPROC) (GLenum pname, void **params);
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif // _FIXIE_EXT_H_
