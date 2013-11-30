@@ -290,29 +290,28 @@ namespace fixie
             for_each_n(0, _caps.max_texture_units(), [&](size_t i) { sync_vertex_attribute(locked_vertex_array->texcoord_attribute(i), locked_shader->texcoord_attribute_location(i), GL_TRUE); });
         }
 
+        void context::sync_texture(std::weak_ptr<const fixie::texture> texture, size_t index)
+        {
+            std::shared_ptr<const fixie::texture> locked_texture = texture.lock();
+            std::shared_ptr<const fixie::texture_impl> texture_impl = (locked_texture != nullptr) ? locked_texture->impl().lock() : nullptr;
+            std::shared_ptr<const desktop_gl_impl::texture> desktop_texture = std::dynamic_pointer_cast<const desktop_gl_impl::texture>(texture_impl);
+            GLuint texuture_id = desktop_texture ? desktop_texture->id() : 0;
+
+            gl_call(_functions, active_texture, static_cast<GLenum>(GL_TEXTURE0 + index));
+            gl_call(_functions, enable, GL_TEXTURE_2D);
+            gl_call(_functions, bind_texture, GL_TEXTURE_2D, texuture_id);
+            if (locked_texture)
+            {
+                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, locked_texture->wrap_s());
+                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, locked_texture->wrap_t());
+                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, locked_texture->min_filter());
+                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, locked_texture->mag_filter());
+            }
+        }
+
         void context::sync_textures(const state& state)
         {
-            for (size_t i = 0; i < static_cast<size_t>(_caps.max_texture_units()); ++i)
-            {
-                if (state.texture_environment(i).enabled())
-                {
-                    std::shared_ptr<const fixie::texture> bound_texture = state.bound_texture(i).lock();
-                    std::shared_ptr<const fixie::texture_impl> bound_texture_impl = (bound_texture != nullptr) ? bound_texture->impl().lock() : nullptr;
-                    std::shared_ptr<const texture> desktop_texture = std::dynamic_pointer_cast<const texture>(bound_texture_impl);
-                    GLuint texuture_id = desktop_texture ? desktop_texture->id() : 0;
-
-                    gl_call(_functions, active_texture, static_cast<GLenum>(GL_TEXTURE0 + i));
-                    gl_call(_functions, enable, GL_TEXTURE_2D);
-                    gl_call(_functions, bind_texture, GL_TEXTURE_2D, texuture_id);
-                    if (bound_texture)
-                    {
-                        gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, bound_texture->wrap_s());
-                        gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, bound_texture->wrap_t());
-                        gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, bound_texture->min_filter());
-                        gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, bound_texture->mag_filter());
-                    }
-                }
-            }
+            for_each_n(0, _caps.max_texture_units(), [&](size_t i){ if (state.texture_environment(i).enabled()) { sync_texture(state.bound_texture(i), i); }});
         }
 
         void context::sync_framebuffer(const state& state)

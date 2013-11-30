@@ -60,6 +60,7 @@ namespace fixie
             void sync_vertex_attribute(const vertex_attribute& attribute, GLint location, GLboolean normalized);
             void sync_vertex_attributes(std::weak_ptr<const fixie::vertex_array> vertex_array, std::weak_ptr<const shader> shader);
 
+            void sync_texture(std::weak_ptr<const fixie::texture> texture, size_t index);
             void sync_textures(const state& state);
 
             void sync_framebuffer(const state& state);
