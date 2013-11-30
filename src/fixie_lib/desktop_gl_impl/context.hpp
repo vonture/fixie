@@ -56,6 +56,7 @@ namespace fixie
             void sync_rasterizer_state(const rasterizer_state& state);
 
             GLuint _vao;
+            std::unordered_map<GLint, vertex_attribute> _cur_vertex_attributes;
             void sync_vertex_attribute(const vertex_attribute& attribute, GLint location, GLboolean normalized);
             void sync_vertex_attributes(std::weak_ptr<const fixie::vertex_array> vertex_array, std::weak_ptr<const shader> shader);
 

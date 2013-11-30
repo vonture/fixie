@@ -1,4 +1,5 @@
 #include "fixie_lib/vector.hpp"
+#include "fixie_lib/util.hpp"
 
 #include <math.h>
 
@@ -109,6 +110,16 @@ namespace fixie
         return vector3(a._data[1] * b._data[2],
                        a._data[2] * b._data[0],
                        a._data[0] * b._data[1]);
+    }
+
+    bool operator==(const vector3& a, const vector3& b)
+    {
+        return a.x() == b.x() && a.y() == b.y() && a.z() == b.z();
+    }
+
+    bool operator!=(const vector3& a, const vector3& b)
+    {
+        return !(a == b);
     }
 
     vector4::vector4()
@@ -223,5 +234,41 @@ namespace fixie
                a._data[1] * b._data[1] +
                a._data[2] * b._data[2] +
                a._data[3] * b._data[3];
+    }
+
+    bool operator==(const vector4& a, const vector4& b)
+    {
+        return a.x() == b.x() && a.y() == b.y() && a.z() == b.z() && a.w() == b.w();
+    }
+
+    bool operator!=(const vector4& a, const vector4& b)
+    {
+        return !(a == b);
+    }
+}
+
+namespace std
+{
+    size_t std::hash<fixie::vector3>::operator()(const fixie::vector3& key) const
+    {
+        size_t seed = 0;
+
+        fixie::hash_combine(seed, key.x());
+        fixie::hash_combine(seed, key.y());
+        fixie::hash_combine(seed, key.z());
+
+        return seed;
+    }
+
+    size_t std::hash<fixie::vector4>::operator()(const fixie::vector4& key) const
+    {
+        size_t seed = 0;
+
+        fixie::hash_combine(seed, key.x());
+        fixie::hash_combine(seed, key.y());
+        fixie::hash_combine(seed, key.z());
+        fixie::hash_combine(seed, key.w());
+
+        return seed;
     }
 }

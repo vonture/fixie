@@ -22,6 +22,7 @@ namespace fixie
         fixie::vertex_attribute& color_attribute();
         const fixie::vertex_attribute& color_attribute() const;
 
+        size_t texcoord_attribute_count() const;
         fixie::vertex_attribute& texcoord_attribute(size_t unit);
         const fixie::vertex_attribute& texcoord_attribute(size_t unit) const;
 
@@ -32,7 +33,19 @@ namespace fixie
         std::vector<fixie::vertex_attribute> _texcoord_attributes;
     };
 
+    bool operator==(const vertex_array& a, const vertex_array& b);
+    bool operator!=(const vertex_array& a, const vertex_array& b);
+
     vertex_array get_default_vertex_array(const caps& caps);
+}
+
+namespace std
+{
+    template <>
+    struct hash<fixie::vertex_array> : public std::unary_function<fixie::vertex_array, size_t>
+    {
+        size_t operator()(const fixie::vertex_array& key) const;
+    };
 }
 
 #endif //_VERTEX_ARRAY_HPP_

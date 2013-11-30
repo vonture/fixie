@@ -248,24 +248,30 @@ namespace fixie
         {
             if (location != -1)
             {
-                if (attribute.enabled())
+                auto cur_attribute = _cur_vertex_attributes.find(location);
+                if (cur_attribute == end(_cur_vertex_attributes) || cur_attribute->second != attribute)
                 {
-                    std::shared_ptr<const fixie::buffer> bound_buffer = attribute.buffer().lock();
-                    std::shared_ptr<const fixie::buffer_impl> bound_buffer_impl = (bound_buffer != nullptr) ? bound_buffer->impl().lock() : nullptr;
-                    std::shared_ptr<const buffer> desktop_buffer = std::dynamic_pointer_cast<const buffer>(bound_buffer_impl);
-                    GLuint buffer_id = desktop_buffer ? desktop_buffer->id() : 0;
+                    if (attribute.enabled())
+                    {
+                        std::shared_ptr<const fixie::buffer> bound_buffer = attribute.buffer().lock();
+                        std::shared_ptr<const fixie::buffer_impl> bound_buffer_impl = (bound_buffer != nullptr) ? bound_buffer->impl().lock() : nullptr;
+                        std::shared_ptr<const buffer> desktop_buffer = std::dynamic_pointer_cast<const buffer>(bound_buffer_impl);
+                        GLuint buffer_id = desktop_buffer ? desktop_buffer->id() : 0;
 
-                    gl_call(_functions, bind_buffer, GL_ARRAY_BUFFER, buffer_id);
-                    gl_call(_functions, enable_vertex_attrib_array, location);
-                    gl_call(_functions, vertex_attrib_pointer, location, attribute.size(), attribute.type(), normalized, attribute.stride(), attribute.pointer());
-                }
-                else
-                {
-                    const vector4& generic_values = attribute.generic_values();
+                        gl_call(_functions, bind_buffer, GL_ARRAY_BUFFER, buffer_id);
+                        gl_call(_functions, enable_vertex_attrib_array, location);
+                        gl_call(_functions, vertex_attrib_pointer, location, attribute.size(), attribute.type(), normalized, attribute.stride(), attribute.pointer());
+                    }
+                    else
+                    {
+                        const vector4& generic_values = attribute.generic_values();
 
-                    gl_call(_functions, bind_buffer, GL_ARRAY_BUFFER, 0);
-                    gl_call(_functions, disable_vertex_attrib_array, location);
-                    gl_call(_functions, vertex_attrib_4f, location, generic_values.x(), generic_values.y(), generic_values.z(), generic_values.w());
+                        gl_call(_functions, bind_buffer, GL_ARRAY_BUFFER, 0);
+                        gl_call(_functions, disable_vertex_attrib_array, location);
+                        gl_call(_functions, vertex_attrib_4f, location, generic_values.x(), generic_values.y(), generic_values.z(), generic_values.w());
+                    }
+
+                    _cur_vertex_attributes[location] = attribute;
                 }
             }
         }

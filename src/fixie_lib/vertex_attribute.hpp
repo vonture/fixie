@@ -45,10 +45,22 @@ namespace fixie
         std::weak_ptr<fixie::buffer> _buffer;
     };
 
+    bool operator==(const vertex_attribute& a, const vertex_attribute& b);
+    bool operator!=(const vertex_attribute& a, const vertex_attribute& b);
+
     vertex_attribute get_default_vertex_attribute();
     vertex_attribute get_default_normal_attribute();
     vertex_attribute get_default_color_attribute();
     vertex_attribute get_default_texcoord_attribute();
+}
+
+namespace std
+{
+    template <>
+    struct hash<fixie::vertex_attribute> : public std::unary_function<fixie::vertex_attribute, size_t>
+    {
+        size_t operator()(const fixie::vertex_attribute& key) const;
+    };
 }
 
 #endif // _VERTEX_ATTRIBUTE_HPP_

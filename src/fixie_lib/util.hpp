@@ -17,7 +17,10 @@ namespace fixie
     template <typename iterator_type, typename func_type>
     func_type for_each_n(iterator_type first, iterator_type last, func_type func);
 
-    template <class hash_type>
+    template <typename iterator_type, typename predicate>
+    bool equal_n(iterator_type first, iterator_type last, predicate pred);
+
+    template <typename hash_type>
     void hash_combine(std::size_t& seed, const hash_type& v);
 }
 

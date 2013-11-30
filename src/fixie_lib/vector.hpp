@@ -40,6 +40,9 @@ namespace fixie
         std::array<GLfloat, 3> _data;
     };
 
+    bool operator==(const vector3& a, const vector3& b);
+    bool operator!=(const vector3& a, const vector3& b);
+
     class vector4
     {
     public:
@@ -73,6 +76,24 @@ namespace fixie
 
     private:
         std::array<GLfloat, 4> _data;
+    };
+
+    bool operator==(const vector4& a, const vector4& b);
+    bool operator!=(const vector4& a, const vector4& b);
+}
+
+namespace std
+{
+    template <>
+    struct hash<fixie::vector3> : public std::unary_function<fixie::vector3, size_t>
+    {
+        size_t operator()(const fixie::vector3& key) const;
+    };
+
+    template <>
+    struct hash<fixie::vector4> : public std::unary_function<fixie::vector4, size_t>
+    {
+        size_t operator()(const fixie::vector4& key) const;
     };
 }
 

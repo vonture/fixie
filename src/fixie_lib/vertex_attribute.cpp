@@ -1,4 +1,5 @@
 #include "fixie_lib/vertex_attribute.hpp"
+#include "fixie_lib/util.hpp"
 
 #include "fixie/fixie_gl_es.h"
 
@@ -124,5 +125,42 @@ namespace fixie
         vertex_attribute attribute = get_default_common_attribute();
         attribute.generic_values() = vector4(0.0f, 0.0f, 0.0f, 1.0f);
         return attribute;
+    }
+
+    bool operator==(const vertex_attribute& a, const vertex_attribute& b)
+    {
+        return a.enabled() == b.enabled() &&
+               a.size() == b.size() &&
+               a.type() == b.type() &&
+               a.stride() == b.stride() &&
+               a.pointer() == b.pointer() &&
+               a.generic_values() == b.generic_values() &&
+               a.buffer().lock() == b.buffer().lock();
+    }
+
+    bool operator!=(const vertex_attribute& a, const vertex_attribute& b)
+    {
+        return !(a == b);
+    }
+}
+
+namespace std
+{
+    size_t std::hash<fixie::vertex_attribute>::operator()(const fixie::vertex_attribute& key) const
+    {
+        size_t seed = 0;
+
+        fixie::hash_combine(seed, key.enabled());
+        if (key.enabled())
+        {
+            fixie::hash_combine(seed, key.size());
+            fixie::hash_combine(seed, key.type());
+            fixie::hash_combine(seed, key.stride());
+            fixie::hash_combine(seed, key.pointer());
+            fixie::hash_combine(seed, key.generic_values());
+            fixie::hash_combine(seed, key.buffer().lock());
+        }
+
+        return seed;
     }
 }

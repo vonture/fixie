@@ -78,12 +78,25 @@ namespace fixie
     template <typename iterator_type, typename func_type>
     func_type for_each_n(iterator_type first, iterator_type last, func_type func)
     {
-        for (size_t i = first; first != last; ++first)
+        for (iterator_type i = first; i != last; ++i)
         {
             func(i);
         }
 
         return func;
+    }
+
+    template <class iterator_type, typename predicate>
+    bool equal_n(iterator_type first, iterator_type last, predicate pred)
+    {
+        for (iterator_type i = first; i != last; ++i)
+        {
+            if (!pred(i))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     template <class hash_type>
