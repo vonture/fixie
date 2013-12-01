@@ -628,7 +628,7 @@ namespace fixie
 
                 if (texture)
                 {
-                    texture->wrap_s() = static_cast<GLenum>(params.as_float(0));
+                    texture->sampler_state().wrap_s() = static_cast<GLenum>(params.as_float(0));
                 }
                 break;
 
@@ -644,7 +644,7 @@ namespace fixie
 
                 if (texture)
                 {
-                    texture->wrap_t() = static_cast<GLenum>(params.as_float(0));
+                    texture->sampler_state().wrap_t() = static_cast<GLenum>(params.as_float(0));
                 }
                 break;
 
@@ -664,7 +664,7 @@ namespace fixie
 
                 if (texture)
                 {
-                    texture->min_filter() = static_cast<GLenum>(params.as_float(0));
+                    texture->sampler_state().min_filter() = static_cast<GLenum>(params.as_float(0));
                 }
                 break;
 
@@ -680,7 +680,7 @@ namespace fixie
 
                 if (texture)
                 {
-                    texture->mag_filter() = static_cast<GLenum>(params.as_float(0));
+                    texture->sampler_state().mag_filter() = static_cast<GLenum>(params.as_float(0));
                 }
                 break;
 
@@ -736,7 +736,7 @@ namespace fixie
 
                 if (texture)
                 {
-                    texture->wrap_s() = params[0];
+                    texture->sampler_state().wrap_s() = params[0];
                 }
                 break;
 
@@ -752,7 +752,7 @@ namespace fixie
 
                 if (texture)
                 {
-                    texture->wrap_t() = params[0];
+                    texture->sampler_state().wrap_t() = params[0];
                 }
                 break;
 
@@ -772,7 +772,7 @@ namespace fixie
 
                 if (texture)
                 {
-                    texture->min_filter() = params[0];
+                    texture->sampler_state().min_filter() = params[0];
                 }
                 break;
 
@@ -788,7 +788,7 @@ namespace fixie
 
                 if (texture)
                 {
-                    texture->mag_filter() = params[0];
+                    texture->sampler_state().mag_filter() = params[0];
                 }
                 break;
 

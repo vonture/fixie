@@ -1,18 +1,14 @@
 #include "fixie_lib/texture.hpp"
+#include "fixie_lib/math_util.hpp"
 
 #include "fixie/fixie_gl_es.h"
 
 #include <assert.h>
 
-#include "fixie_lib/math_util.hpp"
-
 namespace fixie
 {
     texture::texture(std::unique_ptr<texture_impl> impl)
-        : _wrap_s(GL_REPEAT)
-        , _wrap_t(GL_REPEAT)
-        , _min_filter(GL_NEAREST_MIPMAP_LINEAR)
-        , _mag_filter(GL_LINEAR)
+        : _sampler_state(get_default_sampler_state())
         , _auto_generate_mipmap(GL_FALSE)
         , _immutable(GL_FALSE)
         , _impl(std::move(impl))
@@ -26,44 +22,14 @@ namespace fixie
     {
     }
 
-    GLenum& texture::wrap_t()
+    fixie::sampler_state& texture::sampler_state()
     {
-        return _wrap_t;
+        return _sampler_state;
     }
 
-    const GLenum& texture::wrap_t() const
+    const fixie::sampler_state& texture::sampler_state() const
     {
-        return _wrap_t;
-    }
-
-    GLenum& texture::wrap_s()
-    {
-        return _wrap_s;
-    }
-
-    const GLenum& texture::wrap_s() const
-    {
-        return _wrap_s;
-    }
-
-    GLenum& texture::min_filter()
-    {
-        return _min_filter;
-    }
-
-    const GLenum& texture::min_filter() const
-    {
-        return _min_filter;
-    }
-
-    GLenum& texture::mag_filter()
-    {
-        return _mag_filter;
-    }
-
-    const GLenum& texture::mag_filter() const
-    {
-        return _mag_filter;
+        return _sampler_state;
     }
 
     GLboolean& texture::auto_generate_mipmap()
@@ -113,8 +79,8 @@ namespace fixie
             return false;
         }
 
-        if (_min_filter == GL_NEAREST_MIPMAP_LINEAR || _min_filter == GL_NEAREST_MIPMAP_LINEAR ||
-            _min_filter == GL_LINEAR_MIPMAP_NEAREST || _min_filter == GL_LINEAR_MIPMAP_LINEAR)
+        if (_sampler_state.min_filter() == GL_NEAREST_MIPMAP_LINEAR || _sampler_state.min_filter() == GL_NEAREST_MIPMAP_LINEAR ||
+            _sampler_state.min_filter() == GL_LINEAR_MIPMAP_NEAREST || _sampler_state.min_filter() == GL_LINEAR_MIPMAP_LINEAR)
         {
             size_t required_mip_complete_levels = required_mip_levels(_mips[0].width, _mips[0].height);
 

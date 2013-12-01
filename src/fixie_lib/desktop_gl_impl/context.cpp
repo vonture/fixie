@@ -302,10 +302,10 @@ namespace fixie
             gl_call(_functions, bind_texture, GL_TEXTURE_2D, texuture_id);
             if (locked_texture)
             {
-                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, locked_texture->wrap_s());
-                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, locked_texture->wrap_t());
-                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, locked_texture->min_filter());
-                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, locked_texture->mag_filter());
+                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, locked_texture->sampler_state().wrap_s());
+                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, locked_texture->sampler_state().wrap_t());
+                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, locked_texture->sampler_state().min_filter());
+                gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, locked_texture->sampler_state().mag_filter());
             }
         }
 

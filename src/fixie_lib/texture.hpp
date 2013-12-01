@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "fixie/fixie_gl_types.h"
+#include "fixie_lib/sampler_state.hpp"
 #include "fixie_lib/noncopyable.hpp"
 
 namespace fixie
@@ -27,17 +28,8 @@ namespace fixie
     public:
         explicit texture(std::unique_ptr<texture_impl> impl);
 
-        GLenum& wrap_t();
-        const GLenum& wrap_t() const;
-
-        GLenum& wrap_s();
-        const GLenum& wrap_s() const;
-
-        GLenum& min_filter();
-        const GLenum& min_filter() const;
-
-        GLenum& mag_filter();
-        const GLenum& mag_filter() const;
+        fixie::sampler_state& sampler_state();
+        const fixie::sampler_state& sampler_state() const;
 
         GLboolean& auto_generate_mipmap();
         const GLboolean& auto_generate_mipmap() const;
@@ -63,10 +55,7 @@ namespace fixie
         std::weak_ptr<const texture_impl> impl() const;
 
     private:
-        GLenum _wrap_s;
-        GLenum _wrap_t;
-        GLenum _min_filter;
-        GLenum _mag_filter;
+        fixie::sampler_state _sampler_state;
         GLboolean _auto_generate_mipmap;
 
         GLboolean _immutable;
