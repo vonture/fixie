@@ -91,6 +91,7 @@ namespace fixie
             DECLARE_GL_FUNCTION(delete_renderbuffers, void, (GLsizei n, const GLuint* renderbuffers), glDeleteRenderbuffers);
             DECLARE_GL_FUNCTION(gen_renderbuffers, void, (GLsizei n, GLuint* renderbuffers), glGenRenderbuffers);
             DECLARE_GL_FUNCTION(renderbuffer_storage, void, (GLenum target, GLenum internalformat, GLsizei width, GLsizei height), glRenderbufferStorage);
+            DECLARE_GL_FUNCTION(renderbuffer_storage_multisample, void, (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height), glRenderbufferStorageMultisample);
             DECLARE_GL_FUNCTION(get_renderbuffer_parameter_iv, void, (GLenum target, GLenum pname, GLint* params), glGetRenderbufferParameteriv);
 
             DECLARE_GL_FUNCTION(is_framebuffer, GLboolean, (GLuint framebuffer), glIsFramebuffer);
@@ -100,6 +101,7 @@ namespace fixie
             DECLARE_GL_FUNCTION(check_framebuffer_status, GLenum, (GLenum target), glCheckFramebufferStatus);
             DECLARE_GL_FUNCTION(framebuffer_renderbuffer, void, (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer), glFramebufferRenderbuffer);
             DECLARE_GL_FUNCTION(framebuffer_texture_2d, void, (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level), glFramebufferTexture2D);
+            DECLARE_GL_FUNCTION(framebuffer_texture_2d_multisample, void, (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples), glFramebufferTexture2DMultisampleEXT);
             DECLARE_GL_FUNCTION(get_framebuffer_attachment_parameter_iv, void, (GLenum target, GLenum attachment, GLenum pname, GLint* params), glGetFramebufferAttachmentParameteriv);
 
             DECLARE_GL_FUNCTION(get_integer_v, void, (GLenum pname, GLint *params), glGetIntegerv);

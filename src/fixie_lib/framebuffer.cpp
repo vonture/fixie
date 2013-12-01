@@ -4,7 +4,9 @@ namespace fixie
 {
     framebuffer_attachment::framebuffer_attachment()
         : _texture(nullptr)
-        //, _renderbuffer(nullptr)
+        , _texture_level(0)
+        , _texture_samples(0)
+        , _renderbuffer(nullptr)
     {
     }
 
@@ -18,13 +20,24 @@ namespace fixie
         return _texture;
     }
 
-    void framebuffer_attachment::set(std::weak_ptr<const fixie::texture> texture)
+    GLint framebuffer_attachment::texture_level() const
     {
-        _texture = texture.lock();
-        //_renderbuffer = nullptr;
+        return _texture_level;
     }
 
-    /*
+    GLsizei framebuffer_attachment::texture_samples() const
+    {
+        return _texture_samples;
+    }
+
+    void framebuffer_attachment::set(std::weak_ptr<const fixie::texture> texture, GLint level, GLsizei samples)
+    {
+        _texture = texture.lock();
+        _texture_level = level;
+        _texture_samples = samples;
+        _renderbuffer = nullptr;
+    }
+
     GLboolean framebuffer_attachment::is_renderbuffer() const
     {
         return _renderbuffer != nullptr;
@@ -40,11 +53,10 @@ namespace fixie
         _texture = nullptr;
         _renderbuffer = renderbuffer.lock();
     }
-    */
 
     GLboolean framebuffer_attachment::is_bound() const
     {
-        return is_texture();// || is_renderbuffer();
+        return is_texture() || is_renderbuffer();
     }
 
     framebuffer::framebuffer(std::unique_ptr<framebuffer_impl> impl)

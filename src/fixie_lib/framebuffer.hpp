@@ -5,6 +5,7 @@
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/texture.hpp"
+#include "fixie_lib/renderbuffer.hpp"
 #include "fixie_lib/noncopyable.hpp"
 
 namespace fixie
@@ -16,17 +17,22 @@ namespace fixie
 
         GLboolean is_texture() const;
         std::weak_ptr<const fixie::texture> texture() const;
-        void set(std::weak_ptr<const fixie::texture> texture);
+        GLint texture_level() const;
+        GLsizei texture_samples() const;
+        void set(std::weak_ptr<const fixie::texture> texture, GLint level, GLsizei samples);
 
-        //GLboolean is_renderbuffer() const;
-        //std::weak_ptr<const fixie::renderbuffer> renderbuffer() const;
-        //void set(std::weak_ptr<const fixie::renderbuffer> renderbuffer);
+        GLboolean is_renderbuffer() const;
+        std::weak_ptr<const fixie::renderbuffer> renderbuffer() const;
+        void set(std::weak_ptr<const fixie::renderbuffer> renderbuffer);
 
         GLboolean is_bound() const;
 
     private:
         std::shared_ptr<const fixie::texture> _texture;
-        //std::shared_ptr<const fixie::renderbuffer> _renderbuffer;
+        GLint _texture_level;
+        GLsizei _texture_samples;
+
+        std::shared_ptr<const fixie::renderbuffer> _renderbuffer;
     };
 
     class framebuffer_impl : public noncopyable

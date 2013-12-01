@@ -1,10 +1,12 @@
 #include "fixie_lib/desktop_gl_impl/framebuffer.hpp"
 #include "fixie_lib/desktop_gl_impl/texture.hpp"
+#include "fixie_lib/desktop_gl_impl/renderbuffer.hpp"
 #include "fixie_lib/debug.hpp"
 
 namespace fixie
 {
     #define GL_FRAMEBUFFER 0x8D40
+    #define GL_RENDERBUFFER 0x8D41
     #define GL_READ_FRAMEBUFFER 0x8CA8
     #define GL_DRAW_FRAMEBUFFER 0x8CA9
     #define GL_COLOR_ATTACHMENT0 0x8CE0
@@ -55,11 +57,22 @@ namespace fixie
                     std::shared_ptr<const fixie::texture> texture = attachment.texture().lock();
                     std::shared_ptr<const desktop_gl_impl::texture> texture_impl = texture ? std::dynamic_pointer_cast<const desktop_gl_impl::texture>(texture->impl().lock()) : nullptr;
                     GLuint id = texture_impl ? texture_impl->id() : 0;
-                    gl_call(functions, framebuffer_texture_2d, GL_FRAMEBUFFER, attachment_point, GL_TEXTURE_2D, id, 0);
+                    if (attachment.texture_samples() > 1)
+                    {
+                        gl_call(functions, framebuffer_texture_2d, GL_FRAMEBUFFER, attachment_point, GL_TEXTURE_2D, id, attachment.texture_level());
+                    }
+                    else
+                    {
+                        gl_call(functions, framebuffer_texture_2d_multisample, GL_FRAMEBUFFER, attachment_point, GL_TEXTURE_2D, id, attachment.texture_level(), attachment.texture_samples());
+                    }
                 }
-                //else if (attachment.is_renderbuffer())
-                //{
-                //}
+                else if (attachment.is_renderbuffer())
+                {
+                    std::shared_ptr<const fixie::renderbuffer> renderbuffer = attachment.renderbuffer().lock();
+                    std::shared_ptr<const desktop_gl_impl::renderbuffer> renderbuffer_impl = renderbuffer ? std::dynamic_pointer_cast<const desktop_gl_impl::renderbuffer>(renderbuffer->impl().lock()) : nullptr;
+                    GLuint id = renderbuffer_impl ? renderbuffer_impl->id() : 0;
+                    gl_call(functions, framebuffer_renderbuffer, GL_FRAMEBUFFER, attachment_point, GL_RENDERBUFFER, id);
+                }
                 else
                 {
                     assert(!attachment.is_bound());
