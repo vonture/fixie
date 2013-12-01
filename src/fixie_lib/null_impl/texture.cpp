@@ -20,6 +20,10 @@ namespace fixie
         {
         }
 
+        void texture::set_storage(GLsizei levels, GLenum internal_format, GLsizei width, GLsizei height)
+        {
+        }
+
         void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::weak_ptr<const texture_impl> source)
         {
         }

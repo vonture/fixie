@@ -78,6 +78,7 @@ namespace fixie
             DECLARE_GL_FUNCTION(compressed_tex_image_2d, void, (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data), glCompressedTexImage2D);
             DECLARE_GL_FUNCTION(compressed_tex_sub_image_2d, void, (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data), glCompressedTexSubImage2D);
             DECLARE_GL_FUNCTION(copy_tex_image_2d, void, (GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border), glCopyTexImage2D);
+            DECLARE_GL_FUNCTION(tex_storage_2d, void, (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height), glTexStorage2D);
             DECLARE_GL_FUNCTION(copy_tex_sub_image_2d, void, (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height), glCopyTexSubImage2D);
             DECLARE_GL_FUNCTION(tex_parameter_i, void, (GLenum target, GLenum pname, GLint param), glTexParameteri);
             DECLARE_GL_FUNCTION(tex_parameter_iv, void, (GLenum target, GLenum pname, const GLint* params), glTexParameteriv);

@@ -14,6 +14,7 @@ namespace fixie
         , _min_filter(GL_NEAREST_MIPMAP_LINEAR)
         , _mag_filter(GL_LINEAR)
         , _auto_generate_mipmap(GL_FALSE)
+        , _immutable(GL_FALSE)
         , _impl(std::move(impl))
     {
     }
@@ -95,6 +96,11 @@ namespace fixie
         return _mips[mip].internal_format;
     }
 
+    GLboolean texture::immutable() const
+    {
+        return _immutable;
+    }
+
     GLboolean texture::complete() const
     {
         if (_mips.size() == 0)
@@ -132,6 +138,8 @@ namespace fixie
 
     void texture::set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
     {
+        assert(_immutable == GL_FALSE);
+
         _impl->set_data(level, internal_format, width, height, format, type, pixels);
 
         if (_mips.size() <= static_cast<size_t>(level))
@@ -159,6 +167,8 @@ namespace fixie
 
     void texture::set_compressed_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLsizei image_size, const GLvoid *data)
     {
+        assert(_immutable == GL_FALSE);
+
         _impl->set_compressed_data(level, internal_format, width, height, image_size, data);
 
         if (_mips.size() <= static_cast<size_t>(level))
@@ -176,9 +186,25 @@ namespace fixie
         _impl->set_compressed_sub_data(level, xoffset, yoffset, width, height, format, image_size, data);
     }
 
+    void texture::set_storage(GLsizei levels, GLenum internal_format, GLsizei width, GLsizei height)
+    {
+        _impl->set_storage(levels, internal_format, width, height);
+
+        _immutable = GL_TRUE;
+        _mips.resize(levels);
+        for (size_t i = 0; i < _mips.size(); i++)
+        {
+            _mips[i].internal_format = internal_format;
+            _mips[i].width = std::max(width >> i, 1);
+            _mips[i].height = std::max(height >> i, 1);
+        }
+    }
+
     void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height,
                             std::weak_ptr<const texture> source)
     {
+        assert(_immutable == GL_FALSE);
+
         std::shared_ptr<const texture> source_locked = source.lock();
         std::weak_ptr<const texture_impl> source_impl = source_locked ? source_locked->impl()
                                                                       : std::weak_ptr<const texture_impl>();
