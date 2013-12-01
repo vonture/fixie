@@ -1,4 +1,5 @@
 #include "fixie_lib/desktop_gl_impl/shader_cache.hpp"
+#include "fixie_lib/desktop_gl_impl/exceptions.hpp"
 
 namespace fixie
 {
@@ -15,13 +16,28 @@ namespace fixie
             auto iter = _shaders.find(key);
             if (iter != end(_shaders))
             {
-                return iter->second;
+                if (iter->second == nullptr)
+                {
+                    throw null_shader();
+                }
+                else
+                {
+                    return iter->second;
+                }
             }
             else
             {
-                std::shared_ptr<shader> generated_shader = std::make_shared<shader>(key, _functions);
-                _shaders.insert(std::make_pair(key, generated_shader));
-                return generated_shader;
+                try
+                {
+                    std::shared_ptr<shader> generated_shader = std::make_shared<shader>(key, _functions);
+                    _shaders.insert(std::make_pair(key, generated_shader));
+                    return generated_shader;
+                }
+                catch (const shader_error&)
+                {
+                    _shaders.insert(std::make_pair(key, nullptr));
+                    throw;
+                }
             }
         }
     }

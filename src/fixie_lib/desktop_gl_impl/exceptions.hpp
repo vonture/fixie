@@ -13,6 +13,12 @@ namespace fixie
             shader_error(const std::string& msg);
         };
 
+        class null_shader : public shader_error
+        {
+        public:
+            null_shader();
+        };
+
         class compile_error : public shader_error
         {
         public:
