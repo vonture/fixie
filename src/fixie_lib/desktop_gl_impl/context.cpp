@@ -123,6 +123,16 @@ namespace fixie
             gl_call(_functions, clear, mask);
         }
 
+        void context::flush()
+        {
+            gl_call(_functions, flush);
+        }
+
+        void context::finish()
+        {
+            gl_call(_functions, finish);
+        }
+
         void context::sync_depth_stencil_state(const depth_stencil_state& state)
         {
             if (_cur_depth_stencil_state.depth_func() != state.depth_func())
@@ -440,16 +450,6 @@ namespace fixie
             }
 
             return caps;
-        }
-
-        void context::flush()
-        {
-            gl_call(_functions, flush);
-        }
-
-        void context::finish()
-        {
-            gl_call(_functions, finish);
         }
     }
 }
