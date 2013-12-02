@@ -59,11 +59,11 @@ namespace fixie
                     GLuint id = texture_impl ? texture_impl->id() : 0;
                     if (attachment.texture_samples() > 1)
                     {
-                        gl_call(functions, framebuffer_texture_2d, GL_FRAMEBUFFER, attachment_point, GL_TEXTURE_2D, id, attachment.texture_level());
+                        gl_call(functions, framebuffer_texture_2d_multisample, GL_FRAMEBUFFER, attachment_point, GL_TEXTURE_2D, id, attachment.texture_level(), attachment.texture_samples());
                     }
                     else
                     {
-                        gl_call(functions, framebuffer_texture_2d_multisample, GL_FRAMEBUFFER, attachment_point, GL_TEXTURE_2D, id, attachment.texture_level(), attachment.texture_samples());
+                        gl_call(functions, framebuffer_texture_2d, GL_FRAMEBUFFER, attachment_point, GL_TEXTURE_2D, id, attachment.texture_level());
                     }
                 }
                 else if (attachment.is_renderbuffer())
