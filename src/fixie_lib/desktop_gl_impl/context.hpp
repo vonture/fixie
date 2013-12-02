@@ -39,12 +39,11 @@ namespace fixie
         private:
             std::shared_ptr<const gl_functions> _functions;
             gl_version _version;
+            std::unordered_set<std::string> _extensions;
             fixie::caps _caps;
             shader_cache _shader_cache;
 
             std::string _renderer_string;
-
-            std::unordered_set<std::string> _extensions;
 
             depth_stencil_state _cur_depth_stencil_state;
             void sync_depth_stencil_state(const depth_stencil_state& state);
@@ -68,7 +67,8 @@ namespace fixie
             void sync_draw_state(const state& state);
 
             static gl_version initialize_version(std::shared_ptr<const gl_functions> functions);
-            static fixie::caps initialize_caps(std::shared_ptr<const gl_functions> functions, const gl_version version);
+            static std::unordered_set<std::string> intialize_extensions(std::shared_ptr<const gl_functions> functions, const gl_version& version);
+            static fixie::caps initialize_caps(std::shared_ptr<const gl_functions> functions, const gl_version& version, const std::unordered_set<std::string>& extensions);
         };
     }
 }

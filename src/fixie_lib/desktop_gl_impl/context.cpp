@@ -24,7 +24,8 @@ namespace fixie
         context::context()
             : _functions(std::make_shared<gl_functions>())
             , _version(initialize_version(_functions))
-            , _caps(initialize_caps(_functions, _version))
+            , _extensions(intialize_extensions(_functions, _version))
+            , _caps(initialize_caps(_functions, _version, _extensions))
             , _shader_cache(_functions)
             , _cur_depth_stencil_state(get_default_depth_stencil_state())
             , _cur_clear_state(get_default_clear_state())
@@ -33,24 +34,6 @@ namespace fixie
         {
             const GLubyte* gl_renderer_string = gl_call(_functions, get_string, GL_RENDERER);
             const GLubyte* gl_vendor_string = gl_call(_functions, get_string, GL_VENDOR);
-
-            if (_version >= gl_3_0 || _version >= gl_es_3_0)
-            {
-                #define GL_NUM_EXTENSIONS 0x821D
-
-                GLint num_extensions;
-                gl_call(_functions, get_integer_v, GL_NUM_EXTENSIONS, &num_extensions);
-                for (GLint i = 0; i < num_extensions; i++)
-                {
-                    const GLubyte* extension_name = gl_call(_functions, get_string_i, GL_EXTENSIONS, i);
-                    _extensions.insert(reinterpret_cast<const char*>(extension_name));
-                }
-            }
-            else
-            {
-                const GLubyte* gl_extension_string = gl_call(_functions, get_string, GL_EXTENSIONS);
-                split(reinterpret_cast<const char*>(gl_extension_string), ' ', std::inserter(_extensions, _extensions.end()));
-            }
 
             _renderer_string = format("%s OpenGL %s", reinterpret_cast<const char*>(gl_renderer_string), _version.str().c_str());
 
@@ -341,7 +324,32 @@ namespace fixie
             return gl_version(std::string(reinterpret_cast<const char*>(gl_version_string)));
         }
 
-        fixie::caps context::initialize_caps(std::shared_ptr<const gl_functions> functions,  const gl_version version)
+        std::unordered_set<std::string> context::intialize_extensions(std::shared_ptr<const gl_functions> functions, const gl_version& version)
+        {
+            std::unordered_set<std::string> extensions;
+
+            if (version >= gl_3_0 || version >= gl_es_3_0)
+            {
+                #define GL_NUM_EXTENSIONS 0x821D
+
+                GLint num_extensions;
+                gl_call(functions, get_integer_v, GL_NUM_EXTENSIONS, &num_extensions);
+                for (GLint i = 0; i < num_extensions; i++)
+                {
+                    const GLubyte* extension_name = gl_call(functions, get_string_i, GL_EXTENSIONS, i);
+                    extensions.insert(reinterpret_cast<const char*>(extension_name));
+                }
+            }
+            else
+            {
+                const GLubyte* gl_extension_string = gl_call(functions, get_string, GL_EXTENSIONS);
+                split(reinterpret_cast<const char*>(gl_extension_string), ' ', std::inserter(extensions, extensions.end()));
+            }
+
+            return extensions;
+        }
+
+        fixie::caps context::initialize_caps(std::shared_ptr<const gl_functions> functions, const gl_version& version, const std::unordered_set<std::string>& extensions)
         {
             fixie::caps caps;
 
@@ -386,7 +394,7 @@ namespace fixie
                 caps.insert_compressed_format(compressed_formats[i]);
             }
 
-            if (version >= gl_3_0 || version >= gl_es_3_0)
+            if (version >= gl_3_0 || version >= gl_es_3_0 || extensions.find("GL_EXT_framebuffer_object") != end(extensions))
             {
                 #define GL_FRONT_LEFT 0x0400
                 #define GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE 0x8212
