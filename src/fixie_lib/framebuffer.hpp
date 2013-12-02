@@ -14,16 +14,16 @@ namespace fixie
     {
     public:
         framebuffer_attachment();
+        framebuffer_attachment(std::weak_ptr<const fixie::texture> texture, GLint level, GLsizei samples);
+        framebuffer_attachment(std::weak_ptr<const fixie::renderbuffer> renderbuffer);
 
         GLboolean is_texture() const;
         std::weak_ptr<const fixie::texture> texture() const;
         GLint texture_level() const;
         GLsizei texture_samples() const;
-        void set(std::weak_ptr<const fixie::texture> texture, GLint level, GLsizei samples);
 
         GLboolean is_renderbuffer() const;
         std::weak_ptr<const fixie::renderbuffer> renderbuffer() const;
-        void set(std::weak_ptr<const fixie::renderbuffer> renderbuffer);
 
         GLboolean is_bound() const;
 
