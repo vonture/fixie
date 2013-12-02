@@ -16,6 +16,13 @@ namespace fixie
 
             GLuint id() const;
 
+            virtual GLsizei red_size() const override;
+            virtual GLsizei green_size() const override;
+            virtual GLsizei blue_size() const override;
+            virtual GLsizei alpha_size() const override;
+            virtual GLsizei depth_size() const override;
+            virtual GLsizei stencil_size() const override;
+
             virtual void set_storage(GLenum target, GLenum internal_format, GLsizei width, GLsizei height) override;
             virtual void set_storage_multisample(GLenum target, GLsizei samples, GLenum internal_format, GLsizei width, GLsizei height) override;
 
