@@ -410,6 +410,8 @@ namespace fixie
                 caps.insert_compressed_format(compressed_formats[i]);
             }
 
+            caps.supports_vertex_array_objects() = version >= gl_3_0 || version >= gl_es_3_0 || extensions.find("GL_ARB_vertex_array_object") != end(extensions);
+
             if (version >= gl_3_0 || version >= gl_es_3_0 || extensions.find("GL_EXT_framebuffer_object") != end(extensions))
             {
                 #define GL_FRONT_LEFT 0x0400
