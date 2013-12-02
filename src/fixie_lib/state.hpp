@@ -79,13 +79,9 @@ namespace fixie
         std::weak_ptr<fixie::framebuffer> default_framebuffer();
         std::weak_ptr<const fixie::framebuffer> default_framebuffer() const;
 
-        void bind_draw_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer);
-        std::weak_ptr<const fixie::framebuffer> bound_draw_framebuffer() const;
-        std::weak_ptr<fixie::framebuffer> bound_draw_framebuffer();
-
-        void bind_read_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer);
-        std::weak_ptr<const fixie::framebuffer> bound_read_framebuffer() const;
-        std::weak_ptr<fixie::framebuffer> bound_read_framebuffer();
+        void bind_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer);
+        std::weak_ptr<const fixie::framebuffer> bound_framebuffer() const;
+        std::weak_ptr<fixie::framebuffer> bound_framebuffer();
 
         GLuint insert_buffer(std::unique_ptr<fixie::buffer> buffer);
         void delete_buffer(GLuint id);
@@ -143,8 +139,7 @@ namespace fixie
 
         GLuint _next_framebuffer_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::framebuffer> > _framebuffers;
-        std::weak_ptr<fixie::framebuffer> _bound_draw_framebuffer;
-        std::weak_ptr<fixie::framebuffer> _bound_read_framebuffer;
+        std::weak_ptr<fixie::framebuffer> _bound_framebuffer;
 
         GLuint _next_buffer_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::buffer> > _buffers;

@@ -21,8 +21,7 @@ namespace fixie
         , _bound_textures(caps.max_texture_units())
         , _texture_environments(caps.max_texture_units())
         , _next_framebuffer_id(1)
-        , _bound_draw_framebuffer()
-        , _bound_read_framebuffer()
+        , _bound_framebuffer()
         , _next_buffer_id(1)
         , _bound_array_buffer()
         , _bound_element_array_buffer()
@@ -33,8 +32,7 @@ namespace fixie
         , _error(GL_NO_ERROR)
     {
         _framebuffers.insert(std::make_pair(0, std::move(default_fbo)));
-        bind_draw_framebuffer(default_framebuffer());
-        bind_read_framebuffer(default_framebuffer());
+        bind_framebuffer(default_framebuffer());
 
         _vertex_arrays.insert(std::make_pair(0, std::move(default_vao)));
         bind_vertex_array(default_vertex_array());
@@ -234,34 +232,19 @@ namespace fixie
         return framebuffer(0);
     }
 
-    void state::bind_draw_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer)
+    void state::bind_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer)
     {
-        _bound_draw_framebuffer = framebuffer.expired() ? default_framebuffer() : framebuffer;
+        _bound_framebuffer = framebuffer;
     }
 
-    std::weak_ptr<const fixie::framebuffer> state::bound_draw_framebuffer() const
+    std::weak_ptr<const fixie::framebuffer> state::bound_framebuffer() const
     {
-        return _bound_draw_framebuffer.expired() ? default_framebuffer() : _bound_draw_framebuffer;
+        return _bound_framebuffer.expired() ? default_framebuffer() : _bound_framebuffer;
     }
 
-    std::weak_ptr<fixie::framebuffer> state::bound_draw_framebuffer()
+    std::weak_ptr<fixie::framebuffer> state::bound_framebuffer()
     {
-        return _bound_draw_framebuffer.expired() ? default_framebuffer() : _bound_draw_framebuffer;
-    }
-
-    void state::bind_read_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer)
-    {
-        _bound_read_framebuffer = framebuffer;
-    }
-
-    std::weak_ptr<const fixie::framebuffer> state::bound_read_framebuffer() const
-    {
-        return _bound_read_framebuffer.expired() ? default_framebuffer() : _bound_read_framebuffer;
-    }
-
-    std::weak_ptr<fixie::framebuffer> state::bound_read_framebuffer()
-    {
-        return _bound_read_framebuffer.expired() ? default_framebuffer() : _bound_read_framebuffer;
+        return _bound_framebuffer.expired() ? default_framebuffer() : _bound_framebuffer;
     }
 
     GLuint state::insert_buffer(std::unique_ptr<fixie::buffer> buffer)

@@ -2804,10 +2804,10 @@ void FIXIE_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        std::shared_ptr<fixie::framebuffer> framebuffer = ctx->state().bound_read_framebuffer().lock();
+        std::shared_ptr<fixie::framebuffer> framebuffer = ctx->state().bound_framebuffer().lock();
         if (framebuffer == nullptr)
         {
-            throw fixie::state_error("null read framebuffer.");
+            throw fixie::state_error("null framebuffer bound.");
         }
 
         if (width < 0 || height < 0)

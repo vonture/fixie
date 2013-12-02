@@ -316,7 +316,7 @@ namespace fixie
 
         void context::sync_framebuffer(const state& state)
         {
-            std::shared_ptr<const fixie::framebuffer> bound_framebuffer = state.bound_draw_framebuffer().lock();
+            std::shared_ptr<const fixie::framebuffer> bound_framebuffer = state.bound_framebuffer().lock();
             std::shared_ptr<const fixie::framebuffer_impl> bound_framebuffer_impl = bound_framebuffer ? bound_framebuffer->impl().lock() : nullptr;
             std::shared_ptr<const framebuffer> desktop_framebuffer = std::dynamic_pointer_cast<const framebuffer>(bound_framebuffer_impl);
             GLuint framebuffer_id = desktop_framebuffer ? desktop_framebuffer->id() : 0;
