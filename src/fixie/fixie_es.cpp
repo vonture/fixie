@@ -1841,10 +1841,7 @@ void FIXIE_APIENTRY glDeleteBuffers(GLsizei n, const GLuint *buffers)
             throw fixie::invalid_value_error(fixie::format("invalid number of buffers, at least 0 required, %i provided.", n));
         }
 
-        for (GLsizei i = 0; i < n; ++i)
-        {
-            ctx->state().delete_buffer(buffers[i]);
-        }
+        fixie::for_each_n(0, n, [&](size_t i){ ctx->state().delete_buffer(buffers[i]); });
     }
     catch (const fixie::gl_error& e)
     {
@@ -1871,10 +1868,7 @@ void FIXIE_APIENTRY glDeleteTextures(GLsizei n, const GLuint *textures)
             throw fixie::invalid_value_error(fixie::format("invalid number of textures, at least 0 required, %i provided.", n));
         }
 
-        for (GLsizei i = 0; i < n; ++i)
-        {
-            ctx->state().delete_texture(textures[i]);
-        }
+        fixie::for_each_n(0, n, [&](size_t i){ ctx->state().delete_texture(textures[i]); });
     }
     catch (const fixie::gl_error& e)
     {
