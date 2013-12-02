@@ -584,7 +584,7 @@ namespace fixie
                 break;
 
             default:
-                throw invalid_enum_error(format("invalid texture environment parameter name, %s", get_gl_enum_name(pname).c_str()));
+                throw invalid_enum_error(format("invalid texture environment parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -692,7 +692,7 @@ namespace fixie
                 break;
 
             default:
-                throw invalid_enum_error(format("invalid texture parameter name, %s", get_gl_enum_name(pname).c_str()));
+                throw invalid_enum_error(format("invalid texture parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -800,7 +800,7 @@ namespace fixie
                 break;
 
             default:
-                throw invalid_enum_error(format("invalid texture parameter name, %s", get_gl_enum_name(pname).c_str()));
+                throw invalid_enum_error(format("invalid texture parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
