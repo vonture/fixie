@@ -414,6 +414,12 @@ namespace fixie
                 gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &caps.stencil_bits());
 
                 caps.supports_framebuffer_objects() = GL_TRUE;
+                caps.supports_rgb8_rgba8() = (version >= gl_3_0 || extensions.find("GL_OES_rgb8_rgba8") != end(extensions)) ? GL_TRUE : GL_FALSE;
+                caps.supports_depth24() = (version >= gl_3_0 || extensions.find("GL_OES_depth24") != end(extensions)) ? GL_TRUE : GL_FALSE;
+                caps.supports_depth32() = (version >= gl_3_0 || extensions.find("GL_OES_depth32") != end(extensions)) ? GL_TRUE : GL_FALSE;
+                caps.supports_stencil1() = (version >= gl_3_0 || extensions.find("GL_OES_stencil1") != end(extensions)) ? GL_TRUE : GL_FALSE;
+                caps.supports_stencil4() = (version >= gl_3_0 || extensions.find("GL_OES_stencil4") != end(extensions)) ? GL_TRUE : GL_FALSE;
+                caps.supports_stencil8() = (version >= gl_3_0 || extensions.find("GL_OES_stencil8") != end(extensions)) ? GL_TRUE : GL_FALSE;
             }
             else
             {
@@ -425,6 +431,12 @@ namespace fixie
                 gl_call(functions, get_integer_v, GL_STENCIL_BITS, &caps.stencil_bits());
 
                 caps.supports_framebuffer_objects() = GL_FALSE;
+                caps.supports_rgb8_rgba8() = GL_FALSE;
+                caps.supports_depth24() = GL_FALSE;
+                caps.supports_depth32() = GL_FALSE;
+                caps.supports_stencil1() = GL_FALSE;
+                caps.supports_stencil4() = GL_FALSE;
+                caps.supports_stencil8() = GL_FALSE;
             }
 
             return caps;

@@ -87,6 +87,24 @@ namespace fixie
         GLboolean& supports_framebuffer_objects();
         const GLboolean& supports_framebuffer_objects() const;
 
+        GLboolean& supports_rgb8_rgba8();
+        const GLboolean& supports_rgb8_rgba8() const;
+
+        GLboolean& supports_depth24();
+        const GLboolean& supports_depth24() const;
+
+        GLboolean& supports_depth32();
+        const GLboolean& supports_depth32() const;
+
+        GLboolean& supports_stencil1();
+        const GLboolean& supports_stencil1() const;
+
+        GLboolean& supports_stencil4();
+        const GLboolean& supports_stencil4() const;
+
+        GLboolean& supports_stencil8();
+        const GLboolean& supports_stencil8() const;
+
         GLboolean& supports_vertex_array_objects();
         const GLboolean& supports_vertex_array_objects() const;
 
@@ -117,6 +135,12 @@ namespace fixie
 
         // extensions
         GLboolean _supports_framebuffer_objects;
+        GLboolean _supports_rgb8_rgba8;
+        GLboolean _supports_depth24;
+        GLboolean _supports_depth32;
+        GLboolean _supports_stencil1;
+        GLboolean _supports_stencil4;
+        GLboolean _supports_stencil8;
         GLboolean _supports_vertex_array_objects;
     };
 }

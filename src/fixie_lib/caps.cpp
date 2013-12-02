@@ -27,6 +27,14 @@ namespace fixie
         , _alpha_bits(0)
         , _depth_bits(0)
         , _stencil_bits(0)
+        , _supports_framebuffer_objects(0)
+        , _supports_rgb8_rgba8(0)
+        , _supports_depth24(0)
+        , _supports_depth32(0)
+        , _supports_stencil1(0)
+        , _supports_stencil4(0)
+        , _supports_stencil8(0)
+        , _supports_vertex_array_objects(0)
     {
     }
 
@@ -286,5 +294,65 @@ namespace fixie
     const GLboolean& caps::supports_vertex_array_objects() const
     {
         return _supports_vertex_array_objects;
+    }
+
+    const GLboolean& caps::supports_rgb8_rgba8() const
+    {
+        return _supports_rgb8_rgba8;
+    }
+
+    GLboolean& caps::supports_rgb8_rgba8()
+    {
+        return _supports_rgb8_rgba8;
+    }
+
+    const GLboolean& caps::supports_depth24() const
+    {
+        return _supports_depth24;
+    }
+
+    GLboolean& caps::supports_depth24()
+    {
+        return _supports_depth24;
+    }
+
+    const GLboolean& caps::supports_depth32() const
+    {
+        return _supports_depth32;
+    }
+
+    GLboolean& caps::supports_depth32()
+    {
+        return _supports_depth32;
+    }
+
+    const GLboolean& caps::supports_stencil1() const
+    {
+        return _supports_stencil1;
+    }
+
+    GLboolean& caps::supports_stencil1()
+    {
+        return _supports_stencil1;
+    }
+
+    const GLboolean& caps::supports_stencil4() const
+    {
+        return _supports_stencil4;
+    }
+
+    GLboolean& caps::supports_stencil4()
+    {
+        return _supports_stencil4;
+    }
+
+    const GLboolean& caps::supports_stencil8() const
+    {
+        return _supports_stencil8;
+    }
+
+    GLboolean& caps::supports_stencil8()
+    {
+        return _supports_stencil8;
     }
 }
