@@ -18,6 +18,7 @@
 #include "fixie_lib/matrix.hpp"
 #include "fixie_lib/matrix_stack.hpp"
 #include "fixie_lib/texture.hpp"
+#include "fixie_lib/renderbuffer.hpp"
 #include "fixie_lib/buffer.hpp"
 #include "fixie_lib/framebuffer.hpp"
 #include "fixie_lib/vertex_array.hpp"
@@ -71,6 +72,15 @@ namespace fixie
 
         fixie::texture_environment& texture_environment(size_t unit);
         const fixie::texture_environment& texture_environment(size_t unit) const;
+
+        GLuint insert_renderbuffer(std::unique_ptr<fixie::renderbuffer> renderbuffer);
+        void delete_renderbuffer(GLuint id);
+        std::weak_ptr<fixie::renderbuffer> renderbuffer(GLuint id);
+        std::weak_ptr<const fixie::renderbuffer> renderbuffer(GLuint id) const;
+
+        void bind_renderbuffer(std::weak_ptr<fixie::renderbuffer> renderbuffer);
+        std::weak_ptr<const fixie::renderbuffer> bound_renderbuffer() const;
+        std::weak_ptr<fixie::renderbuffer> bound_renderbuffer();
 
         GLuint insert_framebuffer(std::unique_ptr<fixie::framebuffer> framebuffer);
         void delete_framebuffer(GLuint id);
@@ -136,6 +146,10 @@ namespace fixie
         std::unordered_map< GLuint, std::shared_ptr<fixie::texture> > _textures;
         std::vector< std::weak_ptr<fixie::texture> > _bound_textures;
         std::vector<fixie::texture_environment> _texture_environments;
+
+        GLuint _next_renderbuffer_id;
+        std::unordered_map< GLuint, std::shared_ptr<fixie::renderbuffer> > _renderbuffers;
+        std::weak_ptr<fixie::renderbuffer> _bound_renderbuffer;
 
         GLuint _next_framebuffer_id;
         std::unordered_map< GLuint, std::shared_ptr<fixie::framebuffer> > _framebuffers;

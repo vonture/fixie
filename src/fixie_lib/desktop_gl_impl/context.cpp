@@ -1,5 +1,6 @@
 #include "fixie_lib/desktop_gl_impl/context.hpp"
 #include "fixie_lib/desktop_gl_impl/texture.hpp"
+#include "fixie_lib/desktop_gl_impl/renderbuffer.hpp"
 #include "fixie_lib/desktop_gl_impl/framebuffer.hpp"
 #include "fixie_lib/desktop_gl_impl/buffer.hpp"
 #include "fixie_lib/desktop_gl_impl/exceptions.hpp"
@@ -84,6 +85,11 @@ namespace fixie
         std::unique_ptr<texture_impl> context::create_texture()
         {
             return std::unique_ptr<texture_impl>(new texture(_functions));
+        }
+
+        std::unique_ptr<renderbuffer_impl> context::create_renderbuffer()
+        {
+            return std::unique_ptr<renderbuffer_impl>(new renderbuffer(_functions));
         }
 
         std::unique_ptr<framebuffer_impl> context::create_default_framebuffer()

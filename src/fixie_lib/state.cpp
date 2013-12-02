@@ -194,6 +194,49 @@ namespace fixie
         return _texture_environments[unit];
     }
 
+    GLuint state::insert_renderbuffer(std::unique_ptr<fixie::renderbuffer> renderbuffer)
+    {
+        GLuint id = _next_renderbuffer_id++;
+        _renderbuffers[id] = std::move(renderbuffer);
+        return id;
+    }
+
+    void state::delete_renderbuffer(GLuint id)
+    {
+        auto iter = _renderbuffers.find(id);
+        if (iter != end(_renderbuffers))
+        {
+            _renderbuffers.erase(iter);
+        }
+    }
+
+    std::weak_ptr<fixie::renderbuffer> state::renderbuffer(GLuint id)
+    {
+        auto iter = _renderbuffers.find(id);
+        return (iter != end(_renderbuffers)) ? iter->second : std::weak_ptr<fixie::renderbuffer>();
+    }
+
+    std::weak_ptr<const fixie::renderbuffer> state::renderbuffer(GLuint id) const
+    {
+        auto iter = _renderbuffers.find(id);
+        return (iter != end(_renderbuffers)) ? iter->second : std::weak_ptr<fixie::renderbuffer>();
+    }
+
+    void state::bind_renderbuffer(std::weak_ptr<fixie::renderbuffer> renderbuffer)
+    {
+        _bound_renderbuffer = renderbuffer;
+    }
+
+    std::weak_ptr<const fixie::renderbuffer> state::bound_renderbuffer() const
+    {
+        return _bound_renderbuffer;
+    }
+
+    std::weak_ptr<fixie::renderbuffer> state::bound_renderbuffer()
+    {
+        return _bound_renderbuffer;
+    }
+
     GLuint state::insert_framebuffer(std::unique_ptr<fixie::framebuffer> framebuffer)
     {
         GLuint id = _next_framebuffer_id++;

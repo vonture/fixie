@@ -31,6 +31,13 @@ namespace fixie
         return _state.insert_texture(std::move(texture));
     }
 
+    GLuint context::create_renderbuffer()
+    {
+        std::unique_ptr<renderbuffer_impl> impl = _impl->create_renderbuffer();
+        std::unique_ptr<fixie::renderbuffer> renderbuffer = std::unique_ptr<fixie::renderbuffer>(new fixie::renderbuffer(std::move(impl)));
+        return _state.insert_renderbuffer(std::move(renderbuffer));
+    }
+
     GLuint context::create_framebuffer()
     {
         std::unique_ptr<framebuffer_impl> impl = _impl->create_framebuffer();
