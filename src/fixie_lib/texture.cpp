@@ -19,6 +19,7 @@ namespace fixie
         : internal_format(0)
         , width(0)
         , height(0)
+        , compressed(0)
     {
     }
 
@@ -55,6 +56,11 @@ namespace fixie
     GLsizei texture::mip_level_height(size_t mip) const
     {
         return _mips[mip].height;
+    }
+
+    GLboolean texture::mip_level_compressed(size_t mip) const
+    {
+        return _mips[mip].compressed;
     }
 
     GLenum texture::mip_level_internal_format(size_t mip) const
@@ -115,6 +121,7 @@ namespace fixie
         _mips[level].internal_format = internal_format;
         _mips[level].width = width;
         _mips[level].height = width;
+        _mips[level].compressed = GL_FALSE;
 
         if (level == 0 && auto_generate_mipmap())
         {
@@ -144,6 +151,7 @@ namespace fixie
         _mips[level].internal_format = internal_format;
         _mips[level].width = width;
         _mips[level].height = width;
+        _mips[level].compressed = GL_TRUE;
     }
 
     void texture::set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height,
@@ -183,6 +191,7 @@ namespace fixie
         _mips[level].internal_format = internal_format;
         _mips[level].width = width;
         _mips[level].height = width;
+        _mips[level].compressed = GL_FALSE;
 
         if (level == 0 && auto_generate_mipmap())
         {
@@ -209,9 +218,10 @@ namespace fixie
         _mips.resize(required_mip_levels(mip_level_width(0), mip_level_height(0)));
         for (size_t i = 0; i < _mips.size(); i++)
         {
-            _mips[i].internal_format = _mips[0].internal_format;
+            _mips[i].internal_format = mip_level_internal_format(0);
             _mips[i].width = std::max(mip_level_width(0) >> i, 1);
             _mips[i].height = std::max(mip_level_height(0) >> i, 1);
+            _mips[i].compressed = mip_level_compressed(0);
         }
     }
 

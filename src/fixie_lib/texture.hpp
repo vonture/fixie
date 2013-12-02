@@ -37,6 +37,7 @@ namespace fixie
         size_t mip_levels() const;
         GLsizei mip_level_width(size_t mip) const;
         GLsizei mip_level_height(size_t mip) const;
+        GLboolean mip_level_compressed(size_t mip) const;
         GLenum mip_level_internal_format(size_t mip) const;
         GLboolean immutable() const;
         GLboolean complete() const;
@@ -62,11 +63,13 @@ namespace fixie
 
         struct mip_info
         {
+            mip_info();
+
             GLenum internal_format;
             GLsizei width;
             GLsizei height;
 
-            mip_info();
+            GLboolean compressed;
         };
         std::vector<mip_info> _mips;
 
