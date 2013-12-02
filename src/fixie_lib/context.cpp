@@ -134,6 +134,12 @@ namespace fixie
         auto insert_if = [&](GLboolean cond, const std::string& extension){ extension_set.insert(std::move(extension)); };
 
         insert_if(caps.supports_framebuffer_objects(), "GL_OES_framebuffer_object");
+        insert_if(caps.supports_rgb8_rgba8(), "GL_OES_rgb8_rgba8");
+        insert_if(caps.supports_depth24(), "GL_OES_depth24");
+        insert_if(caps.supports_depth32(), "GL_OES_depth32");
+        insert_if(caps.supports_stencil1(), "GL_OES_stencil1");
+        insert_if(caps.supports_stencil4(), "GL_OES_stencil4");
+        insert_if(caps.supports_stencil8(), "GL_OES_stencil8");
         insert_if(caps.supports_vertex_array_objects(), "GL_OES_vertex_array_object");
 
         return extension_set;
