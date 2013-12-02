@@ -3,22 +3,16 @@
 
 namespace fixie
 {
-    template <typename T>
-    T clamp(const T& val, const T& min, const T& max)
-    {
-        return (val < min) ? min : ((val > max) ? max : val);
-    }
+    template <typename value_type>
+    value_type clamp(const value_type& val, const value_type& min, const value_type& max);
 
-    template <typename T>
-    T log2(T x)
-    {
-        T r = 0;
-        while ((x >> r) > 1)
-        {
-            r++;
-        }
-        return r;
-    }
+    template <typename number_type>
+    number_type log2(const number_type& x);
+
+    template <typename number_type>
+    bool is_power_of_two(const number_type& number);
 }
+
+#include "fixie_lib/math_util.inl"
 
 #endif // _MATH_UTIL_HPP_
