@@ -39,7 +39,7 @@ macro(add_sample PROJECT_NAME SOURCE COPY_FILES)
                            copy ${COPY_FILE} ${PROJECT_BINARY_DIR}/samples/${PROJECT_NAME})
     endforeach()
 
-    add_definitions(-DSAMPLE_NAME=\"${PROJECT_NAME}\" -DSAMPLE_WIDTH=${SAMPLE_WINDOW_WIDTH} -DSAMPLE_HEIGHT=${SAMPLE_WINDOW_HEIGHT})
+    add_definitions(-DSAMPLE_NAME=\"${PROJECT_NAME}\" -DSAMPLE_WIDTH=${SAMPLE_WINDOW_WIDTH} -DSAMPLE_HEIGHT=${SAMPLE_WINDOW_HEIGHT} -DGL_GLEXT_PROTOTYPES)
 endmacro()
 
 add_subdirectory(sample_util)
@@ -47,3 +47,4 @@ add_subdirectory(simple_triangle)
 add_subdirectory(simple_texturing)
 add_subdirectory(simple_model)
 add_subdirectory(simple_lighting)
+add_subdirectory(render_to_texture)
