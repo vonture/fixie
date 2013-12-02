@@ -89,7 +89,7 @@ namespace fixie
     void framebuffer::set_depth_attachment(const framebuffer_attachment& attachment)
     {
         _depth = attachment;
-        _impl->set_color_attachment(_color);
+        _impl->set_depth_attachment(_depth);
     }
 
     const framebuffer_attachment& framebuffer::stencil_attachment() const
@@ -100,7 +100,7 @@ namespace fixie
     void framebuffer::set_stencil_attachment(const framebuffer_attachment& attachment)
     {
         _stencil = attachment;
-        _impl->set_color_attachment(_color);
+        _impl->set_stencil_attachment(_stencil);
     }
 
     GLenum framebuffer::preferred_read_format() const
