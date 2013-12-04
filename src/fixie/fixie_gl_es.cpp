@@ -1924,7 +1924,39 @@ void FIXIE_APIENTRY glDeleteTextures(GLsizei n, const GLuint *textures)
 
 void FIXIE_APIENTRY glDepthFunc(GLenum func)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (func)
+        {
+        case GL_NEVER:
+        case GL_ALWAYS:
+        case GL_LESS:
+        case GL_LEQUAL:
+        case GL_EQUAL:
+        case GL_GREATER:
+        case GL_GEQUAL:
+        case GL_NOTEQUAL:
+            break;
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid depth func, %s", fixie::get_gl_enum_name(func).c_str()));
+        }
+
+        ctx->state().depth_buffer_state().depth_func() = func;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDepthMask(GLboolean flag)
