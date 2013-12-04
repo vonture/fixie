@@ -1055,7 +1055,7 @@ void FIXIE_APIENTRY glDepthRangef(GLclampf zNear, GLclampf zFar)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().depth_stencil_state().depth_range() = fixie::range(zNear, zFar);
+        ctx->state().viewport_state().depth_range() = fixie::range(zNear, zFar);
     }
     catch (const fixie::gl_error& e)
     {
@@ -1899,7 +1899,7 @@ void FIXIE_APIENTRY glDepthRangex(GLclampx zNear, GLclampx zFar)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        ctx->state().depth_stencil_state().depth_range() = fixie::range(fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar));
+        ctx->state().viewport_state().depth_range() = fixie::range(fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar));
     }
     catch (const fixie::gl_error& e)
     {
@@ -3166,7 +3166,7 @@ void FIXIE_APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
             throw fixie::invalid_value_error(fixie::format("viewport width and hight cannot be negative, %i and %i provided.", width, height));
         }
 
-        ctx->state().rasterizer_state().viewport() = fixie::rectangle(x, y, width, height);
+        ctx->state().viewport_state().viewport() = fixie::rectangle(x, y, width, height);
     }
     catch (const fixie::gl_error& e)
     {

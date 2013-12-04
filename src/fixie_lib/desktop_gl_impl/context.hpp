@@ -46,6 +46,9 @@ namespace fixie
 
             std::string _renderer_string;
 
+            viewport_state _cur_viewport_state;
+            void sync_viewport_state(const viewport_state& state);
+
             depth_stencil_state _cur_depth_stencil_state;
             void sync_depth_stencil_state(const depth_stencil_state& state);
 

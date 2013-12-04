@@ -28,6 +28,7 @@ namespace fixie
             , _extensions(intialize_extensions(_functions, _version))
             , _caps(initialize_caps(_functions, _version, _extensions))
             , _shader_cache(_functions)
+            , _cur_viewport_state(get_default_viewport_state())
             , _cur_depth_stencil_state(get_default_depth_stencil_state())
             , _cur_clear_state(get_default_clear_state())
             , _cur_rasterizer_state(get_default_rasterizer_state())
@@ -75,7 +76,7 @@ namespace fixie
         {
             GLint viewport_values[4];
             gl_call(_functions, get_integer_v, GL_VIEWPORT, viewport_values);
-            state.rasterizer_state().viewport() = rectangle(viewport_values[0], viewport_values[1], viewport_values[2], viewport_values[3]);
+            state.viewport_state().viewport() = rectangle(viewport_values[0], viewport_values[1], viewport_values[2], viewport_values[3]);
 
             GLint scissor_values[4];
             gl_call(_functions, get_integer_v, GL_SCISSOR_BOX, scissor_values);
@@ -123,6 +124,7 @@ namespace fixie
 
         void context::clear(const state& state, GLbitfield mask)
         {
+            sync_viewport_state(state.viewport_state());
             sync_clear_state(state.clear_state());
             sync_rasterizer_state(state.rasterizer_state());
             sync_framebuffer(state);
@@ -137,6 +139,21 @@ namespace fixie
         void context::finish()
         {
             gl_call(_functions, finish);
+        }
+
+        void context::sync_viewport_state(const viewport_state& state)
+        {
+            if (_cur_viewport_state.viewport() != state.viewport())
+            {
+                gl_call(_functions, viewport, state.viewport().x, state.viewport().y, state.viewport().width, state.viewport().height);
+                _cur_viewport_state.viewport() = state.viewport();
+            }
+
+            if (_cur_viewport_state.depth_range() != state.depth_range())
+            {
+                gl_call(_functions, depth_range_f, state.depth_range().near, state.depth_range().far);
+                _cur_viewport_state.depth_range() = state.depth_range();
+            }
         }
 
         void context::sync_depth_stencil_state(const depth_stencil_state& state)
@@ -164,12 +181,6 @@ namespace fixie
             {
                 gl_call(_functions, depth_mask, state.depth_mask());
                 _cur_depth_stencil_state.depth_mask() = state.depth_mask();
-            }
-
-            if (_cur_depth_stencil_state.depth_range() != state.depth_range())
-            {
-                gl_call(_functions, depth_range_f, state.depth_range().near, state.depth_range().far);
-                _cur_depth_stencil_state.depth_range() = state.depth_range();
             }
 
             if (_cur_depth_stencil_state.stencil_func() != state.stencil_func() ||
@@ -234,12 +245,6 @@ namespace fixie
             {
                 gl_call(_functions, scissor, state.scissor().x, state.scissor().y, state.scissor().width, state.scissor().height);
                 _cur_rasterizer_state.scissor() = state.scissor();
-            }
-
-            if (_cur_rasterizer_state.viewport() != state.viewport())
-            {
-                gl_call(_functions, viewport, state.viewport().x, state.viewport().y, state.viewport().width, state.viewport().height);
-                _cur_rasterizer_state.viewport() = state.viewport();
             }
         }
 
@@ -330,6 +335,7 @@ namespace fixie
             sync_vertex_attributes(state.bound_vertex_array(), shader);
             sync_textures(state);
             sync_framebuffer(state);
+            sync_viewport_state(state.viewport_state());
             sync_depth_stencil_state(state.depth_stencil_state());
             sync_rasterizer_state(state.rasterizer_state());
         }

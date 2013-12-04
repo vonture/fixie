@@ -5,8 +5,7 @@
 namespace fixie
 {
     rasterizer_state::rasterizer_state()
-        : _viewport()
-        , _scissor_test()
+        : _scissor_test()
         , _scissor()
         , _point_size()
         , _point_smooth()
@@ -22,16 +21,6 @@ namespace fixie
         , _polygon_offset_units()
         , _polygon_offset_fill()
     {
-    }
-
-    rectangle& rasterizer_state::viewport()
-    {
-        return _viewport;
-    }
-
-    const rectangle& rasterizer_state::viewport() const
-    {
-        return _viewport;
     }
 
     GLboolean& rasterizer_state::scissor_test()
@@ -197,7 +186,6 @@ namespace fixie
     rasterizer_state get_default_rasterizer_state()
     {
         rasterizer_state state;
-        state.viewport() = rectangle(0, 0, 1, 1);
         state.scissor_test() = GL_FALSE;
         state.scissor() = rectangle(0, 0, 1, 1);
         state.point_size() = 1.0f;

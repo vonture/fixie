@@ -21,9 +21,6 @@ namespace fixie
         const GLboolean& depth_mask() const;
         GLboolean& depth_mask();
 
-        const fixie::range& depth_range() const;
-        fixie::range& depth_range();
-
         const GLenum& stencil_func() const;
         GLenum& stencil_func();
 

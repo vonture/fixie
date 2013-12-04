@@ -9,7 +9,8 @@
 namespace fixie
 {
     state::state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_fbo, std::unique_ptr<fixie::vertex_array> default_vao)
-        : _clear_state(get_default_clear_state())
+        : _viewport_state(get_default_viewport_state())
+        , _clear_state(get_default_clear_state())
         , _depth_stencil_state(get_default_depth_stencil_state())
         , _rasterizer_state(get_default_rasterizer_state())
         , _lighting_state(get_default_lighting_state(caps))
@@ -39,6 +40,16 @@ namespace fixie
 
         std::generate(begin(_clip_planes), end(_clip_planes), get_default_clip_plane);
         std::generate(begin(_texture_environments), end(_texture_environments), get_default_texture_environment);
+    }
+
+    const fixie::viewport_state& state::viewport_state() const
+    {
+        return _viewport_state;
+    }
+
+    fixie::viewport_state& state::viewport_state()
+    {
+        return _viewport_state;
     }
 
     const fixie::clear_state& state::clear_state() const

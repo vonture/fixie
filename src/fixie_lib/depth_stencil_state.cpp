@@ -7,7 +7,6 @@ namespace fixie
     depth_stencil_state::depth_stencil_state()
         : _depth_func()
         , _depth_test()
-        , _depth_range()
         , _stencil_func()
         , _stencil_ref()
         , _stencil_mask()
@@ -45,16 +44,6 @@ namespace fixie
     GLboolean& depth_stencil_state::depth_mask()
     {
         return _depth_mask;
-    }
-
-    const fixie::range& depth_stencil_state::depth_range() const
-    {
-        return _depth_range;
-    }
-
-    fixie::range& depth_stencil_state::depth_range()
-    {
-        return _depth_range;
     }
 
     const GLenum& depth_stencil_state::stencil_func() const
@@ -123,7 +112,6 @@ namespace fixie
         state.depth_func() = GL_LESS;
         state.depth_test() = GL_FALSE;
         state.depth_mask() = GL_TRUE;
-        state.depth_range() = range(0.0f, 1.0f);
         state.stencil_func() = GL_ALWAYS;
         state.stencil_ref() = 0;
         state.stencil_mask() = static_cast<GLuint>(-1);

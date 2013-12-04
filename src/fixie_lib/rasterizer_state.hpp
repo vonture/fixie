@@ -14,9 +14,6 @@ namespace fixie
     public:
         rasterizer_state();
 
-        rectangle& viewport();
-        const rectangle& viewport() const;
-
         GLboolean& scissor_test();
         const GLboolean& scissor_test() const;
 
@@ -66,8 +63,6 @@ namespace fixie
         GLboolean& polygon_offset_fill();
     
     private:
-        rectangle _viewport;
-
         GLboolean _scissor_test;
         rectangle _scissor;
 

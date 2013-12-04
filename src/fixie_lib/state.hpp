@@ -9,6 +9,7 @@
 #include "fixie_lib/depth_stencil_state.hpp"
 #include "fixie_lib/clear_state.hpp"
 #include "fixie_lib/rasterizer_state.hpp"
+#include "fixie_lib/viewport_state.hpp"
 #include "fixie_lib/rectangle.hpp"
 #include "fixie_lib/range.hpp"
 #include "fixie_lib/lighting_state.hpp"
@@ -30,6 +31,9 @@ namespace fixie
     {
     public:
         state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_fbo, std::unique_ptr<fixie::vertex_array> default_vao);
+
+        const fixie::viewport_state& viewport_state() const;
+        fixie::viewport_state& viewport_state();
 
         const fixie::clear_state& clear_state() const;
         fixie::clear_state& clear_state();
@@ -127,6 +131,7 @@ namespace fixie
         const GLenum& error() const;
 
     private:
+        fixie::viewport_state _viewport_state;
         fixie::clear_state _clear_state;
         fixie::depth_stencil_state _depth_stencil_state;
         fixie::rasterizer_state _rasterizer_state;
