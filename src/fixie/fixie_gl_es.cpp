@@ -1961,7 +1961,23 @@ void FIXIE_APIENTRY glDepthFunc(GLenum func)
 
 void FIXIE_APIENTRY glDepthMask(GLboolean flag)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().depth_buffer_state().depth_write_mask() = flag;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDepthRangex(GLclampx zNear, GLclampx zFar)
