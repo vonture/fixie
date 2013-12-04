@@ -52,6 +52,9 @@ namespace fixie
             scissor_state _cur_scissor_state;
             void sync_scissor_state(const scissor_state& state);
 
+            color_buffer_state _cur_color_buffer_state;
+            void sync_color_buffer_state(const color_buffer_state& state);
+
             depth_stencil_state _cur_depth_stencil_state;
             void sync_depth_stencil_state(const depth_stencil_state& state);
 

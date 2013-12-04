@@ -54,6 +54,11 @@ namespace fixie
             DECLARE_GL_FUNCTION(clear_stencil, void, (GLint s), glClearStencil);
             DECLARE_GL_FUNCTION(clear, void, (GLbitfield mask), glClear);
 
+            DECLARE_GL_FUNCTION(alpha_func, void, (GLenum func, GLclampf ref), glAlphaFunc);
+            DECLARE_GL_FUNCTION(blend_func, void, (GLenum sfactor, GLenum dfactor), glBlendFunc);
+            DECLARE_GL_FUNCTION(blend_func_seperate, void, (GLenum src_rgb, GLenum dst_rgb, GLenum src_alpha, GLenum dst_alpha), glBlendFuncSeparate);
+            DECLARE_GL_FUNCTION(logic_op, void, (GLenum opcode), glLogicOp);
+
             DECLARE_GL_FUNCTION(depth_func, void, (GLboolean func), glDepthFunc);
             DECLARE_GL_FUNCTION(depth_range_f, void, (GLfloat nearVal, GLfloat farVal), glDepthRangef);
             DECLARE_GL_FUNCTION(depth_mask, void, (GLboolean flag), glDepthMask);

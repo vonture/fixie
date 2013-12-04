@@ -12,6 +12,7 @@ namespace fixie
         : _viewport_state(get_default_viewport_state())
         , _scissor_state(get_default_scissor_state())
         , _clear_state(get_default_clear_state())
+        , _color_buffer_state(get_default_color_buffer_state())
         , _depth_stencil_state(get_default_depth_stencil_state())
         , _rasterizer_state(get_default_rasterizer_state())
         , _lighting_state(get_default_lighting_state(caps))
@@ -71,6 +72,16 @@ namespace fixie
     fixie::clear_state& state::clear_state()
     {
         return _clear_state;
+    }
+
+    const fixie::color_buffer_state& state::color_buffer_state() const
+    {
+        return _color_buffer_state;
+    }
+
+    fixie::color_buffer_state& state::color_buffer_state()
+    {
+        return _color_buffer_state;
     }
 
     const fixie::depth_stencil_state& state::depth_stencil_state() const

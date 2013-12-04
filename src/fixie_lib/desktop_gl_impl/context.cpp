@@ -29,6 +29,7 @@ namespace fixie
             , _caps(initialize_caps(_functions, _version, _extensions))
             , _shader_cache(_functions)
             , _cur_viewport_state(get_default_viewport_state())
+            , _cur_color_buffer_state(get_default_color_buffer_state())
             , _cur_depth_stencil_state(get_default_depth_stencil_state())
             , _cur_clear_state(get_default_clear_state())
             , _cur_rasterizer_state(get_default_rasterizer_state())
@@ -176,6 +177,96 @@ namespace fixie
             {
                 gl_call(_functions, scissor, state.scissor().x(), state.scissor().y(), state.scissor().width(), state.scissor().height());
                 _cur_scissor_state.scissor() = state.scissor();
+            }
+        }
+
+        void context::sync_color_buffer_state(const color_buffer_state& state)
+        {
+            if (_cur_color_buffer_state.alpha_test_enabled() != state.alpha_test_enabled())
+            {
+                if (state.alpha_test_enabled())
+                {
+                    gl_call(_functions, enable, GL_ALPHA_TEST);
+                }
+                else
+                {
+                    gl_call(_functions, disable, GL_ALPHA_TEST);
+                }
+                _cur_color_buffer_state.alpha_test_enabled() = state.alpha_test_enabled();
+            }
+
+            if (_cur_color_buffer_state.alpha_test_func() != state.alpha_test_func() ||
+                _cur_color_buffer_state.alpha_test_ref() != state.alpha_test_ref())
+            {
+                gl_call(_functions, alpha_func, state.alpha_test_func(), state.alpha_test_ref());
+                _cur_color_buffer_state.alpha_test_func() = state.alpha_test_func();
+                _cur_color_buffer_state.alpha_test_ref() = state.alpha_test_ref();
+            }
+
+            if (_cur_color_buffer_state.blend_enabled() != state.blend_enabled())
+            {
+                if (state.blend_enabled())
+                {
+                    gl_call(_functions, enable, GL_BLEND);
+                }
+                else
+                {
+                    gl_call(_functions, disable, GL_BLEND);
+                }
+                _cur_color_buffer_state.blend_enabled() = state.blend_enabled();
+            }
+
+            if (_cur_color_buffer_state.blend_src_rgb_func() != state.blend_src_rgb_func() ||
+                _cur_color_buffer_state.blend_dst_rgb_func() != state.blend_dst_rgb_func() ||
+                _cur_color_buffer_state.blend_src_alpha_func() != state.blend_src_alpha_func() ||
+                _cur_color_buffer_state.blend_dst_alpha_func() != state.blend_dst_alpha_func())
+            {
+                if (state.blend_src_rgb_func() == state.blend_src_alpha_func() &&
+                    state.blend_dst_rgb_func() == state.blend_dst_alpha_func())
+                {
+                    gl_call(_functions, blend_func, state.blend_src_rgb_func(), state.blend_dst_rgb_func());
+                }
+                else
+                {
+                    gl_call(_functions, blend_func_seperate, state.blend_src_rgb_func(), state.blend_dst_rgb_func(),
+                                                             state.blend_src_alpha_func(), state.blend_dst_alpha_func());
+                }
+                _cur_color_buffer_state.blend_src_rgb_func() = state.blend_src_rgb_func();
+                _cur_color_buffer_state.blend_dst_rgb_func() = state.blend_dst_rgb_func();
+                _cur_color_buffer_state.blend_src_alpha_func() = state.blend_src_alpha_func();
+                _cur_color_buffer_state.blend_dst_alpha_func() = state.blend_dst_alpha_func();
+            }
+
+            if (_cur_color_buffer_state.dither_enabled() != state.dither_enabled())
+            {
+                if (state.dither_enabled())
+                {
+                    gl_call(_functions, enable, GL_DITHER);
+                }
+                else
+                {
+                    gl_call(_functions, disable, GL_DITHER);
+                }
+                _cur_color_buffer_state.dither_enabled() = state.dither_enabled();
+            }
+
+            if (_cur_color_buffer_state.color_logic_op_enabled() != state.color_logic_op_enabled())
+            {
+                if (state.color_logic_op_enabled())
+                {
+                    gl_call(_functions, enable, GL_COLOR_LOGIC_OP);
+                }
+                else
+                {
+                    gl_call(_functions, disable, GL_COLOR_LOGIC_OP);
+                }
+                _cur_color_buffer_state.color_logic_op_enabled() = state.color_logic_op_enabled();
+            }
+
+            if (_cur_color_buffer_state.color_logic_op_func() != state.color_logic_op_func())
+            {
+                gl_call(_functions, logic_op, state.color_logic_op_func());
+                _cur_color_buffer_state.color_logic_op_func() = state.color_logic_op_func();
             }
         }
 
@@ -342,6 +433,7 @@ namespace fixie
             sync_framebuffer(state);
             sync_viewport_state(state.viewport_state());
             sync_scissor_state(state.scissor_state());
+            sync_color_buffer_state(state.color_buffer_state());
             sync_depth_stencil_state(state.depth_stencil_state());
             sync_rasterizer_state(state.rasterizer_state());
         }
