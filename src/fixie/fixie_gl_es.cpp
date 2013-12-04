@@ -2991,12 +2991,70 @@ void FIXIE_APIENTRY glStencilFunc(GLenum func, GLint ref, GLuint mask)
 
 void FIXIE_APIENTRY glStencilMask(GLuint mask)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+        ctx->state().stencil_buffer_state().stencil_write_mask() = mask;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glStencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        std::set<GLenum> valid_operations;
+        valid_operations.insert(GL_KEEP);
+        valid_operations.insert(GL_ZERO);
+        valid_operations.insert(GL_REPLACE);
+        valid_operations.insert(GL_INCR);
+        valid_operations.insert(GL_DECR);
+        valid_operations.insert(GL_INVERT);
+
+        if (valid_operations.find(fail) == end(valid_operations))
+        {
+            throw fixie::invalid_enum_error(fixie::format("invalid stencil fail operation, %s", fixie::get_gl_enum_name(fail).c_str()));
+        }
+
+        if (valid_operations.find(zfail) == end(valid_operations))
+        {
+            throw fixie::invalid_enum_error(fixie::format("invalid stencil depth fail operation, %s", fixie::get_gl_enum_name(zfail).c_str()));
+        }
+
+        if (valid_operations.find(zpass) == end(valid_operations))
+        {
+            throw fixie::invalid_enum_error(fixie::format("invalid stencil depth pass operation, %s", fixie::get_gl_enum_name(zpass).c_str()));
+        }
+
+        ctx->state().stencil_buffer_state().stencil_fail_operation() = fail;
+        ctx->state().stencil_buffer_state().stencil_pass_depth_fail_operation() = zfail;
+        ctx->state().stencil_buffer_state().stencil_pass_depth_pass_operation() = zpass;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
