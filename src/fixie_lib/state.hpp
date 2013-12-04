@@ -6,12 +6,13 @@
 #include <vector>
 
 #include "fixie_lib/caps.hpp"
-#include "fixie_lib/depth_stencil_state.hpp"
 #include "fixie_lib/clear_state.hpp"
 #include "fixie_lib/rasterizer_state.hpp"
 #include "fixie_lib/viewport_state.hpp"
 #include "fixie_lib/scissor_state.hpp"
 #include "fixie_lib/color_buffer_state.hpp"
+#include "fixie_lib/depth_buffer_state.hpp"
+#include "fixie_lib/stencil_buffer_state.hpp"
 #include "fixie_lib/rectangle.hpp"
 #include "fixie_lib/range.hpp"
 #include "fixie_lib/lighting_state.hpp"
@@ -46,8 +47,11 @@ namespace fixie
         const fixie::color_buffer_state& color_buffer_state() const;
         fixie::color_buffer_state& color_buffer_state();
 
-        const fixie::depth_stencil_state& depth_stencil_state() const;
-        fixie::depth_stencil_state& depth_stencil_state();
+        const fixie::depth_buffer_state& depth_buffer_state() const;
+        fixie::depth_buffer_state& depth_buffer_state();
+
+        const fixie::stencil_buffer_state& stencil_buffer_state() const;
+        fixie::stencil_buffer_state& stencil_buffer_state();
 
         const fixie::rasterizer_state& rasterizer_state() const;
         fixie::rasterizer_state& rasterizer_state();
@@ -143,7 +147,8 @@ namespace fixie
         fixie::scissor_state _scissor_state;
         fixie::clear_state _clear_state;
         fixie::color_buffer_state _color_buffer_state;
-        fixie::depth_stencil_state _depth_stencil_state;
+        fixie::depth_buffer_state _depth_buffer_state;
+        fixie::stencil_buffer_state _stencil_buffer_state;
         fixie::rasterizer_state _rasterizer_state;
         fixie::lighting_state _lighting_state;
 

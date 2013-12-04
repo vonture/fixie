@@ -30,7 +30,8 @@ namespace fixie
             , _shader_cache(_functions)
             , _cur_viewport_state(get_default_viewport_state())
             , _cur_color_buffer_state(get_default_color_buffer_state())
-            , _cur_depth_stencil_state(get_default_depth_stencil_state())
+            , _cur_depth_buffer_state(get_default_depth_buffer_state())
+            , _cur_stencil_buffer_state(get_default_stencil_buffer_state())
             , _cur_clear_state(get_default_clear_state())
             , _cur_rasterizer_state(get_default_rasterizer_state())
             , _vao(0)
@@ -270,17 +271,11 @@ namespace fixie
             }
         }
 
-        void context::sync_depth_stencil_state(const depth_stencil_state& state)
+        void context::sync_depth_buffer_state(const depth_buffer_state& state)
         {
-            if (_cur_depth_stencil_state.depth_func() != state.depth_func())
+            if (_cur_depth_buffer_state.depth_test_enabled() != state.depth_test_enabled())
             {
-                gl_call(_functions, depth_func, state.depth_func());
-                _cur_depth_stencil_state.depth_func() = state.depth_func();
-            }
-
-            if (_cur_depth_stencil_state.depth_test() != state.depth_test())
-            {
-                if (state.depth_test())
+                if (state.depth_test_enabled())
                 {
                     gl_call(_functions, enable, GL_DEPTH_TEST);
                 }
@@ -288,34 +283,62 @@ namespace fixie
                 {
                     gl_call(_functions, disable, GL_DEPTH_TEST);
                 }
-                _cur_depth_stencil_state.depth_test() = state.depth_test();
+                _cur_depth_buffer_state.depth_test_enabled() = state.depth_test_enabled();
             }
 
-            if (_cur_depth_stencil_state.depth_mask() != state.depth_mask())
+            if (_cur_depth_buffer_state.depth_func() != state.depth_func())
             {
-                gl_call(_functions, depth_mask, state.depth_mask());
-                _cur_depth_stencil_state.depth_mask() = state.depth_mask();
+                gl_call(_functions, depth_func, state.depth_func());
+                _cur_depth_buffer_state.depth_func() = state.depth_func();
             }
 
-            if (_cur_depth_stencil_state.stencil_func() != state.stencil_func() ||
-                _cur_depth_stencil_state.stencil_ref() != state.stencil_ref() ||
-                _cur_depth_stencil_state.stencil_mask() != state.stencil_mask())
+            if (_cur_depth_buffer_state.depth_write_mask() != state.depth_write_mask())
             {
-                gl_call(_functions, stencil_func, state.stencil_func(), state.stencil_ref(), state.stencil_mask());
-                _cur_depth_stencil_state.stencil_func() = state.stencil_func();
-                _cur_depth_stencil_state.stencil_ref() = state.stencil_ref();
-                _cur_depth_stencil_state.stencil_mask() = state.stencil_mask();
+                gl_call(_functions, depth_mask, state.depth_write_mask());
+                _cur_depth_buffer_state.depth_write_mask() = state.depth_write_mask();
+            }
+        }
+
+        void context::sync_stencil_buffer_state(const stencil_buffer_state& state)
+        {
+            if (_cur_stencil_buffer_state.stencil_test_enabled() != state.stencil_test_enabled())
+            {
+                if (state.stencil_test_enabled())
+                {
+                    gl_call(_functions, enable, GL_STENCIL_TEST);
+                }
+                else
+                {
+                    gl_call(_functions, disable, GL_STENCIL_TEST);
+                }
+                _cur_stencil_buffer_state.stencil_test_enabled() = state.stencil_test_enabled();
             }
 
-            if (_cur_depth_stencil_state.stencil_fail_operation() != state.stencil_fail_operation() ||
-                _cur_depth_stencil_state.stencil_pass_depth_fail_operation() != state.stencil_pass_depth_fail_operation() ||
-                _cur_depth_stencil_state.stencil_pass_depth_pass_operation() != state.stencil_pass_depth_pass_operation())
+            if (_cur_stencil_buffer_state.stencil_func() != state.stencil_func() ||
+                _cur_stencil_buffer_state.stencil_ref() != state.stencil_ref() ||
+                _cur_stencil_buffer_state.stencil_read_mask() != state.stencil_read_mask())
+            {
+                gl_call(_functions, stencil_func, state.stencil_func(), state.stencil_ref(), state.stencil_read_mask());
+                _cur_stencil_buffer_state.stencil_func() = state.stencil_func();
+                _cur_stencil_buffer_state.stencil_ref() = state.stencil_ref();
+                _cur_stencil_buffer_state.stencil_read_mask() = state.stencil_read_mask();
+            }
+
+            if (_cur_stencil_buffer_state.stencil_fail_operation() != state.stencil_fail_operation() ||
+                _cur_stencil_buffer_state.stencil_pass_depth_fail_operation() != state.stencil_pass_depth_fail_operation() ||
+                _cur_stencil_buffer_state.stencil_pass_depth_pass_operation() != state.stencil_pass_depth_pass_operation())
             {
                 gl_call(_functions, stencil_op, state.stencil_fail_operation(), state.stencil_pass_depth_fail_operation(),
                                                 state.stencil_pass_depth_pass_operation());
-                _cur_depth_stencil_state.stencil_fail_operation() = state.stencil_fail_operation();
-                _cur_depth_stencil_state.stencil_pass_depth_fail_operation() = state.stencil_pass_depth_fail_operation();
-                _cur_depth_stencil_state.stencil_pass_depth_pass_operation() = state.stencil_pass_depth_pass_operation();
+                _cur_stencil_buffer_state.stencil_fail_operation() = state.stencil_fail_operation();
+                _cur_stencil_buffer_state.stencil_pass_depth_fail_operation() = state.stencil_pass_depth_fail_operation();
+                _cur_stencil_buffer_state.stencil_pass_depth_pass_operation() = state.stencil_pass_depth_pass_operation();
+            }
+
+            if (_cur_stencil_buffer_state.stencil_write_mask() != state.stencil_write_mask())
+            {
+                gl_call(_functions, stencil_mask, state.stencil_write_mask());
+                _cur_stencil_buffer_state.stencil_write_mask() = state.stencil_write_mask();
             }
         }
 
@@ -434,7 +457,8 @@ namespace fixie
             sync_viewport_state(state.viewport_state());
             sync_scissor_state(state.scissor_state());
             sync_color_buffer_state(state.color_buffer_state());
-            sync_depth_stencil_state(state.depth_stencil_state());
+            sync_depth_buffer_state(state.depth_buffer_state());
+            sync_stencil_buffer_state(state.stencil_buffer_state());
             sync_rasterizer_state(state.rasterizer_state());
         }
 

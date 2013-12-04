@@ -921,7 +921,7 @@ namespace fixie
         {
         case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).enabled();
         case GL_SCISSOR_TEST: return ctx->state().scissor_state().enabled();
-        case GL_DEPTH_TEST:   return ctx->state().depth_stencil_state().depth_test();
+        case GL_DEPTH_TEST:   return ctx->state().depth_buffer_state().depth_test_enabled();
         case GL_LIGHTING:     return ctx->state().lighting_state().enabled();
         default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
         }

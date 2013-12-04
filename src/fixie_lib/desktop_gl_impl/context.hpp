@@ -55,8 +55,11 @@ namespace fixie
             color_buffer_state _cur_color_buffer_state;
             void sync_color_buffer_state(const color_buffer_state& state);
 
-            depth_stencil_state _cur_depth_stencil_state;
-            void sync_depth_stencil_state(const depth_stencil_state& state);
+            depth_buffer_state _cur_depth_buffer_state;
+            void sync_depth_buffer_state(const depth_buffer_state& state);
+
+            stencil_buffer_state _cur_stencil_buffer_state;
+            void sync_stencil_buffer_state(const stencil_buffer_state& state);
 
             clear_state _cur_clear_state;
             void sync_clear_state(const clear_state& state);

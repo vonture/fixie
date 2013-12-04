@@ -13,7 +13,8 @@ namespace fixie
         , _scissor_state(get_default_scissor_state())
         , _clear_state(get_default_clear_state())
         , _color_buffer_state(get_default_color_buffer_state())
-        , _depth_stencil_state(get_default_depth_stencil_state())
+        , _depth_buffer_state(get_default_depth_buffer_state())
+        , _stencil_buffer_state(get_default_stencil_buffer_state())
         , _rasterizer_state(get_default_rasterizer_state())
         , _lighting_state(get_default_lighting_state(caps))
         , _clip_planes(caps.max_clip_planes())
@@ -84,14 +85,24 @@ namespace fixie
         return _color_buffer_state;
     }
 
-    const fixie::depth_stencil_state& state::depth_stencil_state() const
+    const fixie::depth_buffer_state& state::depth_buffer_state() const
     {
-        return _depth_stencil_state;
+        return _depth_buffer_state;
     }
 
-    fixie::depth_stencil_state& state::depth_stencil_state()
+    fixie::depth_buffer_state& state::depth_buffer_state()
     {
-        return _depth_stencil_state;
+        return _depth_buffer_state;
+    }
+
+    const fixie::stencil_buffer_state& state::stencil_buffer_state() const
+    {
+        return _stencil_buffer_state;
+    }
+
+    fixie::stencil_buffer_state& state::stencil_buffer_state()
+    {
+        return _stencil_buffer_state;
     }
 
     const fixie::rasterizer_state& state::rasterizer_state() const

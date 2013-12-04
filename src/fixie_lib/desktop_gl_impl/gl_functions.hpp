@@ -62,8 +62,10 @@ namespace fixie
             DECLARE_GL_FUNCTION(depth_func, void, (GLboolean func), glDepthFunc);
             DECLARE_GL_FUNCTION(depth_range_f, void, (GLfloat nearVal, GLfloat farVal), glDepthRangef);
             DECLARE_GL_FUNCTION(depth_mask, void, (GLboolean flag), glDepthMask);
+
             DECLARE_GL_FUNCTION(stencil_func, void, (GLenum func, GLint ref, GLuint mask), glStencilFunc);
             DECLARE_GL_FUNCTION(stencil_op, void, (GLenum stencil_fail, GLenum stencil_pass_depth_fail, GLenum stencil_pass_depth_pass), glStencilOp);
+            DECLARE_GL_FUNCTION(stencil_mask, void, (GLuint mask), glStencilMask);
 
             DECLARE_GL_FUNCTION(scissor, void, (GLint x, GLint y, GLsizei width, GLsizei height), glScissor);
             DECLARE_GL_FUNCTION(viewport, void, (GLint x, GLint y, GLsizei width, GLsizei height), glViewport);
