@@ -8,6 +8,7 @@ namespace fixie
         : _depth_test_enabled()
         , _depth_func()
         , _depth_write_mask()
+        , _clear_depth()
     {
     }
 
@@ -41,12 +42,23 @@ namespace fixie
         return _depth_write_mask;
     }
 
+    GLclampf& depth_buffer_state::clear_depth()
+    {
+        return _clear_depth;
+    }
+
+    const GLclampf& depth_buffer_state::clear_depth() const
+    {
+        return _clear_depth;
+    }
+
     fixie::depth_buffer_state get_default_depth_buffer_state()
     {
         depth_buffer_state state;
         state.depth_test_enabled() = GL_FALSE;
         state.depth_func() = GL_LESS;
         state.depth_write_mask() = GL_TRUE;
+        state.clear_depth() = 1.0f;
         return state;
     }
 }

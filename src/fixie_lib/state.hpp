@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "fixie_lib/caps.hpp"
-#include "fixie_lib/clear_state.hpp"
 #include "fixie_lib/rasterizer_state.hpp"
 #include "fixie_lib/viewport_state.hpp"
 #include "fixie_lib/scissor_state.hpp"
@@ -40,9 +39,6 @@ namespace fixie
 
         const fixie::scissor_state& scissor_state() const;
         fixie::scissor_state& scissor_state();
-
-        const fixie::clear_state& clear_state() const;
-        fixie::clear_state& clear_state();
 
         const fixie::color_buffer_state& color_buffer_state() const;
         fixie::color_buffer_state& color_buffer_state();
@@ -145,7 +141,7 @@ namespace fixie
     private:
         fixie::viewport_state _viewport_state;
         fixie::scissor_state _scissor_state;
-        fixie::clear_state _clear_state;
+
         fixie::color_buffer_state _color_buffer_state;
         fixie::depth_buffer_state _depth_buffer_state;
         fixie::stencil_buffer_state _stencil_buffer_state;

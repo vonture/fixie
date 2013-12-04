@@ -3,6 +3,8 @@
 
 #include "fixie/fixie_gl_types.h"
 
+#include "fixie_lib/color.hpp"
+
 namespace fixie
 {
     class color_buffer_state
@@ -43,7 +45,12 @@ namespace fixie
         const GLenum& color_logic_op_func() const;
         GLenum& color_logic_op_func();
 
+        color& clear_color();
+        const color& clear_color() const;
+
     private:
+        color _clear_color;
+
         GLboolean _alpha_test_enabled;
         GLenum _alpha_test_func;
         GLclampf _alpha_test_ref;

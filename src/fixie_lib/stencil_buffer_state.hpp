@@ -36,6 +36,9 @@ namespace fixie
         const GLuint& stencil_write_mask() const;
         GLuint& stencil_write_mask();
 
+        GLint& clear_stencil();
+        const GLint& clear_stencil() const;
+
     private:
         GLboolean _stencil_test_enabled;
         GLenum _stencil_func;
@@ -46,6 +49,8 @@ namespace fixie
         GLenum _stencil_pass_depth_pass_operation;
 
         GLuint _stencil_write_mask;
+
+        GLint _clear_stencil;
     };
 
     stencil_buffer_state get_default_stencil_buffer_state();

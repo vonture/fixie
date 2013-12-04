@@ -11,7 +11,6 @@ namespace fixie
     state::state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_fbo, std::unique_ptr<fixie::vertex_array> default_vao)
         : _viewport_state(get_default_viewport_state())
         , _scissor_state(get_default_scissor_state())
-        , _clear_state(get_default_clear_state())
         , _color_buffer_state(get_default_color_buffer_state())
         , _depth_buffer_state(get_default_depth_buffer_state())
         , _stencil_buffer_state(get_default_stencil_buffer_state())
@@ -63,16 +62,6 @@ namespace fixie
     fixie::scissor_state& state::scissor_state()
     {
         return _scissor_state;
-    }
-
-    const fixie::clear_state& state::clear_state() const
-    {
-        return _clear_state;
-    }
-
-    fixie::clear_state& state::clear_state()
-    {
-        return _clear_state;
     }
 
     const fixie::color_buffer_state& state::color_buffer_state() const

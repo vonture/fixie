@@ -32,7 +32,6 @@ namespace fixie
             , _cur_color_buffer_state(get_default_color_buffer_state())
             , _cur_depth_buffer_state(get_default_depth_buffer_state())
             , _cur_stencil_buffer_state(get_default_stencil_buffer_state())
-            , _cur_clear_state(get_default_clear_state())
             , _cur_rasterizer_state(get_default_rasterizer_state())
             , _vao(0)
         {
@@ -128,7 +127,9 @@ namespace fixie
         {
             sync_viewport_state(state.viewport_state());
             sync_scissor_state(state.scissor_state());
-            sync_clear_state(state.clear_state());
+            sync_color_buffer_state(state.color_buffer_state());
+            sync_depth_buffer_state(state.depth_buffer_state());
+            sync_stencil_buffer_state(state.stencil_buffer_state());
             sync_rasterizer_state(state.rasterizer_state());
             sync_framebuffer(state);
             gl_call(_functions, clear, mask);
@@ -269,6 +270,12 @@ namespace fixie
                 gl_call(_functions, logic_op, state.color_logic_op_func());
                 _cur_color_buffer_state.color_logic_op_func() = state.color_logic_op_func();
             }
+
+            if (_cur_color_buffer_state.clear_color() != state.clear_color())
+            {
+                gl_call(_functions, clear_color, state.clear_color().r(), state.clear_color().g(), state.clear_color().b(), state.clear_color().a());
+                _cur_color_buffer_state.clear_color() = state.clear_color();
+            }
         }
 
         void context::sync_depth_buffer_state(const depth_buffer_state& state)
@@ -296,6 +303,12 @@ namespace fixie
             {
                 gl_call(_functions, depth_mask, state.depth_write_mask());
                 _cur_depth_buffer_state.depth_write_mask() = state.depth_write_mask();
+            }
+
+            if (_cur_depth_buffer_state.clear_depth() != state.clear_depth())
+            {
+                gl_call(_functions, clear_depthf, state.clear_depth());
+                _cur_depth_buffer_state.clear_depth() = state.clear_depth();
             }
         }
 
@@ -340,26 +353,11 @@ namespace fixie
                 gl_call(_functions, stencil_mask, state.stencil_write_mask());
                 _cur_stencil_buffer_state.stencil_write_mask() = state.stencil_write_mask();
             }
-        }
 
-        void context::sync_clear_state(const clear_state& state)
-        {
-            if (_cur_clear_state.clear_color() != state.clear_color())
-            {
-                gl_call(_functions, clear_color, state.clear_color().r(), state.clear_color().g(), state.clear_color().b(), state.clear_color().a());
-                _cur_clear_state.clear_color() = state.clear_color();
-            }
-
-            if (_cur_clear_state.clear_depth() != state.clear_depth())
-            {
-                gl_call(_functions, clear_depthf, state.clear_depth());
-                _cur_clear_state.clear_depth() = state.clear_depth();
-            }
-
-            if (_cur_clear_state.clear_stencil() != state.clear_stencil())
+            if (_cur_stencil_buffer_state.clear_stencil() != state.clear_stencil())
             {
                 gl_call(_functions, clear_stencil, state.clear_stencil());
-                _cur_clear_state.clear_stencil() = state.clear_stencil();
+                _cur_stencil_buffer_state.clear_stencil() = state.clear_stencil();
             }
         }
 

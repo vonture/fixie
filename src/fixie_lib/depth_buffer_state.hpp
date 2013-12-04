@@ -21,11 +21,16 @@ namespace fixie
         const GLboolean& depth_write_mask() const;
         GLboolean& depth_write_mask();
 
+        GLclampf& clear_depth();
+        const GLclampf& clear_depth() const;
+
     private:
         GLboolean _depth_test_enabled;
         GLenum _depth_func;
 
         GLboolean _depth_write_mask;
+
+        GLclampf _clear_depth;
     };
 
     depth_buffer_state get_default_depth_buffer_state();

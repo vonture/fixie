@@ -61,9 +61,6 @@ namespace fixie
             stencil_buffer_state _cur_stencil_buffer_state;
             void sync_stencil_buffer_state(const stencil_buffer_state& state);
 
-            clear_state _cur_clear_state;
-            void sync_clear_state(const clear_state& state);
-
             rasterizer_state _cur_rasterizer_state;
             void sync_rasterizer_state(const rasterizer_state& state);
 

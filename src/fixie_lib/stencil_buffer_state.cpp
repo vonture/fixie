@@ -96,6 +96,16 @@ namespace fixie
         return _stencil_write_mask;
     }
 
+    GLint& stencil_buffer_state::clear_stencil()
+    {
+        return _clear_stencil;
+    }
+
+    const GLint& stencil_buffer_state::clear_stencil() const
+    {
+        return _clear_stencil;
+    }
+
     stencil_buffer_state get_default_stencil_buffer_state()
     {
         stencil_buffer_state state;
@@ -107,6 +117,7 @@ namespace fixie
         state.stencil_pass_depth_fail_operation() = GL_KEEP;
         state.stencil_pass_depth_pass_operation() = GL_KEEP;
         state.stencil_write_mask() = static_cast<GLuint>(-1);
+        state.clear_stencil() = 0;
         return state;
     }
 }

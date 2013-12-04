@@ -16,6 +16,7 @@ namespace fixie
         , _dither_enabled()
         , _color_logic_op_enabled()
         , _color_logic_op_func()
+        , _clear_color()
     {
     }
 
@@ -129,6 +130,16 @@ namespace fixie
         return _color_logic_op_func;
     }
 
+    color& color_buffer_state::clear_color()
+    {
+        return _clear_color;
+    }
+
+    const color& color_buffer_state::clear_color() const
+    {
+        return _clear_color;
+    }
+
     color_buffer_state get_default_color_buffer_state()
     {
         color_buffer_state state;
@@ -143,6 +154,7 @@ namespace fixie
         state.dither_enabled() = GL_TRUE;
         state.color_logic_op_enabled() = GL_FALSE;
         state.color_logic_op_func() = GL_COPY;
+        state.clear_color() = color(0.0f, 0.0f, 0.0f, 0.0f);
         return state;
     }
 }
