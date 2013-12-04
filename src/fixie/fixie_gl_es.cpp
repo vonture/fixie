@@ -2986,7 +2986,41 @@ void FIXIE_APIENTRY glShadeModel(GLenum mode)
 
 void FIXIE_APIENTRY glStencilFunc(GLenum func, GLint ref, GLuint mask)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (func)
+        {
+        case GL_NEVER:
+        case GL_ALWAYS:
+        case GL_LESS:
+        case GL_LEQUAL:
+        case GL_EQUAL:
+        case GL_GREATER:
+        case GL_GEQUAL:
+        case GL_NOTEQUAL:
+            break;
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid stencil func, %s", fixie::get_gl_enum_name(func).c_str()));
+        }
+
+        ctx->state().stencil_buffer_state().stencil_func() = func;
+        ctx->state().stencil_buffer_state().stencil_ref() = ref;
+        ctx->state().stencil_buffer_state().stencil_read_mask() = mask;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glStencilMask(GLuint mask)
