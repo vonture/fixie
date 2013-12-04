@@ -5,12 +5,21 @@
 
 namespace fixie
 {
-    struct range
+    class range
     {
-        GLclampf near, far;
-
+    public:
         range();
         range(GLclampf near, GLclampf far);
+
+        const GLclampf& near() const;
+        GLclampf& near();
+
+        const GLclampf& far() const;
+        GLclampf& far();
+
+    private:
+        GLclampf _near;
+        GLclampf _far;
     };
 
     bool operator==(const range& a, const range& b);

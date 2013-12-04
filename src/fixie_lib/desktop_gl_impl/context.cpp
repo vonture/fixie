@@ -146,13 +146,13 @@ namespace fixie
         {
             if (_cur_viewport_state.viewport() != state.viewport())
             {
-                gl_call(_functions, viewport, state.viewport().x, state.viewport().y, state.viewport().width, state.viewport().height);
+                gl_call(_functions, viewport, state.viewport().x(), state.viewport().y(), state.viewport().width(), state.viewport().height());
                 _cur_viewport_state.viewport() = state.viewport();
             }
 
             if (_cur_viewport_state.depth_range() != state.depth_range())
             {
-                gl_call(_functions, depth_range_f, state.depth_range().near, state.depth_range().far);
+                gl_call(_functions, depth_range_f, state.depth_range().near(), state.depth_range().far());
                 _cur_viewport_state.depth_range() = state.depth_range();
             }
         }
@@ -174,7 +174,7 @@ namespace fixie
 
             if (_cur_scissor_state.scissor() != state.scissor())
             {
-                gl_call(_functions, scissor, state.scissor().x, state.scissor().y, state.scissor().width, state.scissor().height);
+                gl_call(_functions, scissor, state.scissor().x(), state.scissor().y(), state.scissor().width(), state.scissor().height());
                 _cur_scissor_state.scissor() = state.scissor();
             }
         }
