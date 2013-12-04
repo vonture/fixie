@@ -5,9 +5,7 @@
 namespace fixie
 {
     rasterizer_state::rasterizer_state()
-        : _scissor_test()
-        , _scissor()
-        , _point_size()
+        : _point_size()
         , _point_smooth()
         , _point_size_range()
         , _point_fade_threshold()
@@ -21,26 +19,6 @@ namespace fixie
         , _polygon_offset_units()
         , _polygon_offset_fill()
     {
-    }
-
-    GLboolean& rasterizer_state::scissor_test()
-    {
-        return _scissor_test;
-    }
-
-    const GLboolean& rasterizer_state::scissor_test() const
-    {
-        return _scissor_test;
-    }
-
-    rectangle& rasterizer_state::scissor()
-    {
-        return _scissor;
-    }
-
-    const rectangle& rasterizer_state::scissor() const
-    {
-        return _scissor;
     }
 
     const GLfloat& rasterizer_state::point_size() const
@@ -186,8 +164,6 @@ namespace fixie
     rasterizer_state get_default_rasterizer_state()
     {
         rasterizer_state state;
-        state.scissor_test() = GL_FALSE;
-        state.scissor() = rectangle(0, 0, 1, 1);
         state.point_size() = 1.0f;
         state.point_smooth() = GL_FALSE;
         state.point_size_range() = range(0.0f, 1.0f);

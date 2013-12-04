@@ -10,6 +10,7 @@
 #include "fixie_lib/clear_state.hpp"
 #include "fixie_lib/rasterizer_state.hpp"
 #include "fixie_lib/viewport_state.hpp"
+#include "fixie_lib/scissor_state.hpp"
 #include "fixie_lib/rectangle.hpp"
 #include "fixie_lib/range.hpp"
 #include "fixie_lib/lighting_state.hpp"
@@ -34,6 +35,9 @@ namespace fixie
 
         const fixie::viewport_state& viewport_state() const;
         fixie::viewport_state& viewport_state();
+
+        const fixie::scissor_state& scissor_state() const;
+        fixie::scissor_state& scissor_state();
 
         const fixie::clear_state& clear_state() const;
         fixie::clear_state& clear_state();
@@ -132,6 +136,7 @@ namespace fixie
 
     private:
         fixie::viewport_state _viewport_state;
+        fixie::scissor_state _scissor_state;
         fixie::clear_state _clear_state;
         fixie::depth_stencil_state _depth_stencil_state;
         fixie::rasterizer_state _rasterizer_state;

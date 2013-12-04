@@ -14,12 +14,6 @@ namespace fixie
     public:
         rasterizer_state();
 
-        GLboolean& scissor_test();
-        const GLboolean& scissor_test() const;
-
-        rectangle& scissor();
-        const rectangle& scissor() const;
-
         const GLfloat& point_size() const;
         GLfloat& point_size();
 
@@ -61,11 +55,8 @@ namespace fixie
 
         const GLboolean& polygon_offset_fill() const;
         GLboolean& polygon_offset_fill();
-    
-    private:
-        GLboolean _scissor_test;
-        rectangle _scissor;
 
+    private:
         GLfloat _point_size;
         GLboolean _point_smooth;
         range _point_size_range;

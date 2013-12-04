@@ -80,7 +80,7 @@ namespace fixie
 
             GLint scissor_values[4];
             gl_call(_functions, get_integer_v, GL_SCISSOR_BOX, scissor_values);
-            state.rasterizer_state().scissor() = rectangle(scissor_values[0], scissor_values[1], scissor_values[2], scissor_values[3]);
+            state.scissor_state().scissor() = rectangle(scissor_values[0], scissor_values[1], scissor_values[2], scissor_values[3]);
         }
 
         std::unique_ptr<texture_impl> context::create_texture()
@@ -125,6 +125,7 @@ namespace fixie
         void context::clear(const state& state, GLbitfield mask)
         {
             sync_viewport_state(state.viewport_state());
+            sync_scissor_state(state.scissor_state());
             sync_clear_state(state.clear_state());
             sync_rasterizer_state(state.rasterizer_state());
             sync_framebuffer(state);
@@ -153,6 +154,28 @@ namespace fixie
             {
                 gl_call(_functions, depth_range_f, state.depth_range().near, state.depth_range().far);
                 _cur_viewport_state.depth_range() = state.depth_range();
+            }
+        }
+
+        void context::sync_scissor_state(const scissor_state& state)
+        {
+            if (_cur_scissor_state.enabled() != state.enabled())
+            {
+                if (state.enabled())
+                {
+                    gl_call(_functions, enable, GL_SCISSOR_TEST);
+                }
+                else
+                {
+                    gl_call(_functions, disable, GL_SCISSOR_TEST);
+                }
+                _cur_scissor_state.enabled() = state.enabled();
+            }
+
+            if (_cur_scissor_state.scissor() != state.scissor())
+            {
+                gl_call(_functions, scissor, state.scissor().x, state.scissor().y, state.scissor().width, state.scissor().height);
+                _cur_scissor_state.scissor() = state.scissor();
             }
         }
 
@@ -228,24 +251,6 @@ namespace fixie
 
         void context::sync_rasterizer_state(const rasterizer_state& state)
         {
-            if (_cur_rasterizer_state.scissor_test() != state.scissor_test())
-            {
-                if (state.scissor_test())
-                {
-                    gl_call(_functions, enable, GL_SCISSOR_TEST);
-                }
-                else
-                {
-                    gl_call(_functions, disable, GL_SCISSOR_TEST);
-                }
-                _cur_rasterizer_state.scissor_test() = state.scissor_test();
-            }
-
-            if (_cur_rasterizer_state.scissor() != state.scissor())
-            {
-                gl_call(_functions, scissor, state.scissor().x, state.scissor().y, state.scissor().width, state.scissor().height);
-                _cur_rasterizer_state.scissor() = state.scissor();
-            }
         }
 
         void context::sync_vertex_attribute(const vertex_attribute& attribute, GLint location, GLboolean normalized)
@@ -336,6 +341,7 @@ namespace fixie
             sync_textures(state);
             sync_framebuffer(state);
             sync_viewport_state(state.viewport_state());
+            sync_scissor_state(state.scissor_state());
             sync_depth_stencil_state(state.depth_stencil_state());
             sync_rasterizer_state(state.rasterizer_state());
         }

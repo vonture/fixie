@@ -920,7 +920,7 @@ namespace fixie
         switch (target)
         {
         case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).enabled();
-        case GL_SCISSOR_TEST: return ctx->state().rasterizer_state().scissor_test();
+        case GL_SCISSOR_TEST: return ctx->state().scissor_state().enabled();
         case GL_DEPTH_TEST:   return ctx->state().depth_stencil_state().depth_test();
         case GL_LIGHTING:     return ctx->state().lighting_state().enabled();
         default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
@@ -2877,7 +2877,7 @@ void FIXIE_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
             throw fixie::invalid_value_error(fixie::format("scissor width and hight cannot be negative, %i and %i provided.", width, height));
         }
 
-        ctx->state().rasterizer_state().scissor() = fixie::rectangle(x, y, width, height);
+        ctx->state().scissor_state().scissor() = fixie::rectangle(x, y, width, height);
     }
     catch (const fixie::gl_error& e)
     {
