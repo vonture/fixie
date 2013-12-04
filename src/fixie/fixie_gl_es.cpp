@@ -964,6 +964,44 @@ namespace fixie
             UNREACHABLE();
         }
     }
+
+    static void set_alpha_func(GLenum func, const real& ref)
+    {
+        try
+        {
+            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+            switch (func)
+            {
+            case GL_NEVER:
+            case GL_ALWAYS:
+            case GL_LESS:
+            case GL_LEQUAL:
+            case GL_EQUAL:
+            case GL_GEQUAL:
+            case GL_GREATER:
+            case GL_NOTEQUAL:
+                break;
+            default:
+                throw invalid_enum_error(format("invalid alpha func, %s.", get_gl_enum_name(func).c_str()));
+            }
+
+            ctx->state().color_buffer_state().alpha_test_func() = func;
+            ctx->state().color_buffer_state().alpha_test_ref() = ref.as_float();
+        }
+        catch (const fixie::gl_error& e)
+        {
+            fixie::log_gl_error(e);
+        }
+        catch (const fixie::context_error& e)
+        {
+            fixie::log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
 }
 
 extern "C"
@@ -971,7 +1009,7 @@ extern "C"
 
 void FIXIE_APIENTRY glAlphaFunc(GLenum func, GLclampf ref)
 {
-    UNIMPLEMENTED();
+    fixie::set_alpha_func(func, ref);
 }
 
 void FIXIE_APIENTRY glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
@@ -1374,7 +1412,7 @@ void FIXIE_APIENTRY glActiveTexture(GLenum texture)
 
 void FIXIE_APIENTRY glAlphaFuncx(GLenum func, GLclampx ref)
 {
-    UNIMPLEMENTED();
+    fixie::set_alpha_func(func, ref);
 }
 
 void FIXIE_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
