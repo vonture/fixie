@@ -2981,7 +2981,33 @@ void FIXIE_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 
 void FIXIE_APIENTRY glShadeModel(GLenum mode)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (mode)
+        {
+        case GL_SMOOTH:
+        case GL_FLAT:
+            break;
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid shade mode, %s", fixie::get_gl_enum_name(mode).c_str()));
+        }
+
+        ctx->state().shade_model() = mode;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glStencilFunc(GLenum func, GLint ref, GLuint mask)
