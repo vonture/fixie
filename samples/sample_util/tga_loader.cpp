@@ -1,5 +1,6 @@
 #include "tga_loader.hpp"
 
+#include <climits>
 #include <iostream>
 #include <fstream>
 

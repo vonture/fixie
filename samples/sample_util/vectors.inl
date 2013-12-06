@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <limits>
+#include <cmath>
 #include <assert.h>
 
 namespace sample_util

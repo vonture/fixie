@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <vector>
 #include <set>
+#include <limits>
+#include <algorithm>
 
 #include "fixie/fixie.h"
 #include "fixie/fixie_ext.h"
@@ -2905,13 +2907,13 @@ void FIXIE_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height
         if (format != GL_RGBA || format != framebuffer->preferred_read_format())
         {
             throw fixie::invalid_operation_error(fixie::format("read pixels format must be GL_RGBA or IMPLEMENTATION_COLOR_READ_FORMAT, "
-                                                               "%s provided.", fixie::get_gl_enum_name(format)));
+                                                               "%s provided.", fixie::get_gl_enum_name(format).c_str()));
         }
 
         if (type != GL_UNSIGNED_BYTE || type != framebuffer->preferred_read_type())
         {
             throw fixie::invalid_operation_error(fixie::format("read pixels type must be GL_UNSIGNED_BYTE or IMPLEMENTATION_COLOR_READ_TYPE, "
-                                                               "%s provided.", fixie::get_gl_enum_name(type)));
+                                                               "%s provided.", fixie::get_gl_enum_name(type).c_str()));
         }
 
         framebuffer->read_pixels(x, y, width, height, format, type, pixels);
@@ -3240,7 +3242,7 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
             throw fixie::invalid_value_error(fixie::format("border must be zero, %i provided.", border));
         }
 
-        if (format != internalformat)
+        if (format != static_cast<GLenum>(internalformat))
         {
             throw fixie::invalid_operation_error("internal format and format must match.");
         }

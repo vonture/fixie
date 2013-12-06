@@ -62,7 +62,7 @@ namespace fixie
         vao.vertex_attribute() = get_default_vertex_attribute();
         vao.normal_attribute() = get_default_normal_attribute();
         vao.color_attribute() = get_default_color_attribute();
-        for_each_n(0U, vao.texcoord_attribute_count(), [&](size_t i){ vao.texcoord_attribute(i) = get_default_texcoord_attribute(); });
+        for_each_n<size_t>(0U, vao.texcoord_attribute_count(), [&](size_t i){ vao.texcoord_attribute(i) = get_default_texcoord_attribute(); });
         return vao;
     }
 
@@ -72,7 +72,7 @@ namespace fixie
                a.normal_attribute() == b.normal_attribute() &&
                a.color_attribute() == b.color_attribute() &&
                a.texcoord_attribute_count() == b.texcoord_attribute_count() &&
-               equal_n(0U, a.texcoord_attribute_count(), [&](size_t i){ return a.texcoord_attribute(i) == b.texcoord_attribute(i); });
+               equal_n<size_t>(0U, a.texcoord_attribute_count(), [&](size_t i){ return a.texcoord_attribute(i) == b.texcoord_attribute(i); });
     }
 
     bool operator!=(const vertex_array& a, const vertex_array& b)
@@ -90,7 +90,7 @@ namespace std
         fixie::hash_combine(seed, key.vertex_attribute());
         fixie::hash_combine(seed, key.normal_attribute());
         fixie::hash_combine(seed, key.color_attribute());
-        fixie::for_each_n(0U, key.texcoord_attribute_count(), [&](size_t i){ fixie::hash_combine(seed, key.texcoord_attribute(i)); });
+        fixie::for_each_n<size_t>(0U, key.texcoord_attribute_count(), [&](size_t i){ fixie::hash_combine(seed, key.texcoord_attribute(i)); });
 
         return seed;
     }

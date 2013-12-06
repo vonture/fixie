@@ -32,17 +32,17 @@ namespace fixie
     {
         #define DECLARE_GL_FUNCTION(name, return_type, args, gl_name) \
             public: \
-                std::function<return_type GL_APIENTRY ## args> name() const \
+                std::function<return_type GL_APIENTRY args> name() const \
                 { \
                     if (_##name == nullptr) \
                     { \
-                        _##name = load_gl_function<return_type GL_APIENTRY ## args>(#gl_name); \
+                        _##name = load_gl_function<return_type GL_APIENTRY args>(#gl_name); \
                         assert(_##name != nullptr); \
                     } \
                     return _##name; \
                 } \
             private: \
-                mutable std::function<return_type GL_APIENTRY ## args> _##name
+                mutable std::function<return_type GL_APIENTRY args> _##name
 
         class gl_functions
         {

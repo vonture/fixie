@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <vector>
 #include <set>
+#include <algorithm>
 
 #include "fixie/fixie.h"
 #include "fixie/fixie_ext.h"

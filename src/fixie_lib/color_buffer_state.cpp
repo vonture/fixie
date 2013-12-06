@@ -5,7 +5,8 @@
 namespace fixie
 {
     color_buffer_state::color_buffer_state()
-        :  _alpha_test_enabled()
+        : _clear_color()
+        , _alpha_test_enabled()
         , _alpha_test_func()
         , _alpha_test_ref()
         , _blend_enabled()
@@ -16,7 +17,6 @@ namespace fixie
         , _dither_enabled()
         , _color_logic_op_enabled()
         , _color_logic_op_func()
-        , _clear_color()
     {
     }
 

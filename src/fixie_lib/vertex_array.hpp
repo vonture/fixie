@@ -5,6 +5,7 @@
 #include "fixie_lib/caps.hpp"
 
 #include <vector>
+#include <cstddef>
 
 namespace fixie
 {

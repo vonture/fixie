@@ -11,7 +11,7 @@ namespace fixie
         template <typename char_type>
         struct format_func
         {
-            int operator()(char_type* dest, size_t count, const char_type* format, va_list args) { static_assert(false, "no template specialization for format func.") }
+            int operator()(char_type* dest, size_t count, const char_type* format, va_list args) { /*static_assert(false, "no template specialization for format func.");*/ return 0; }
         };
 
         template <>

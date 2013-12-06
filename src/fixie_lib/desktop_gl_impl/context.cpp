@@ -36,8 +36,6 @@ namespace fixie
             , _vao(0)
         {
             const GLubyte* gl_renderer_string = gl_call(_functions, get_string, GL_RENDERER);
-            const GLubyte* gl_vendor_string = gl_call(_functions, get_string, GL_VENDOR);
-
             _renderer_string = format("%s OpenGL %s", reinterpret_cast<const char*>(gl_renderer_string), _version.str().c_str());
 
             if (_version >= gl_4_3 || _extensions.find("GL_KHR_debug") != end(_extensions))
@@ -51,7 +49,7 @@ namespace fixie
             {
                 // need to generate a vao to use so 0 it not bound
                 gl_call(_functions, gen_vertex_arrays, 1, &_vao);
-                gl_call(_functions, bind_vertex_array, _vao)
+                gl_call(_functions, bind_vertex_array, _vao);
             }
         }
 

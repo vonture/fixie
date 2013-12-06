@@ -20,7 +20,7 @@ namespace fixie
         {
             GLuint shader = gl_call(functions, create_shader, type);
 
-            std::array<const GLchar*, 1> source_array = { source.c_str() };
+            std::array<const GLchar*, 1> source_array = {{ source.c_str() }};
             gl_call(functions, shader_source, shader, static_cast<GLsizei>(source_array.size()), source_array.data(), nullptr);
             gl_call(functions, compile_shader, shader);
 

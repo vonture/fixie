@@ -5,8 +5,8 @@
 namespace fixie
 {
     sampler_state::sampler_state()
-        : _wrap_t()
-        , _wrap_s()
+        : _wrap_s()
+        , _wrap_t()
         , _min_filter()
         , _mag_filter()
     {
