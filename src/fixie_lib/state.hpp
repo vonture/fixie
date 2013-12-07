@@ -12,6 +12,7 @@
 #include "fixie_lib/multisample_state.hpp"
 #include "fixie_lib/viewport_state.hpp"
 #include "fixie_lib/scissor_state.hpp"
+#include "fixie_lib/fog_state.hpp"
 #include "fixie_lib/color_buffer_state.hpp"
 #include "fixie_lib/depth_buffer_state.hpp"
 #include "fixie_lib/stencil_buffer_state.hpp"
@@ -63,6 +64,9 @@ namespace fixie
 
         const fixie::multisample_state& multisample_state() const;
         fixie::multisample_state& multisample_state();
+
+        const fixie::fog_state& fog_state() const;
+        fixie::fog_state& fog_state();
 
         const fixie::lighting_state& lighting_state() const;
         fixie::lighting_state& lighting_state();
@@ -164,6 +168,7 @@ namespace fixie
 
         fixie::multisample_state _multisample_state;
 
+        fixie::fog_state _fog_state;
         fixie::lighting_state _lighting_state;
 
         std::vector<fixie::clip_plane> _clip_planes;
