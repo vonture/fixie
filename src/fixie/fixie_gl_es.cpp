@@ -819,6 +819,66 @@ namespace fixie
         }
     }
 
+    static void set_point_parameters(GLenum pname, const real_ptr& params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            point_state& state = ctx->state().point_state();
+
+            switch (pname)
+            {
+            case GL_POINT_SIZE_MIN:
+                if (params.as_float(0) < 0.0f)
+                {
+                    throw invalid_value_error(format("point size min must be at least 0.0, %g provided.", params.as_float(0)));
+                }
+                state.point_size_range().near() = params.as_float(0);
+                break;
+
+            case GL_POINT_SIZE_MAX:
+                if (params.as_float(0) < 0.0f)
+                {
+                    throw invalid_value_error(format("point size max must be at least 0.0, %g provided.", params.as_float(0)));
+                }
+                state.point_size_range().far() = params.as_float(0);
+                break;
+
+            case GL_POINT_DISTANCE_ATTENUATION:
+                if (!vector_call)
+                {
+                    throw invalid_enum_error("multi-valued parameter name, GL_POINT_DISTANCE_ATTENUATION, passed to non-vector point parameter function.");
+                }
+                state.point_distance_attenuation() = vector3(params.as_float(0), params.as_float(1), params.as_float(2));
+                break;
+
+            case GL_POINT_FADE_THRESHOLD_SIZE:
+                if (params.as_float(0) < 0.0f)
+                {
+                    throw invalid_value_error(format("point fade threshold must be at least 0.0, %g provided.", params.as_float(0)));
+                }
+                state.point_fade_threshold() = params.as_float(0);
+                break;
+
+            default:
+                throw invalid_enum_error(format("invalid point parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
     static void set_clip_plane(GLenum p, const real_ptr& params)
     {
         try
@@ -1330,12 +1390,12 @@ void FIXIE_APIENTRY glOrthof(GLfloat left, GLfloat right, GLfloat bottom, GLfloa
 
 void FIXIE_APIENTRY glPointParameterf(GLenum pname, GLfloat param)
 {
-    UNIMPLEMENTED();
+    fixie::set_point_parameters(pname, &param, false);
 }
 
 void FIXIE_APIENTRY glPointParameterfv(GLenum pname, const GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_point_parameters(pname, params, true);
 }
 
 void FIXIE_APIENTRY glPointSize(GLfloat size)
@@ -2771,12 +2831,12 @@ void FIXIE_APIENTRY glPixelStorei(GLenum pname, GLint param)
 
 void FIXIE_APIENTRY glPointParameterx(GLenum pname, GLfixed param)
 {
-    UNIMPLEMENTED();
+    fixie::set_point_parameters(pname, &param, false);
 }
 
 void FIXIE_APIENTRY glPointParameterxv(GLenum pname, const GLfixed *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_point_parameters(pname, params, true);
 }
 
 void FIXIE_APIENTRY glPointSizex(GLfixed size)
