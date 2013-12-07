@@ -7,6 +7,7 @@
 #include "fixie_lib/texture.hpp"
 #include "fixie_lib/renderbuffer.hpp"
 #include "fixie_lib/noncopyable.hpp"
+#include "fixie_lib/pixel_store_state.hpp"
 
 namespace fixie
 {
@@ -44,7 +45,7 @@ namespace fixie
 
         virtual GLenum preferred_read_format() const = 0;
         virtual GLenum preferred_read_type() const = 0;
-        virtual void read_pixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data) = 0;
+        virtual void read_pixels(const pixel_store_state& store_state, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data) = 0;
 
         virtual GLenum status() const = 0;
     };
@@ -65,7 +66,7 @@ namespace fixie
 
         GLenum preferred_read_format() const;
         GLenum preferred_read_type() const;
-        void read_pixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data);
+        void read_pixels(const pixel_store_state& store_state, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data);
 
         GLenum status() const;
 

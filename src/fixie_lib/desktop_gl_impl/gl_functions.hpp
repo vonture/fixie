@@ -76,6 +76,8 @@ namespace fixie
             DECLARE_GL_FUNCTION(buffer_data, void, (GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage), glBufferData);
             DECLARE_GL_FUNCTION(buffer_sub_data, void, (GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid* data), glBufferSubData);
 
+            DECLARE_GL_FUNCTION(pixel_store_i, void, (GLenum pname, GLint param), glPixelStorei);
+
             DECLARE_GL_FUNCTION(gen_textures, void, (GLsizei n, GLuint* textures), glGenTextures);
             DECLARE_GL_FUNCTION(delete_textures, void, (GLsizei n, const GLuint* textures), glDeleteTextures);
             DECLARE_GL_FUNCTION(active_texture, void, (GLenum texture), glActiveTexture);

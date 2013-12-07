@@ -113,9 +113,9 @@ namespace fixie
         return _impl->preferred_read_type();
     }
 
-    void framebuffer::read_pixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data)
+    void framebuffer::read_pixels(const pixel_store_state& store_state, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data)
     {
-        _impl->read_pixels(x, y, width, height, format, type, data);
+        _impl->read_pixels(store_state, x, y, width, height, format, type, data);
     }
 
     GLenum framebuffer::status() const

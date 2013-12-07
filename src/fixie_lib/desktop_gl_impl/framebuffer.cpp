@@ -114,9 +114,10 @@ namespace fixie
             return static_cast<GLenum>(read_type);
         }
 
-        void framebuffer::read_pixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data)
+        void framebuffer::read_pixels(const pixel_store_state& store_state, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data)
         {
             gl_call(_functions, bind_framebuffer, GL_FRAMEBUFFER, _id);
+            gl_call(_functions, pixel_store_i, GL_PACK_ALIGNMENT, store_state.pack_alignment());
             gl_call(_functions, read_pixels, x, y, width, height, format, type, data);
         }
 

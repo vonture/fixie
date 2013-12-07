@@ -29,7 +29,7 @@ namespace fixie
             return GL_UNSIGNED_BYTE;
         }
 
-        void framebuffer::read_pixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data)
+        void framebuffer::read_pixels(const pixel_store_state& store_state, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data)
         {
         }
 

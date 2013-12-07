@@ -2916,7 +2916,7 @@ void FIXIE_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height
                                                                "%s provided.", fixie::get_gl_enum_name(type).c_str()));
         }
 
-        framebuffer->read_pixels(x, y, width, height, format, type, pixels);
+        framebuffer->read_pixels(ctx->state().pixel_store_state(), x, y, width, height, format, type, pixels);
     }
     catch (const fixie::gl_error& e)
     {
@@ -3255,7 +3255,7 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
         std::shared_ptr<fixie::texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
         if (texture != nullptr)
         {
-            texture->set_data(level, internalformat, width, height, format, type, pixels);
+            texture->set_data(ctx->state().pixel_store_state(), level, internalformat, width, height, format, type, pixels);
         }
     }
     catch (const fixie::gl_error& e)

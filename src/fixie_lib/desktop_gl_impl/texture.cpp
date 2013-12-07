@@ -23,27 +23,31 @@ namespace fixie
             return _id;
         }
 
-        void texture::set_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
+        void texture::set_data(const pixel_store_state& store_state, GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
         {
             gl_call(_functions, bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, pixel_store_i, GL_UNPACK_ALIGNMENT, store_state.unpack_alignment());
             gl_call(_functions, tex_image_2d, GL_TEXTURE_2D, level, internal_format, width, height, 0, format, type, pixels);
         }
 
-        void texture::set_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
+        void texture::set_sub_data(const pixel_store_state& store_state, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
         {
             gl_call(_functions, bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, pixel_store_i, GL_UNPACK_ALIGNMENT, store_state.unpack_alignment());
             gl_call(_functions, tex_sub_image_2d, GL_TEXTURE_2D, level, xoffset, yoffset, width, height, format, type, pixels);
         }
 
-        void texture::set_compressed_data(GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLsizei image_size, const GLvoid *data)
+        void texture::set_compressed_data(const pixel_store_state& store_state, GLint level, GLenum internal_format, GLsizei width, GLsizei height, GLsizei image_size, const GLvoid *data)
         {
             gl_call(_functions, bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, pixel_store_i, GL_UNPACK_ALIGNMENT, store_state.unpack_alignment());
             gl_call(_functions, compressed_tex_image_2d, GL_TEXTURE_2D, level, internal_format, width, height, 0, image_size, data);
         }
 
-        void texture::set_compressed_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei image_size, const GLvoid *data)
+        void texture::set_compressed_sub_data(const pixel_store_state& store_state, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei image_size, const GLvoid *data)
         {
             gl_call(_functions, bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, pixel_store_i, GL_UNPACK_ALIGNMENT, store_state.unpack_alignment());
             gl_call(_functions, tex_sub_image_2d, GL_TEXTURE_2D, level, xoffset, yoffset, width, height, format, image_size, data);
         }
 

@@ -22,7 +22,7 @@ namespace fixie
 
             virtual GLenum preferred_read_format() const override;
             virtual GLenum preferred_read_type() const override;
-            virtual void read_pixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data) override;
+            virtual void read_pixels(const pixel_store_state& store_state, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* data) override;
 
             virtual GLenum status() const override;
 
