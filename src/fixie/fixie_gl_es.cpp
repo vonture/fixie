@@ -879,6 +879,33 @@ namespace fixie
         }
     }
 
+    void set_point_size(const real& size)
+    {
+        try
+        {
+            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+            if (size.as_float() <= 0.0f)
+            {
+                throw fixie::invalid_value_error(fixie::format("point size must be greater than 0.0, %g provided.", size.as_float()));
+            }
+
+            ctx->state().point_state().point_size() = size.as_float();
+        }
+        catch (const fixie::gl_error& e)
+        {
+            fixie::log_gl_error(e);
+        }
+        catch (const fixie::context_error& e)
+        {
+            fixie::log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
     static void set_clip_plane(GLenum p, const real_ptr& params)
     {
         try
@@ -1400,7 +1427,7 @@ void FIXIE_APIENTRY glPointParameterfv(GLenum pname, const GLfloat *params)
 
 void FIXIE_APIENTRY glPointSize(GLfloat size)
 {
-    UNIMPLEMENTED();
+    fixie::set_point_size(size);
 }
 
 void FIXIE_APIENTRY glPolygonOffset(GLfloat factor, GLfloat units)
@@ -2841,7 +2868,7 @@ void FIXIE_APIENTRY glPointParameterxv(GLenum pname, const GLfixed *params)
 
 void FIXIE_APIENTRY glPointSizex(GLfixed size)
 {
-    UNIMPLEMENTED();
+    fixie::set_point_size(size);
 }
 
 void FIXIE_APIENTRY glPolygonOffsetx(GLfixed factor, GLfixed units)
