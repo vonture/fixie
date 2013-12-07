@@ -3060,12 +3060,40 @@ void FIXIE_APIENTRY glRotatex(GLfixed angle, GLfixed x, GLfixed y, GLfixed z)
 
 void FIXIE_APIENTRY glSampleCoverage(GLclampf value, GLboolean invert)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        ctx->state().multisample_state().sample_coverage_value() = value;
+        ctx->state().multisample_state().sample_coverage_invert() = invert;
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glSampleCoveragex(GLclampx value, GLboolean invert)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        ctx->state().multisample_state().sample_coverage_value() = fixie::fixed_to_float(value);
+        ctx->state().multisample_state().sample_coverage_invert() = invert;
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glScalex(GLfixed x, GLfixed y, GLfixed z)
