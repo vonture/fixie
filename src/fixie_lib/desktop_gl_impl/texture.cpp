@@ -1,4 +1,5 @@
 #include "fixie_lib/desktop_gl_impl/texture.hpp"
+#include "fixie_lib/desktop_gl_impl/framebuffer.hpp"
 #include "fixie_lib/debug.hpp"
 
 #include "fixie/fixie_gl_es.h"
@@ -7,6 +8,8 @@ namespace fixie
 {
     namespace desktop_gl_impl
     {
+        #define GL_FRAMEBUFFER 0x8D40
+
         texture::texture(std::shared_ptr<const gl_functions> functions)
             : _functions(functions)
         {
@@ -57,14 +60,26 @@ namespace fixie
             gl_call(_functions, tex_storage_2d, GL_TEXTURE_2D, levels, internal_format, width, height);
         }
 
-        void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::weak_ptr<const texture_impl> source)
+        void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height, std::weak_ptr<const framebuffer_impl> source)
         {
-            UNIMPLEMENTED();
+            std::shared_ptr<const framebuffer_impl> source_locked = source.lock();
+            std::shared_ptr<const desktop_gl_impl::framebuffer> desktop_framebuffer = std::dynamic_pointer_cast<const desktop_gl_impl::framebuffer>(source_locked);
+            assert(desktop_framebuffer != nullptr);
+
+            gl_call(_functions, bind_framebuffer, GL_FRAMEBUFFER, desktop_framebuffer->id());
+            gl_call(_functions, bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, copy_tex_image_2d, GL_TEXTURE_2D, level, internal_format, x, y, width, height, 0);
         }
 
-        void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, std::weak_ptr<const texture_impl> source)
+        void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, std::weak_ptr<const framebuffer_impl> source)
         {
-            UNIMPLEMENTED();
+            std::shared_ptr<const framebuffer_impl> source_locked = source.lock();
+            std::shared_ptr<const desktop_gl_impl::framebuffer> desktop_framebuffer = std::dynamic_pointer_cast<const desktop_gl_impl::framebuffer>(source_locked);
+            assert(desktop_framebuffer != nullptr);
+
+            gl_call(_functions, bind_framebuffer, GL_FRAMEBUFFER, desktop_framebuffer->id());
+            gl_call(_functions, bind_texture, GL_TEXTURE_2D, _id);
+            gl_call(_functions, copy_tex_sub_image_2d, GL_TEXTURE_2D, level, xoffset, yoffset, x, y, width, height);
         }
 
         void texture::generate_mipmaps()

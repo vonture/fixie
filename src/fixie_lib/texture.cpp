@@ -1,4 +1,5 @@
 #include "fixie_lib/texture.hpp"
+#include "fixie_lib/framebuffer.hpp"
 #include "fixie_lib/math_util.hpp"
 
 #include "fixie/fixie_gl_es.h"
@@ -175,13 +176,13 @@ namespace fixie
     }
 
     void texture::copy_data(GLint level, GLenum internal_format, GLint x, GLint y, GLsizei width, GLsizei height,
-                            std::weak_ptr<const texture> source)
+                            std::weak_ptr<const framebuffer> source)
     {
         assert(_immutable == GL_FALSE);
 
-        std::shared_ptr<const texture> source_locked = source.lock();
-        std::weak_ptr<const texture_impl> source_impl = source_locked ? source_locked->impl()
-                                                                      : std::weak_ptr<const texture_impl>();
+        std::shared_ptr<const framebuffer> source_locked = source.lock();
+        std::weak_ptr<const framebuffer_impl> source_impl = source_locked ? source_locked->impl()
+                                                                          : std::weak_ptr<const framebuffer_impl>();
         _impl->copy_data(level, internal_format, x, y, width, height, source_impl);
 
         if (_mips.size() <= static_cast<size_t>(level))
@@ -199,13 +200,13 @@ namespace fixie
         }
     }
 
-    void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format,
-                                GLenum type, std::weak_ptr<const texture> source)
+    void texture::copy_sub_data(GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width,
+                                GLsizei height, GLenum format, GLenum type, std::weak_ptr<const framebuffer> source)
     {
-        std::shared_ptr<const texture> source_locked = source.lock();
-        std::weak_ptr<const texture_impl> source_impl = source_locked ? source_locked->impl()
-                                                                      : std::weak_ptr<const texture_impl>();
-        _impl->copy_sub_data(level, xoffset, yoffset, width, height, format, type, source_impl);
+        std::shared_ptr<const framebuffer> source_locked = source.lock();
+        std::weak_ptr<const framebuffer_impl> source_impl = source_locked ? source_locked->impl()
+                                                                          : std::weak_ptr<const framebuffer_impl>();
+        _impl->copy_sub_data(level, xoffset, yoffset, x, y, width, height, format, type, source_impl);
         if (level == 0 && auto_generate_mipmap())
         {
             generate_mipmaps();
