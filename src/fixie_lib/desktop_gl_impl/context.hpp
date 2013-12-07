@@ -61,8 +61,14 @@ namespace fixie
             stencil_buffer_state _cur_stencil_buffer_state;
             void sync_stencil_buffer_state(const stencil_buffer_state& state);
 
-            rasterizer_state _cur_rasterizer_state;
-            void sync_rasterizer_state(const rasterizer_state& state);
+            point_state _cur_point_state;
+            void sync_point_state(const point_state& state);
+
+            line_state _cur_line_state;
+            void sync_line_state(const line_state& state);
+
+            polygon_state _cur_polygon_state;
+            void sync_polygon_state(const polygon_state& state);
 
             GLuint _vao;
             std::unordered_map<GLint, vertex_attribute> _cur_vertex_attributes;

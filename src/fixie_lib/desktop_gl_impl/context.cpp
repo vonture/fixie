@@ -32,7 +32,9 @@ namespace fixie
             , _cur_color_buffer_state(get_default_color_buffer_state())
             , _cur_depth_buffer_state(get_default_depth_buffer_state())
             , _cur_stencil_buffer_state(get_default_stencil_buffer_state())
-            , _cur_rasterizer_state(get_default_rasterizer_state())
+            , _cur_point_state(get_default_point_state())
+            , _cur_line_state(get_default_line_state())
+            , _cur_polygon_state(get_default_polygon_state())
             , _vao(0)
         {
             const GLubyte* gl_renderer_string = gl_call(_functions, get_string, GL_RENDERER);
@@ -128,7 +130,6 @@ namespace fixie
             sync_color_buffer_state(state.color_buffer_state());
             sync_depth_buffer_state(state.depth_buffer_state());
             sync_stencil_buffer_state(state.stencil_buffer_state());
-            sync_rasterizer_state(state.rasterizer_state());
             sync_framebuffer(state);
             gl_call(_functions, clear, mask);
         }
@@ -359,7 +360,15 @@ namespace fixie
             }
         }
 
-        void context::sync_rasterizer_state(const rasterizer_state& state)
+        void context::sync_point_state(const point_state& state)
+        {
+        }
+
+        void context::sync_line_state(const line_state& state)
+        {
+        }
+
+        void context::sync_polygon_state(const polygon_state& state)
         {
         }
 
@@ -455,7 +464,9 @@ namespace fixie
             sync_color_buffer_state(state.color_buffer_state());
             sync_depth_buffer_state(state.depth_buffer_state());
             sync_stencil_buffer_state(state.stencil_buffer_state());
-            sync_rasterizer_state(state.rasterizer_state());
+            sync_point_state(state.point_state());
+            sync_line_state(state.line_state());
+            sync_polygon_state(state.polygon_state());
         }
 
         gl_version context::initialize_version(std::shared_ptr<const gl_functions> functions)

@@ -14,7 +14,9 @@ namespace fixie
         , _color_buffer_state(get_default_color_buffer_state())
         , _depth_buffer_state(get_default_depth_buffer_state())
         , _stencil_buffer_state(get_default_stencil_buffer_state())
-        , _rasterizer_state(get_default_rasterizer_state())
+        , _point_state(get_default_point_state())
+        , _line_state(get_default_line_state())
+        , _polygon_state(get_default_polygon_state())
         , _lighting_state(get_default_lighting_state(caps))
         , _clip_planes(caps.max_clip_planes())
         , _active_texture_unit(0)
@@ -94,14 +96,34 @@ namespace fixie
         return _stencil_buffer_state;
     }
 
-    const fixie::rasterizer_state& state::rasterizer_state() const
+    const fixie::point_state& state::point_state() const
     {
-        return _rasterizer_state;
+        return _point_state;
     }
 
-    fixie::rasterizer_state& state::rasterizer_state()
+    fixie::point_state& state::point_state()
     {
-        return _rasterizer_state;
+        return _point_state;
+    }
+
+    const fixie::line_state& state::line_state() const
+    {
+        return _line_state;
+    }
+
+    fixie::line_state& state::line_state()
+    {
+        return _line_state;
+    }
+
+    const fixie::polygon_state& state::polygon_state() const
+    {
+        return _polygon_state;
+    }
+
+    fixie::polygon_state& state::polygon_state()
+    {
+        return _polygon_state;
     }
 
     const fixie::lighting_state& state::lighting_state() const

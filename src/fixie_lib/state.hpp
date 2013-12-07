@@ -6,7 +6,9 @@
 #include <vector>
 
 #include "fixie_lib/caps.hpp"
-#include "fixie_lib/rasterizer_state.hpp"
+#include "fixie_lib/point_state.hpp"
+#include "fixie_lib/line_state.hpp"
+#include "fixie_lib/polygon_state.hpp"
 #include "fixie_lib/viewport_state.hpp"
 #include "fixie_lib/scissor_state.hpp"
 #include "fixie_lib/color_buffer_state.hpp"
@@ -49,8 +51,14 @@ namespace fixie
         const fixie::stencil_buffer_state& stencil_buffer_state() const;
         fixie::stencil_buffer_state& stencil_buffer_state();
 
-        const fixie::rasterizer_state& rasterizer_state() const;
-        fixie::rasterizer_state& rasterizer_state();
+        const fixie::point_state& point_state() const;
+        fixie::point_state& point_state();
+
+        const fixie::line_state& line_state() const;
+        fixie::line_state& line_state();
+
+        const fixie::polygon_state& polygon_state() const;
+        fixie::polygon_state& polygon_state();
 
         const fixie::lighting_state& lighting_state() const;
         fixie::lighting_state& lighting_state();
@@ -145,7 +153,11 @@ namespace fixie
         fixie::color_buffer_state _color_buffer_state;
         fixie::depth_buffer_state _depth_buffer_state;
         fixie::stencil_buffer_state _stencil_buffer_state;
-        fixie::rasterizer_state _rasterizer_state;
+
+        fixie::point_state _point_state;
+        fixie::line_state _line_state;
+        fixie::polygon_state _polygon_state;
+
         fixie::lighting_state _lighting_state;
 
         std::vector<fixie::clip_plane> _clip_planes;
