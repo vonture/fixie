@@ -20,6 +20,7 @@ namespace fixie
         , _multisample_state(get_default_multisample_state())
         , _fog_state(get_default_fog_state())
         , _lighting_state(get_default_lighting_state(caps))
+        , _hint_state(get_default_hint_state())
         , _clip_planes(caps.max_clip_planes())
         , _active_texture_unit(0)
         , _matrix_mode(GL_MODELVIEW)
@@ -156,6 +157,16 @@ namespace fixie
     fixie::lighting_state& state::lighting_state()
     {
         return _lighting_state;
+    }
+
+    const fixie::hint_state& state::hint_state() const
+    {
+        return _hint_state;
+    }
+
+    fixie::hint_state& state::hint_state()
+    {
+        return _hint_state;
     }
 
     fixie::clip_plane& state::clip_plane(size_t idx)

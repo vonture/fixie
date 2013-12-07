@@ -16,6 +16,7 @@
 #include "fixie_lib/color_buffer_state.hpp"
 #include "fixie_lib/depth_buffer_state.hpp"
 #include "fixie_lib/stencil_buffer_state.hpp"
+#include "fixie_lib/hint_state.hpp"
 #include "fixie_lib/rectangle.hpp"
 #include "fixie_lib/range.hpp"
 #include "fixie_lib/lighting_state.hpp"
@@ -70,6 +71,9 @@ namespace fixie
 
         const fixie::lighting_state& lighting_state() const;
         fixie::lighting_state& lighting_state();
+
+        const fixie::hint_state& hint_state() const;
+        fixie::hint_state& hint_state();
 
         fixie::clip_plane& clip_plane(size_t idx);
         const fixie::clip_plane& clip_plane(size_t idx) const;
@@ -170,6 +174,8 @@ namespace fixie
 
         fixie::fog_state _fog_state;
         fixie::lighting_state _lighting_state;
+
+        fixie::hint_state _hint_state;
 
         std::vector<fixie::clip_plane> _clip_planes;
 
