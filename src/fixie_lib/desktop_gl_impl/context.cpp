@@ -426,14 +426,18 @@ namespace fixie
             GLuint texuture_id = desktop_texture ? desktop_texture->id() : 0;
 
             gl_call(_functions, active_texture, static_cast<GLenum>(GL_TEXTURE0 + index));
-            gl_call(_functions, enable, GL_TEXTURE_2D);
             gl_call(_functions, bind_texture, GL_TEXTURE_2D, texuture_id);
             if (locked_texture)
             {
+                gl_call(_functions, enable, GL_TEXTURE_2D);
                 gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, locked_texture->sampler_state().wrap_s());
                 gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, locked_texture->sampler_state().wrap_t());
                 gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, locked_texture->sampler_state().min_filter());
                 gl_call(_functions, tex_parameter_i, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, locked_texture->sampler_state().mag_filter());
+            }
+            else
+            {
+                gl_call(_functions, disable, GL_TEXTURE_2D);
             }
         }
 
