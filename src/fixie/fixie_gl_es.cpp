@@ -2853,7 +2853,39 @@ void FIXIE_APIENTRY glOrthox(GLfixed left, GLfixed right, GLfixed bottom, GLfixe
 
 void FIXIE_APIENTRY glPixelStorei(GLenum pname, GLint param)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (pname)
+        {
+        case GL_UNPACK_ALIGNMENT:
+            if (param != 1 && param != 2 && param != 4 && param != 8)
+            {
+                throw fixie::invalid_value_error(fixie::format("unpack alignment must be 1, 2, 4 or 8, %i provided.", param));
+            }
+            ctx->state().pixel_store_state().unpack_alignment() = param;
+            break;
+
+        case GL_PACK_ALIGNMENT:
+            if (param != 1 && param != 2 && param != 4 && param != 8)
+            {
+                throw fixie::invalid_value_error(fixie::format("unpack alignment must be 1, 2, 4 or 8, %i provided.", param));
+            }
+            ctx->state().pixel_store_state().pack_alignment() = param;
+            break;
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid pixel store parameter, %s", fixie::get_gl_enum_name(pname).c_str()));
+        }
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glPointParameterx(GLenum pname, GLfixed param)
