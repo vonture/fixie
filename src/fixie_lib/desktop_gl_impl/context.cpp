@@ -22,6 +22,18 @@ namespace fixie
             log_message(source, type, id, severity, std::string(message));
         }
 
+        void enable_gl_state(std::shared_ptr<const gl_functions> funtions, GLenum cap, GLboolean enabled)
+        {
+            if (enabled)
+            {
+                gl_call(funtions, enable, cap);
+            }
+            else
+            {
+                gl_call(funtions, disable, cap);
+            }
+        }
+
         context::context()
             : _functions(std::make_shared<gl_functions>())
             , _version(initialize_version(_functions))
@@ -163,14 +175,7 @@ namespace fixie
         {
             if (_cur_scissor_state.enabled() != state.enabled())
             {
-                if (state.enabled())
-                {
-                    gl_call(_functions, enable, GL_SCISSOR_TEST);
-                }
-                else
-                {
-                    gl_call(_functions, disable, GL_SCISSOR_TEST);
-                }
+                enable_gl_state(_functions, GL_SCISSOR_TEST, state.enabled());
                 _cur_scissor_state.enabled() = state.enabled();
             }
 
@@ -185,14 +190,7 @@ namespace fixie
         {
             if (_cur_color_buffer_state.alpha_test_enabled() != state.alpha_test_enabled())
             {
-                if (state.alpha_test_enabled())
-                {
-                    gl_call(_functions, enable, GL_ALPHA_TEST);
-                }
-                else
-                {
-                    gl_call(_functions, disable, GL_ALPHA_TEST);
-                }
+                enable_gl_state(_functions, GL_ALPHA_TEST, state.alpha_test_enabled());
                 _cur_color_buffer_state.alpha_test_enabled() = state.alpha_test_enabled();
             }
 
@@ -206,14 +204,7 @@ namespace fixie
 
             if (_cur_color_buffer_state.blend_enabled() != state.blend_enabled())
             {
-                if (state.blend_enabled())
-                {
-                    gl_call(_functions, enable, GL_BLEND);
-                }
-                else
-                {
-                    gl_call(_functions, disable, GL_BLEND);
-                }
+                enable_gl_state(_functions, GL_BLEND, state.blend_enabled());
                 _cur_color_buffer_state.blend_enabled() = state.blend_enabled();
             }
 
@@ -240,27 +231,13 @@ namespace fixie
 
             if (_cur_color_buffer_state.dither_enabled() != state.dither_enabled())
             {
-                if (state.dither_enabled())
-                {
-                    gl_call(_functions, enable, GL_DITHER);
-                }
-                else
-                {
-                    gl_call(_functions, disable, GL_DITHER);
-                }
+                enable_gl_state(_functions, GL_DITHER, state.dither_enabled());
                 _cur_color_buffer_state.dither_enabled() = state.dither_enabled();
             }
 
             if (_cur_color_buffer_state.color_logic_op_enabled() != state.color_logic_op_enabled())
             {
-                if (state.color_logic_op_enabled())
-                {
-                    gl_call(_functions, enable, GL_COLOR_LOGIC_OP);
-                }
-                else
-                {
-                    gl_call(_functions, disable, GL_COLOR_LOGIC_OP);
-                }
+                enable_gl_state(_functions, GL_COLOR_LOGIC_OP, state.color_logic_op_enabled());
                 _cur_color_buffer_state.color_logic_op_enabled() = state.color_logic_op_enabled();
             }
 
@@ -281,14 +258,7 @@ namespace fixie
         {
             if (_cur_depth_buffer_state.depth_test_enabled() != state.depth_test_enabled())
             {
-                if (state.depth_test_enabled())
-                {
-                    gl_call(_functions, enable, GL_DEPTH_TEST);
-                }
-                else
-                {
-                    gl_call(_functions, disable, GL_DEPTH_TEST);
-                }
+                enable_gl_state(_functions, GL_DEPTH_TEST, state.depth_test_enabled());
                 _cur_depth_buffer_state.depth_test_enabled() = state.depth_test_enabled();
             }
 
@@ -315,14 +285,7 @@ namespace fixie
         {
             if (_cur_stencil_buffer_state.stencil_test_enabled() != state.stencil_test_enabled())
             {
-                if (state.stencil_test_enabled())
-                {
-                    gl_call(_functions, enable, GL_STENCIL_TEST);
-                }
-                else
-                {
-                    gl_call(_functions, disable, GL_STENCIL_TEST);
-                }
+                enable_gl_state(_functions, GL_STENCIL_TEST, state.stencil_test_enabled());
                 _cur_stencil_buffer_state.stencil_test_enabled() = state.stencil_test_enabled();
             }
 
