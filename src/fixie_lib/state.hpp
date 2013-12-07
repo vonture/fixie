@@ -9,6 +9,7 @@
 #include "fixie_lib/point_state.hpp"
 #include "fixie_lib/line_state.hpp"
 #include "fixie_lib/polygon_state.hpp"
+#include "fixie_lib/multisample_state.hpp"
 #include "fixie_lib/viewport_state.hpp"
 #include "fixie_lib/scissor_state.hpp"
 #include "fixie_lib/color_buffer_state.hpp"
@@ -59,6 +60,9 @@ namespace fixie
 
         const fixie::polygon_state& polygon_state() const;
         fixie::polygon_state& polygon_state();
+
+        const fixie::multisample_state& multisample_state() const;
+        fixie::multisample_state& multisample_state();
 
         const fixie::lighting_state& lighting_state() const;
         fixie::lighting_state& lighting_state();
@@ -157,6 +161,8 @@ namespace fixie
         fixie::point_state _point_state;
         fixie::line_state _line_state;
         fixie::polygon_state _polygon_state;
+
+        fixie::multisample_state _multisample_state;
 
         fixie::lighting_state _lighting_state;
 

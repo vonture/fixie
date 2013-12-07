@@ -70,6 +70,9 @@ namespace fixie
             polygon_state _cur_polygon_state;
             void sync_polygon_state(const polygon_state& state);
 
+            multisample_state _cur_multisample_state;
+            void sync_multisample_state(const multisample_state& state);
+
             GLuint _vao;
             std::unordered_map<GLint, vertex_attribute> _cur_vertex_attributes;
             void sync_vertex_attribute(const vertex_attribute& attribute, GLint location, GLboolean normalized);

@@ -111,6 +111,8 @@ namespace fixie
             DECLARE_GL_FUNCTION(framebuffer_texture_2d_multisample, void, (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples), glFramebufferTexture2DMultisampleEXT);
             DECLARE_GL_FUNCTION(get_framebuffer_attachment_parameter_iv, void, (GLenum target, GLenum attachment, GLenum pname, GLint* params), glGetFramebufferAttachmentParameteriv);
 
+            DECLARE_GL_FUNCTION(sample_coverage, void, (GLfloat value, GLboolean invert), glSampleCoverage);
+
             DECLARE_GL_FUNCTION(get_integer_v, void, (GLenum pname, GLint *params), glGetIntegerv);
             DECLARE_GL_FUNCTION(get_float_v, void, (GLenum pname, GLfloat *params), glGetFloatv);
             DECLARE_GL_FUNCTION(get_string, GLubyte*, (GLenum name), glGetString);

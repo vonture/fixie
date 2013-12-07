@@ -47,6 +47,7 @@ namespace fixie
             , _cur_point_state(get_default_point_state())
             , _cur_line_state(get_default_line_state())
             , _cur_polygon_state(get_default_polygon_state())
+            , _cur_multisample_state(get_default_multisample_state())
             , _vao(0)
         {
             const GLubyte* gl_renderer_string = gl_call(_functions, get_string, GL_RENDERER);
@@ -333,6 +334,42 @@ namespace fixie
 
         void context::sync_polygon_state(const polygon_state& state)
         {
+        }
+
+        void context::sync_multisample_state(const multisample_state& state)
+        {
+            if (_cur_multisample_state.multisample_enabled() != state.multisample_enabled())
+            {
+                enable_gl_state(_functions, GL_MULTISAMPLE, state.multisample_enabled());
+                _cur_multisample_state.multisample_enabled() = state.multisample_enabled();
+            }
+
+            if (_cur_multisample_state.sample_to_alpha_coverage_enabled() != state.sample_to_alpha_coverage_enabled())
+            {
+                enable_gl_state(_functions, GL_SAMPLE_ALPHA_TO_COVERAGE, state.sample_to_alpha_coverage_enabled());
+                _cur_multisample_state.sample_to_alpha_coverage_enabled() = state.sample_to_alpha_coverage_enabled();
+            }
+
+            if (_cur_multisample_state.sample_alpha_to_one_enabled() != state.sample_alpha_to_one_enabled())
+            {
+                enable_gl_state(_functions, GL_SAMPLE_ALPHA_TO_ONE, state.sample_alpha_to_one_enabled());
+                _cur_multisample_state.sample_alpha_to_one_enabled() = state.sample_alpha_to_one_enabled();
+            }
+
+            if (_cur_multisample_state.sample_coverage_enabled() != state.sample_coverage_enabled())
+            {
+                enable_gl_state(_functions, GL_SAMPLE_COVERAGE, state.sample_coverage_enabled());
+                _cur_multisample_state.sample_coverage_enabled() = state.sample_coverage_enabled();
+            }
+
+
+            if (_cur_multisample_state.sample_coverage_value() != state.sample_coverage_value() ||
+                _cur_multisample_state.sample_coverage_invert() != state.sample_coverage_invert())
+            {
+                gl_call(_functions, sample_coverage, state.sample_coverage_value(), state.sample_coverage_invert());
+                _cur_multisample_state.sample_coverage_value() = state.sample_coverage_value();
+                _cur_multisample_state.sample_coverage_invert() = state.sample_coverage_invert();
+            }
         }
 
         void context::sync_vertex_attribute(const vertex_attribute& attribute, GLint location, GLboolean normalized)

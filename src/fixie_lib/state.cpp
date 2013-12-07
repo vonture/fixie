@@ -17,6 +17,7 @@ namespace fixie
         , _point_state(get_default_point_state())
         , _line_state(get_default_line_state())
         , _polygon_state(get_default_polygon_state())
+        , _multisample_state(get_default_multisample_state())
         , _lighting_state(get_default_lighting_state(caps))
         , _clip_planes(caps.max_clip_planes())
         , _active_texture_unit(0)
@@ -124,6 +125,16 @@ namespace fixie
     fixie::polygon_state& state::polygon_state()
     {
         return _polygon_state;
+    }
+
+    const fixie::multisample_state& state::multisample_state() const
+    {
+        return _multisample_state;
+    }
+
+    fixie::multisample_state& state::multisample_state()
+    {
+        return _multisample_state;
     }
 
     const fixie::lighting_state& state::lighting_state() const
