@@ -7,7 +7,7 @@ namespace fixie
     }
 
     template <typename number_type>
-    number_type log2(const number_type& x)
+    number_type log_two(const number_type& x)
     {
         number_type r = 0;
         while ((x >> r) > 1)

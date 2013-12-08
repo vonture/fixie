@@ -238,6 +238,6 @@ namespace fixie
 
     size_t texture::required_mip_levels(GLsizei width, GLsizei height) const
     {
-        return log2(std::max(width, height));
+        return log_two(std::max(width, height));
     }
 }

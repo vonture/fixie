@@ -3486,7 +3486,7 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
 
         GLsizei max_texture_size = ctx->caps().max_texture_size();
 
-        GLsizei max_levels = fixie::log2(max_texture_size);
+        GLsizei max_levels = fixie::log_two(max_texture_size);
         if (level < 0 || level >= max_levels)
         {
             throw fixie::invalid_value_error(fixie::format("level must be between 0 and %i, %i provided.", max_levels, level));
