@@ -33,7 +33,7 @@ namespace fixie
         GLclampf _clear_depth;
     };
 
-    depth_buffer_state get_default_depth_buffer_state();
+    depth_buffer_state default_depth_buffer_state();
 }
 
 #endif // _DEPTH_STENCIL_STATE_HPP_

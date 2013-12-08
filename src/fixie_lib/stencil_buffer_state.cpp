@@ -106,7 +106,7 @@ namespace fixie
         return _clear_stencil;
     }
 
-    stencil_buffer_state get_default_stencil_buffer_state()
+    stencil_buffer_state default_stencil_buffer_state()
     {
         stencil_buffer_state state;
         state.stencil_test_enabled() = GL_FALSE;

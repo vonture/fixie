@@ -67,7 +67,7 @@ namespace fixie
         GLenum _color_logic_op_func;
     };
 
-    color_buffer_state get_default_color_buffer_state();
+    color_buffer_state default_color_buffer_state();
 }
 
 #endif // _COLOR_BUFFER_STATE_HPP_

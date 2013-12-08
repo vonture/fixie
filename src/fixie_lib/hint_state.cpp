@@ -63,7 +63,7 @@ namespace fixie
         return _generate_mipmap_hint;
     }
 
-    fixie::hint_state get_default_hint_state()
+    fixie::hint_state default_hint_state()
     {
         hint_state state;
         state.perspective_correction_hint() = GL_DONT_CARE;

@@ -28,7 +28,7 @@ namespace fixie
         return _depth_range;
     }
 
-    viewport_state get_default_viewport_state()
+    viewport_state default_viewport_state()
     {
         viewport_state state;
         state.viewport() = rectangle(0, 0, 1, 1);

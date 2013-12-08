@@ -52,7 +52,7 @@ namespace fixie
         return _clear_depth;
     }
 
-    fixie::depth_buffer_state get_default_depth_buffer_state()
+    fixie::depth_buffer_state default_depth_buffer_state()
     {
         depth_buffer_state state;
         state.depth_test_enabled() = GL_FALSE;

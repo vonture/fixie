@@ -9,19 +9,19 @@
 namespace fixie
 {
     state::state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_fbo, std::unique_ptr<fixie::vertex_array> default_vao)
-        : _viewport_state(get_default_viewport_state())
-        , _scissor_state(get_default_scissor_state())
-        , _color_buffer_state(get_default_color_buffer_state())
-        , _depth_buffer_state(get_default_depth_buffer_state())
-        , _stencil_buffer_state(get_default_stencil_buffer_state())
-        , _point_state(get_default_point_state())
-        , _line_state(get_default_line_state())
-        , _polygon_state(get_default_polygon_state())
-        , _multisample_state(get_default_multisample_state())
-        , _fog_state(get_default_fog_state())
-        , _lighting_state(get_default_lighting_state(caps))
-        , _hint_state(get_default_hint_state())
-        , _pixel_store_state(get_default_pixel_store_state())
+        : _viewport_state(default_viewport_state())
+        , _scissor_state(default_scissor_state())
+        , _color_buffer_state(default_color_buffer_state())
+        , _depth_buffer_state(default_depth_buffer_state())
+        , _stencil_buffer_state(default_stencil_buffer_state())
+        , _point_state(default_point_state())
+        , _line_state(default_line_state())
+        , _polygon_state(default_polygon_state())
+        , _multisample_state(default_multisample_state())
+        , _fog_state(default_fog_state())
+        , _lighting_state(default_lighting_state(caps))
+        , _hint_state(default_hint_state())
+        , _pixel_store_state(default_pixel_store_state())
         , _clip_planes(caps.max_clip_planes())
         , _active_texture_unit(0)
         , _matrix_mode(GL_MODELVIEW)
@@ -46,8 +46,8 @@ namespace fixie
         _vertex_arrays.insert(std::make_pair(0, std::move(default_vao)));
         bind_vertex_array(default_vertex_array());
 
-        std::generate(begin(_clip_planes), end(_clip_planes), get_default_clip_plane);
-        std::generate(begin(_texture_environments), end(_texture_environments), get_default_texture_environment);
+        std::generate(begin(_clip_planes), end(_clip_planes), default_clip_plane);
+        std::generate(begin(_texture_environments), end(_texture_environments), default_texture_environment);
     }
 
     const fixie::viewport_state& state::viewport_state() const

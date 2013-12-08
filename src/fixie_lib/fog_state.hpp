@@ -35,7 +35,7 @@ namespace fixie
         GLboolean _fog_enabled;
     };
 
-    fog_state get_default_fog_state();
+    fog_state default_fog_state();
 }
 
 #endif // _FOG_STATE_HPP_

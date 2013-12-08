@@ -6,7 +6,7 @@
 namespace fixie
 {
     texture_environment::texture_environment()
-        : _enabled(GL_FALSE)
+        : _texture_enabled(GL_FALSE)
         , _mode(0)
         , _color()
         , _combine_rgb(0)
@@ -208,22 +208,22 @@ namespace fixie
         return _mode;
     }
 
-    GLboolean& texture_environment::enabled()
+    GLboolean& texture_environment::texture_enabled()
     {
-        return _enabled;
+        return _texture_enabled;
     }
 
-    const GLboolean& texture_environment::enabled() const
+    const GLboolean& texture_environment::texture_enabled() const
     {
-        return _enabled;
+        return _texture_enabled;
     }
 
-    texture_environment get_default_texture_environment()
+    texture_environment default_texture_environment()
     {
         texture_environment env;
 
         // Initial values from ES 1.1.12 spec, table 6.15
-        env.enabled() = false;
+        env.texture_enabled() = false;
         env.mode() = GL_MODULATE;
         env.color() = color(0.0f, 0.0f, 0.0f, 0.0f);
         env.combine_rgb() = GL_MODULATE;
@@ -248,7 +248,7 @@ namespace fixie
 
     bool operator==(const texture_environment& a, const texture_environment& b)
     {
-        return a.enabled() == b.enabled() &&
+        return a.texture_enabled() == b.texture_enabled() &&
                a.mode() == b.mode() &&
                a.color() == b.color() &&
                a.combine_rgb() == b.combine_rgb() &&
@@ -280,7 +280,7 @@ namespace std
     size_t hash<fixie::texture_environment>::operator()(const fixie::texture_environment& key) const
     {
         size_t seed = 0;
-        fixie::hash_combine(seed, key.enabled());
+        fixie::hash_combine(seed, key.texture_enabled());
         fixie::hash_combine(seed, key.mode());
         fixie::hash_combine(seed, key.color());
         fixie::hash_combine(seed, key.combine_rgb());

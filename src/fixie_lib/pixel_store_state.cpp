@@ -28,7 +28,7 @@ namespace fixie
         return _pack_alignment;
     }
 
-    pixel_store_state get_default_pixel_store_state()
+    pixel_store_state default_pixel_store_state()
     {
         pixel_store_state state;
         state.unpack_alignment() = 4;

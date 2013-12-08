@@ -21,7 +21,7 @@ namespace fixie
         GLint _pack_alignment;
     };
 
-    pixel_store_state get_default_pixel_store_state();
+    pixel_store_state default_pixel_store_state();
 }
 
 #endif // _PIXEL_STORE_STATE_HPP_

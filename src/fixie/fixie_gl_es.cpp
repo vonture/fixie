@@ -1085,7 +1085,7 @@ namespace fixie
         GLsizei max_clip_planes = ctx->caps().max_clip_planes();
         if (target >= GL_CLIP_PLANE0 && static_cast<GLsizei>(target - GL_CLIP_PLANE0) < max_clip_planes)
         {
-            return ctx->state().clip_plane(target - GL_CLIP_PLANE0).enabled();
+            return ctx->state().clip_plane(target - GL_CLIP_PLANE0).clip_plane_enabled();
         }
 
         GLsizei max_lights = ctx->caps().max_lights();
@@ -1096,10 +1096,10 @@ namespace fixie
 
         switch (target)
         {
-        case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).enabled();
-        case GL_SCISSOR_TEST: return ctx->state().scissor_state().enabled();
+        case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).texture_enabled();
+        case GL_SCISSOR_TEST: return ctx->state().scissor_state().scissor_test_enabled();
         case GL_DEPTH_TEST:   return ctx->state().depth_buffer_state().depth_test_enabled();
-        case GL_LIGHTING:     return ctx->state().lighting_state().enabled();
+        case GL_LIGHTING:     return ctx->state().lighting_state().lighting_enabled();
         case GL_FOG:          return ctx->state().fog_state().fog_enabled();
         default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
         }
@@ -1127,7 +1127,7 @@ namespace fixie
             default: throw invalid_enum_error(format("invalid client state, %s.", get_gl_enum_name(array).c_str()));
             }
 
-            attribute->enabled() = enabled ? GL_TRUE : GL_FALSE;
+            attribute->attribute_enabled() = enabled ? GL_TRUE : GL_FALSE;
         }
         catch (gl_error e)
         {

@@ -63,7 +63,7 @@ namespace fixie
         return _fog_enabled;
     }
 
-    fog_state get_default_fog_state()
+    fog_state default_fog_state()
     {
         fog_state state;
         state.fog_color() = color(0.0f, 0.0f, 0.0f, 0.0f);

@@ -11,8 +11,8 @@ namespace fixie
     public:
         clip_plane();
 
-        GLboolean& enabled();
-        const GLboolean& enabled() const;
+        GLboolean& clip_plane_enabled();
+        const GLboolean& clip_plane_enabled() const;
 
         vector4& equation();
         const vector4& equation() const;
@@ -22,7 +22,7 @@ namespace fixie
         vector4 _equation;
     };
 
-    clip_plane get_default_clip_plane();
+    clip_plane default_clip_plane();
 }
 
 #endif // _CLIP_PLANE_HPP_

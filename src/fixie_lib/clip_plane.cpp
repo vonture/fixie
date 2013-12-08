@@ -10,12 +10,12 @@ namespace fixie
     {
     }
 
-    GLboolean& clip_plane::enabled()
+    GLboolean& clip_plane::clip_plane_enabled()
     {
         return _enabled;
     }
 
-    const GLboolean& clip_plane::enabled() const
+    const GLboolean& clip_plane::clip_plane_enabled() const
     {
         return _enabled;
     }
@@ -30,10 +30,10 @@ namespace fixie
         return _equation;
     }
     
-    clip_plane get_default_clip_plane()
+    clip_plane default_clip_plane()
     {
         clip_plane plane;
-        plane.enabled() = GL_FALSE;
+        plane.clip_plane_enabled() = GL_FALSE;
         plane.equation() = vector4(0.0f, 0.0f, 0.0f, 0.0f);
         return plane;
     }

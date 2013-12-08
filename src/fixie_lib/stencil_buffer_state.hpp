@@ -53,7 +53,7 @@ namespace fixie
         GLint _clear_stencil;
     };
 
-    stencil_buffer_state get_default_stencil_buffer_state();
+    stencil_buffer_state default_stencil_buffer_state();
 }
 
 #endif // _STENCIL_BUFFER_STATE_HPP_

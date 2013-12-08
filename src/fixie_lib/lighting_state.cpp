@@ -6,7 +6,7 @@
 namespace fixie
 {
     lighting_state::lighting_state(size_t light_count)
-        : _enabled()
+        : _lighting_enabled()
         , _front_material()
         , _back_material()
         , _light_model()
@@ -14,14 +14,14 @@ namespace fixie
     {
     }
 
-    GLboolean& lighting_state::enabled()
+    GLboolean& lighting_state::lighting_enabled()
     {
-        return _enabled;
+        return _lighting_enabled;
     }
 
-    const GLboolean& lighting_state::enabled() const
+    const GLboolean& lighting_state::lighting_enabled() const
     {
-        return _enabled;
+        return _lighting_enabled;
     }
 
     material& lighting_state::front_material()
@@ -64,11 +64,11 @@ namespace fixie
         return _lights[idx];
     }
 
-    lighting_state get_default_lighting_state(const caps& caps)
+    lighting_state default_lighting_state(const caps& caps)
     {
         lighting_state state(caps.max_lights());
 
-        state.enabled() = GL_FALSE;
+        state.lighting_enabled() = GL_FALSE;
         state.front_material() = get_default_material();
         state.back_material() = get_default_material();
         state.light_model() = get_default_light_model();

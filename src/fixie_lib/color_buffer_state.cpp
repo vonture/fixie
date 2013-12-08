@@ -140,7 +140,7 @@ namespace fixie
         return _clear_color;
     }
 
-    color_buffer_state get_default_color_buffer_state()
+    color_buffer_state default_color_buffer_state()
     {
         color_buffer_state state;
         state.alpha_test_enabled() = GL_FALSE;

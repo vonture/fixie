@@ -15,7 +15,7 @@ namespace fixie
         shader_info::shader_info(const state& state, const caps& caps)
             : _texture_environments(caps.max_texture_units())
             , _uses_clip_planes(caps.max_clip_planes())
-            , _lighting_enabled(state.lighting_state().enabled())
+            , _lighting_enabled(state.lighting_state().lighting_enabled())
             , _two_sided_lighting(state.lighting_state().light_model().two_sided_lighting())
             , _uses_lights(caps.max_lights())
             , _uses_light_attenuation(caps.max_lights())
@@ -23,7 +23,7 @@ namespace fixie
             , _shade_model(state.shade_model())
         {
             for_each_n<size_t>(0U, _texture_environments.size(), [&](size_t i){ _texture_environments[i] = state.texture_environment(i); });
-            for_each_n<size_t>(0U, _uses_clip_planes.size(), [&](size_t i){ _uses_clip_planes[i] = state.clip_plane(i).enabled(); });
+            for_each_n<size_t>(0U, _uses_clip_planes.size(), [&](size_t i){ _uses_clip_planes[i] = state.clip_plane(i).clip_plane_enabled(); });
             for_each_n<size_t>(0U, _uses_lights.size(), [&](size_t i){ _uses_lights[i] = state.lighting_state().light(i).enabled(); });
             for_each_n<size_t>(0U, _uses_light_attenuation.size(), [&](size_t i){ _uses_light_attenuation[i] = state.lighting_state().light(i).position().w() != 0.0f; });
             for_each_n<size_t>(0U, _uses_spot_lights.size(), [&](size_t i){ _uses_spot_lights[i] = state.lighting_state().light(i).spot_cutoff() != 180.0f; });

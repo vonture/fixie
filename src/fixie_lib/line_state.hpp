@@ -21,7 +21,7 @@ namespace fixie
         GLboolean _line_smooth_enabled;
     };
 
-    line_state get_default_line_state();
+    line_state default_line_state();
 }
 
 #endif // _LINE_STATE_HPP_

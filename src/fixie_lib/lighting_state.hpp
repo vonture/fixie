@@ -16,8 +16,8 @@ namespace fixie
     public:
         lighting_state(size_t light_count);
 
-        GLboolean& enabled();
-        const GLboolean& enabled() const;
+        GLboolean& lighting_enabled();
+        const GLboolean& lighting_enabled() const;
 
         material& front_material();
         const material& front_material() const;
@@ -32,7 +32,7 @@ namespace fixie
         const fixie::light& light(size_t idx) const;
 
     private:
-        GLboolean _enabled;
+        GLboolean _lighting_enabled;
 
         material _front_material;
         material _back_material;
@@ -42,7 +42,7 @@ namespace fixie
         std::vector<fixie::light> _lights;
     };
 
-    lighting_state get_default_lighting_state(const caps& caps);
+    lighting_state default_lighting_state(const caps& caps);
 }
 
 #endif // _LIGHTING_STATE_HPP_

@@ -38,7 +38,7 @@ namespace fixie
         GLboolean _polygon_offset_fill_enabled;
     };
 
-    polygon_state get_default_polygon_state();
+    polygon_state default_polygon_state();
 }
 
 #endif // _POLYGON_STATE_HPP_

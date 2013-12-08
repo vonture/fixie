@@ -37,7 +37,7 @@ namespace fixie
         GLboolean _sample_coverage_invert;
     };
 
-    multisample_state get_default_multisample_state();
+    multisample_state default_multisample_state();
 }
 
 #endif // _MULTISAMPLE_STATE_HPP

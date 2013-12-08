@@ -40,14 +40,14 @@ namespace fixie
             , _extensions(intialize_extensions(_functions, _version))
             , _caps(initialize_caps(_functions, _version, _extensions))
             , _shader_cache(_functions)
-            , _cur_viewport_state(get_default_viewport_state())
-            , _cur_color_buffer_state(get_default_color_buffer_state())
-            , _cur_depth_buffer_state(get_default_depth_buffer_state())
-            , _cur_stencil_buffer_state(get_default_stencil_buffer_state())
-            , _cur_point_state(get_default_point_state())
-            , _cur_line_state(get_default_line_state())
-            , _cur_polygon_state(get_default_polygon_state())
-            , _cur_multisample_state(get_default_multisample_state())
+            , _cur_viewport_state(default_viewport_state())
+            , _cur_color_buffer_state(default_color_buffer_state())
+            , _cur_depth_buffer_state(default_depth_buffer_state())
+            , _cur_stencil_buffer_state(default_stencil_buffer_state())
+            , _cur_point_state(default_point_state())
+            , _cur_line_state(default_line_state())
+            , _cur_polygon_state(default_polygon_state())
+            , _cur_multisample_state(default_multisample_state())
             , _vao(0)
         {
             const GLubyte* gl_renderer_string = gl_call(_functions, get_string, GL_RENDERER);
@@ -174,10 +174,10 @@ namespace fixie
 
         void context::sync_scissor_state(const scissor_state& state)
         {
-            if (_cur_scissor_state.enabled() != state.enabled())
+            if (_cur_scissor_state.scissor_test_enabled() != state.scissor_test_enabled())
             {
-                enable_gl_state(_functions, GL_SCISSOR_TEST, state.enabled());
-                _cur_scissor_state.enabled() = state.enabled();
+                enable_gl_state(_functions, GL_SCISSOR_TEST, state.scissor_test_enabled());
+                _cur_scissor_state.scissor_test_enabled() = state.scissor_test_enabled();
             }
 
             if (_cur_scissor_state.scissor() != state.scissor())
@@ -379,7 +379,7 @@ namespace fixie
                 auto cur_attribute = _cur_vertex_attributes.find(location);
                 if (cur_attribute == end(_cur_vertex_attributes) || cur_attribute->second != attribute)
                 {
-                    if (attribute.enabled())
+                    if (attribute.attribute_enabled())
                     {
                         std::shared_ptr<const fixie::buffer> bound_buffer = attribute.buffer().lock();
                         std::shared_ptr<const fixie::buffer_impl> bound_buffer_impl = (bound_buffer != nullptr) ? bound_buffer->impl().lock() : nullptr;
@@ -443,7 +443,7 @@ namespace fixie
 
         void context::sync_textures(const state& state)
         {
-            for_each_n(0, _caps.max_texture_units(), [&](size_t i){ if (state.texture_environment(i).enabled()) { sync_texture(state.bound_texture(i), i); }});
+            for_each_n(0, _caps.max_texture_units(), [&](size_t i){ if (state.texture_environment(i).texture_enabled()) { sync_texture(state.bound_texture(i), i); }});
         }
 
         void context::sync_framebuffer(const state& state)

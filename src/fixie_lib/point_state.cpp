@@ -74,7 +74,7 @@ namespace fixie
         return _point_sprite_enabled;
     }
 
-    point_state get_default_point_state()
+    point_state default_point_state()
     {
         point_state state;
         state.point_size() = 1.0f;

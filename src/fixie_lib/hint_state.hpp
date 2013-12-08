@@ -33,7 +33,7 @@ namespace fixie
         GLenum _generate_mipmap_hint;
     };
 
-    hint_state get_default_hint_state();
+    hint_state default_hint_state();
 }
 
 #endif // _HINT_STATE_HPP_

@@ -6,7 +6,7 @@
 namespace fixie
 {
     vertex_attribute::vertex_attribute()
-        : _enabled(GL_FALSE)
+        : _attribute_enabled(GL_FALSE)
         , _size(0)
         , _type(GL_FLOAT)
         , _stride(0)
@@ -16,14 +16,14 @@ namespace fixie
     {
     }
 
-    GLboolean& vertex_attribute::enabled()
+    GLboolean& vertex_attribute::attribute_enabled()
     {
-        return _enabled;
+        return _attribute_enabled;
     }
 
-    const GLboolean& vertex_attribute::enabled() const
+    const GLboolean& vertex_attribute::attribute_enabled() const
     {
-        return _enabled;
+        return _attribute_enabled;
     }
 
     GLint& vertex_attribute::size()
@@ -89,7 +89,7 @@ namespace fixie
     static vertex_attribute get_default_common_attribute()
     {
         vertex_attribute attribute;
-        attribute.enabled() = GL_FALSE;
+        attribute.attribute_enabled() = GL_FALSE;
         attribute.size() = 0;
         attribute.type() = GL_FALSE;
         attribute.stride() = 0;
@@ -129,7 +129,7 @@ namespace fixie
 
     bool operator==(const vertex_attribute& a, const vertex_attribute& b)
     {
-        return a.enabled() == b.enabled() &&
+        return a.attribute_enabled() == b.attribute_enabled() &&
                a.size() == b.size() &&
                a.type() == b.type() &&
                a.stride() == b.stride() &&
@@ -150,8 +150,8 @@ namespace std
     {
         size_t seed = 0;
 
-        fixie::hash_combine(seed, key.enabled());
-        if (key.enabled())
+        fixie::hash_combine(seed, key.attribute_enabled());
+        if (key.attribute_enabled())
         {
             fixie::hash_combine(seed, key.size());
             fixie::hash_combine(seed, key.type());

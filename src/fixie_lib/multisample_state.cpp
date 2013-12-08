@@ -74,7 +74,7 @@ namespace fixie
         return _sample_coverage_invert;
     }
 
-    multisample_state get_default_multisample_state()
+    multisample_state default_multisample_state()
     {
         multisample_state state;
         state.multisample_enabled() = GL_TRUE;

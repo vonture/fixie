@@ -24,7 +24,7 @@ namespace fixie
         range _depth_range;
     };
 
-    viewport_state get_default_viewport_state();
+    viewport_state default_viewport_state();
 }
 
 #endif // _VIEWPORT_STATE_HPP_

@@ -13,8 +13,8 @@ namespace fixie
     public:
         vertex_attribute();
 
-        GLboolean& enabled();
-        const GLboolean& enabled() const;
+        GLboolean& attribute_enabled();
+        const GLboolean& attribute_enabled() const;
 
         GLint& size();
         const GLint& size() const;
@@ -35,7 +35,7 @@ namespace fixie
         std::weak_ptr<const fixie::buffer> buffer() const;
 
     private:
-        GLboolean _enabled;
+        GLboolean _attribute_enabled;
         GLint _size;
         GLenum _type;
         GLsizei _stride;

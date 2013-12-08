@@ -283,7 +283,7 @@ namespace fixie
             vertex_shader << type_qualifier_name(vertex_output) << " vec4 " << color_name(vertex_output) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
-                if (info.texture_environment(i).enabled())
+                if (info.texture_environment(i).texture_enabled())
                 {
                     vertex_shader << type_qualifier_name(vertex_input) << " vec4 " << tex_coord_name(vertex_input, i) << ";" << std::endl;
                     vertex_shader << type_qualifier_name(vertex_output) << " vec4 " << tex_coord_name(vertex_output, i) << ";" << std::endl;
@@ -299,7 +299,7 @@ namespace fixie
             vertex_shader << tab(1) << color_name(vertex_output) << " = " << color_name(vertex_input) << ";" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
-                if (info.texture_environment(i).enabled())
+                if (info.texture_environment(i).texture_enabled())
                 {
                     vertex_shader << tab(1) << tex_coord_name(vertex_output, i) << " = " << tex_coord_transform_name(i) << " * " << tex_coord_name(vertex_input, i) << ";" << std::endl;
                 }
@@ -325,7 +325,7 @@ namespace fixie
 
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
-                if (info.texture_environment(i).enabled())
+                if (info.texture_environment(i).texture_enabled())
                 {
                     fragment_shader << "in vec4 " << tex_coord_name(fragment_input, i) << ";" << std::endl;
                     fragment_shader << uniform_qualifier_name() << " sampler2D " << sampler_name(i) << ";" << std::endl;
@@ -388,7 +388,7 @@ namespace fixie
             fragment_shader << tab(1) << "vec4 " << texture_result_name << " = vec4(1.0, 1.0, 1.0, 1.0);" << std::endl;
             for (size_t i = 0; i < info.texture_unit_count(); ++i)
             {
-                if (info.texture_environment(i).enabled())
+                if (info.texture_environment(i).texture_enabled())
                 {
                     const std::string texture_sample_name = format("texture_sample_%u", i);
                     fragment_shader << tab(1) << "vec4 " << texture_sample_name << " = texture(" << sampler_name(i) << ", " << tex_coord_name(fragment_input, i) << ".xy);" << std::endl;

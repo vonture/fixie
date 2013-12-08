@@ -14,8 +14,8 @@ namespace fixie
     public:
         texture_environment();
 
-        const GLboolean& enabled() const;
-        GLboolean& enabled();
+        const GLboolean& texture_enabled() const;
+        GLboolean& texture_enabled();
 
         const GLenum& mode() const;
         GLenum& mode();
@@ -72,7 +72,7 @@ namespace fixie
         GLfloat& alpha_scale();
 
     private:
-        GLboolean _enabled;
+        GLboolean _texture_enabled;
         GLenum _mode;
         fixie::color _color;
 
@@ -102,7 +102,7 @@ namespace fixie
     bool operator==(const texture_environment& a, const texture_environment& b);
     bool operator!=(const texture_environment& a, const texture_environment& b);
 
-    texture_environment get_default_texture_environment();
+    texture_environment default_texture_environment();
 }
 
 namespace std

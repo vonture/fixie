@@ -39,7 +39,7 @@ namespace fixie
         GLboolean _point_sprite_enabled;
     };
 
-    point_state get_default_point_state();
+    point_state default_point_state();
 }
 
 #endif // _POINT_STATE_HPP_

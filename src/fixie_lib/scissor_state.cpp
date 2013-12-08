@@ -5,19 +5,19 @@
 namespace fixie
 {
     scissor_state::scissor_state()
-        : _enabled()
+        : _scissor_test_enabled()
         , _scissor()
     {
     }
 
-    GLboolean& scissor_state::enabled()
+    GLboolean& scissor_state::scissor_test_enabled()
     {
-        return _enabled;
+        return _scissor_test_enabled;
     }
 
-    const GLboolean& scissor_state::enabled() const
+    const GLboolean& scissor_state::scissor_test_enabled() const
     {
-        return _enabled;
+        return _scissor_test_enabled;
     }
 
     rectangle& scissor_state::scissor()
@@ -30,10 +30,10 @@ namespace fixie
         return _scissor;
     }
 
-    scissor_state get_default_scissor_state()
+    scissor_state default_scissor_state()
     {
         scissor_state state;
-        state.enabled() = GL_FALSE;
+        state.scissor_test_enabled() = GL_FALSE;
         state.scissor() = rectangle(0, 0, 1, 1);
         return state;
     }

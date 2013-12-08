@@ -12,18 +12,18 @@ namespace fixie
     public:
         scissor_state();
 
-        GLboolean& enabled();
-        const GLboolean& enabled() const;
+        GLboolean& scissor_test_enabled();
+        const GLboolean& scissor_test_enabled() const;
 
         rectangle& scissor();
         const rectangle& scissor() const;
 
     private:
-        GLboolean _enabled;
+        GLboolean _scissor_test_enabled;
         rectangle _scissor;
     };
 
-    scissor_state get_default_scissor_state();
+    scissor_state default_scissor_state();
 }
 
 #endif // _SCISSOR_STATE_HPP_
