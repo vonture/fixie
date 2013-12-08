@@ -1,4 +1,5 @@
 #include "fixie_lib/fixed_point.hpp"
+#include "fixie_lib/util.hpp"
 #include <limits>
 
 namespace fixie
@@ -39,6 +40,11 @@ namespace fixie
         return _is_float ? float_to_fixed(_float) : _fixed;
     }
 
+    GLenum real::as_enum() const
+    {
+        return bit_cast<GLenum>(_is_float ? _float : _fixed);
+    }
+
     real_ptr::real_ptr(const GLfloat* flt)
         : _float(flt)
         , _is_float(true)
@@ -59,6 +65,11 @@ namespace fixie
     GLfixed real_ptr::as_fixed(size_t n) const
     {
         return _is_float ? float_to_fixed(_float[n]) : _fixed[n];
+    }
+
+    GLenum real_ptr::as_enum(size_t n) const
+    {
+        return bit_cast<GLenum>(_is_float ? _float[n] : _fixed[n]);
     }
 
     real real_ptr::operator[](size_t n) const

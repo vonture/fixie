@@ -906,6 +906,71 @@ namespace fixie
         }
     }
 
+    static void set_fog_parameters(GLenum pname, const real_ptr& params, bool vector_call)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            fog_state& state = ctx->state().fog_state();
+
+            switch (pname)
+            {
+            case GL_FOG_MODE:
+                switch (params.as_enum(0))
+                {
+                case GL_EXP:
+                case GL_EXP2:
+                case GL_LINEAR:
+                    break;
+                default:
+                    throw invalid_value_error(format("invalid fog mode, %s.", get_gl_enum_name(params.as_enum(0)).c_str()));
+                }
+                state.fog_mode() = params.as_enum(0);
+                break;
+
+            case GL_FOG_DENSITY:
+                if (params.as_float(0) < 0.0f)
+                {
+                    throw invalid_value_error(format("fog density must be at least 0.0, %g provided.", params.as_float(0)));
+                }
+                state.fog_density() = params.as_float(0);
+                break;
+
+            case GL_FOG_START:
+                state.fog_range().near() = params.as_float(0);
+                break;
+
+            case GL_FOG_END:
+                state.fog_range().far() = params.as_float(0);
+                break;
+
+            case GL_FOG_COLOR:
+                if (!vector_call)
+                {
+                    throw invalid_enum_error("multi-valued parameter name, GL_FOG_COLOR, passed to non-vector fog parameter function.");
+                }
+                state.fog_color() = color(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
+                break;
+
+            default:
+                throw invalid_enum_error(format("invalid fog parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
     static void set_clip_plane(GLenum p, const real_ptr& params)
     {
         try
@@ -1012,6 +1077,7 @@ namespace fixie
         case GL_SCISSOR_TEST: return ctx->state().scissor_state().enabled();
         case GL_DEPTH_TEST:   return ctx->state().depth_buffer_state().depth_test_enabled();
         case GL_LIGHTING:     return ctx->state().lighting_state().enabled();
+        case GL_FOG:          return ctx->state().fog_state().fog_enabled();
         default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
         }
     }
@@ -1200,12 +1266,12 @@ void FIXIE_APIENTRY glDepthRangef(GLclampf zNear, GLclampf zFar)
 
 void FIXIE_APIENTRY glFogf(GLenum pname, GLfloat param)
 {
-    UNIMPLEMENTED();
+    fixie::set_fog_parameters(pname, &param, false);
 }
 
 void FIXIE_APIENTRY glFogfv(GLenum pname, const GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_fog_parameters(pname, params, true);
 }
 
 void FIXIE_APIENTRY glFrustumf(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
@@ -2276,12 +2342,12 @@ void FIXIE_APIENTRY glFlush(void)
 
 void FIXIE_APIENTRY glFogx(GLenum pname, GLfixed param)
 {
-    UNIMPLEMENTED();
+    fixie::set_fog_parameters(pname, &param, false);
 }
 
 void FIXIE_APIENTRY glFogxv(GLenum pname, const GLfixed *params)
 {
-    UNIMPLEMENTED();
+    fixie::set_fog_parameters(pname, params, true);
 }
 
 void FIXIE_APIENTRY glFrontFace(GLenum mode)

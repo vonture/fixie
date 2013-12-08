@@ -17,6 +17,7 @@ namespace fixie
 
         GLfloat as_float() const;
         GLfixed as_fixed() const;
+        GLenum as_enum() const;
 
     private:
         union
@@ -35,6 +36,7 @@ namespace fixie
 
         GLfloat as_float(size_t n) const;
         GLfixed as_fixed(size_t n) const;
+        GLenum as_enum(size_t n) const;
 
         real operator[](size_t n) const;
 
