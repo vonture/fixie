@@ -2352,7 +2352,33 @@ void FIXIE_APIENTRY glFogxv(GLenum pname, const GLfixed *params)
 
 void FIXIE_APIENTRY glFrontFace(GLenum mode)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (mode)
+        {
+        case GL_CW:
+        case GL_CCW:
+            break;
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid front face, %s", fixie::get_gl_enum_name(mode).c_str()));
+        }
+
+        ctx->state().polygon_state().front_face() = mode;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glFrustumx(GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
