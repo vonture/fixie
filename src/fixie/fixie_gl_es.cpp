@@ -879,7 +879,7 @@ namespace fixie
         }
     }
 
-    void set_point_size(const real& size)
+    static void set_point_size(const real& size)
     {
         try
         {
