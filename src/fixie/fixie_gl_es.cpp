@@ -906,6 +906,29 @@ namespace fixie
         }
     }
 
+    static void set_polgyon_offset(const real& factor, const real& units)
+    {
+        try
+        {
+            std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+            ctx->state().polygon_state().polygon_offset_factor() = factor.as_float();
+            ctx->state().polygon_state().polygon_offset_units() = units.as_float();
+        }
+        catch (const fixie::gl_error& e)
+        {
+            fixie::log_gl_error(e);
+        }
+        catch (const fixie::context_error& e)
+        {
+            fixie::log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
     static void set_fog_parameters(GLenum pname, const real_ptr& params, bool vector_call)
     {
         try
@@ -1498,7 +1521,7 @@ void FIXIE_APIENTRY glPointSize(GLfloat size)
 
 void FIXIE_APIENTRY glPolygonOffset(GLfloat factor, GLfloat units)
 {
-    UNIMPLEMENTED();
+    fixie::set_polgyon_offset(factor, units);
 }
 
 void FIXIE_APIENTRY glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
@@ -2997,7 +3020,7 @@ void FIXIE_APIENTRY glPointSizex(GLfixed size)
 
 void FIXIE_APIENTRY glPolygonOffsetx(GLfixed factor, GLfixed units)
 {
-    UNIMPLEMENTED();
+    fixie::set_polgyon_offset(factor, units);
 }
 
 void FIXIE_APIENTRY glPopMatrix(void)
