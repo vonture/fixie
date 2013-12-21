@@ -1080,29 +1080,49 @@ namespace fixie
         set_matrix(mat, multiply);
     }
 
-    static GLboolean& get_property(std::shared_ptr<context> ctx, GLenum target)
+    static GLboolean& get_property(GLenum target)
     {
-        GLsizei max_clip_planes = ctx->caps().max_clip_planes();
-        if (target >= GL_CLIP_PLANE0 && static_cast<GLsizei>(target - GL_CLIP_PLANE0) < max_clip_planes)
+        try
         {
-            return ctx->state().clip_plane(target - GL_CLIP_PLANE0).clip_plane_enabled();
+            std::shared_ptr<context> ctx = get_current_context();
+
+            GLsizei max_clip_planes = ctx->caps().max_clip_planes();
+            if (target >= GL_CLIP_PLANE0 && static_cast<GLsizei>(target - GL_CLIP_PLANE0) < max_clip_planes)
+            {
+                return ctx->state().clip_plane(target - GL_CLIP_PLANE0).clip_plane_enabled();
+            }
+
+            GLsizei max_lights = ctx->caps().max_lights();
+            if (target >= GL_LIGHT0 && static_cast<GLsizei>(target - GL_LIGHT0) < max_lights)
+            {
+                return ctx->state().lighting_state().light(target - GL_LIGHT0).enabled();
+            }
+
+            switch (target)
+            {
+            case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).texture_enabled();
+            case GL_SCISSOR_TEST: return ctx->state().scissor_state().scissor_test_enabled();
+            case GL_DEPTH_TEST:   return ctx->state().depth_buffer_state().depth_test_enabled();
+            case GL_LIGHTING:     return ctx->state().lighting_state().lighting_enabled();
+            case GL_FOG:          return ctx->state().fog_state().fog_enabled();
+            default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
         }
 
-        GLsizei max_lights = ctx->caps().max_lights();
-        if (target >= GL_LIGHT0 && static_cast<GLsizei>(target - GL_LIGHT0) < max_lights)
-        {
-            return ctx->state().lighting_state().light(target - GL_LIGHT0).enabled();
-        }
-
-        switch (target)
-        {
-        case GL_TEXTURE_2D:   return ctx->state().texture_environment(ctx->state().active_texture_unit()).texture_enabled();
-        case GL_SCISSOR_TEST: return ctx->state().scissor_state().scissor_test_enabled();
-        case GL_DEPTH_TEST:   return ctx->state().depth_buffer_state().depth_test_enabled();
-        case GL_LIGHTING:     return ctx->state().lighting_state().lighting_enabled();
-        case GL_FOG:          return ctx->state().fog_state().fog_enabled();
-        default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
-        }
+        static GLboolean default_bool = GL_FALSE;
+        return default_bool;
     }
 
     static void set_client_state(GLenum array, bool enabled)
@@ -2181,24 +2201,7 @@ void FIXIE_APIENTRY glDepthRangex(GLclampx zNear, GLclampx zFar)
 
 void FIXIE_APIENTRY glDisable(GLenum cap)
 {
-    try
-    {
-        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        GLboolean& property = fixie::get_property(ctx, cap);
-        property = GL_FALSE;
-    }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
-    catch (...)
-    {
-        UNREACHABLE();
-    }
+    GLboolean& property = fixie::get_property(cap) = GL_FALSE;
 }
 
 void FIXIE_APIENTRY glDisableClientState(GLenum array)
@@ -2304,24 +2307,7 @@ void FIXIE_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, cons
 
 void FIXIE_APIENTRY glEnable(GLenum cap)
 {
-    try
-    {
-        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        GLboolean& property = fixie::get_property(ctx, cap);
-        property = GL_TRUE;
-    }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
-    catch (...)
-    {
-        UNREACHABLE();
-    }
+    GLboolean& property = fixie::get_property(cap) = GL_TRUE;
 }
 
 void FIXIE_APIENTRY glEnableClientState(GLenum array)
@@ -2681,27 +2667,7 @@ GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
 
 GLboolean FIXIE_APIENTRY glIsEnabled(GLenum cap)
 {
-    try
-    {
-        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        GLboolean& property = fixie::get_property(ctx, cap);
-        return property;
-    }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-        return GL_FALSE;
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return GL_FALSE;
-    }
-    catch (...)
-    {
-        UNREACHABLE();
-        return GL_FALSE;
-    }
+    return fixie::get_property(cap);
 }
 
 GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
