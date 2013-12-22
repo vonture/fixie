@@ -1125,6 +1125,180 @@ namespace fixie
         return default_bool;
     }
 
+    template <typename output_type>
+    size_t get_parameter(GLenum pname, output_type* output)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            switch (pname)
+            {
+            default: throw invalid_enum_error(format("invalid parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+            return 0;
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+            return 0;
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+            return 0;
+        }
+    }
+
+    template <typename output_type>
+    size_t get_buffer_parameter(GLenum target, GLenum pname, output_type* output)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            switch (pname)
+            {
+            default: throw invalid_enum_error(format("invalid buffer parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+            return 0;
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+            return 0;
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+            return 0;
+        }
+    }
+
+    template <typename output_type>
+    size_t get_texture_parameter(GLenum target, GLenum pname, output_type* output)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            switch (pname)
+            {
+            default: throw invalid_enum_error(format("invalid texture parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+            return 0;
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+            return 0;
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+            return 0;
+        }
+    }
+
+    template <typename output_type>
+    size_t get_texture_evironment_parameter(GLenum env, GLenum pname, output_type* output)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            switch (pname)
+            {
+            default: throw invalid_enum_error(format("invalid texture environment parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+            return 0;
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+            return 0;
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+            return 0;
+        }
+    }
+
+    template <typename output_type>
+    size_t get_light_parameter(GLenum light, GLenum pname, output_type* output)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            switch (pname)
+            {
+            default: throw invalid_enum_error(format("invalid light parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+            return 0;
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+            return 0;
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+            return 0;
+        }
+    }
+
+    template <typename output_type>
+    size_t get_material_parameter(GLenum face, GLenum pname, output_type* output)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            switch (pname)
+            {
+            default: throw invalid_enum_error(format("invalid material parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+            return 0;
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+            return 0;
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+            return 0;
+        }
+    }
+
     static void set_client_state(GLenum array, bool enabled)
     {
         try
@@ -1360,27 +1534,27 @@ void FIXIE_APIENTRY glGetClipPlanef(GLenum pname, GLfloat eqn[4])
 
 void FIXIE_APIENTRY glGetFloatv(GLenum pname, GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_parameter(pname, params);
 }
 
 void FIXIE_APIENTRY glGetLightfv(GLenum light, GLenum pname, GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_light_parameter(light, pname, params);
 }
 
 void FIXIE_APIENTRY glGetMaterialfv(GLenum face, GLenum pname, GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_material_parameter(face, pname, params);
 }
 
 void FIXIE_APIENTRY glGetTexEnvfv(GLenum env, GLenum pname, GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_texture_evironment_parameter(env, pname, params);
 }
 
 void FIXIE_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLfloat *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_texture_parameter(target, pname, params);
 }
 
 void FIXIE_APIENTRY glLightModelf(GLenum pname, GLfloat param)
@@ -2434,12 +2608,12 @@ void FIXIE_APIENTRY glFrustumx(GLfixed left, GLfixed right, GLfixed bottom, GLfi
 
 void FIXIE_APIENTRY glGetBooleanv(GLenum pname, GLboolean *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_parameter(pname, params);
 }
 
 void FIXIE_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_buffer_parameter(target, pname, params);
 }
 
 void FIXIE_APIENTRY glGetClipPlanex(GLenum pname, GLfixed eqn[4])
@@ -2561,27 +2735,36 @@ GLenum FIXIE_APIENTRY glGetError(void)
 
 void FIXIE_APIENTRY glGetFixedv(GLenum pname, GLfixed *params)
 {
-    UNIMPLEMENTED();
+    size_t write_count = fixie::get_parameter<GLfloat>(pname, nullptr);
+    std::vector<GLfloat> float_values(write_count);
+    fixie::get_parameter(pname, float_values.data());
+    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glGetIntegerv(GLenum pname, GLint *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_parameter(pname, params);
 }
 
 void FIXIE_APIENTRY glGetLightxv(GLenum light, GLenum pname, GLfixed *params)
 {
-    UNIMPLEMENTED();
+    size_t write_count = fixie::get_light_parameter<GLfloat>(light, pname, nullptr);
+    std::vector<GLfloat> float_values(write_count);
+    fixie::get_light_parameter(light, pname, float_values.data());
+    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glGetMaterialxv(GLenum face, GLenum pname, GLfixed *params)
 {
-    UNIMPLEMENTED();
+    size_t write_count = fixie::get_material_parameter<GLfloat>(face, pname, nullptr);
+    std::vector<GLfloat> float_values(write_count);
+    fixie::get_material_parameter(face, pname, float_values.data());
+    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glGetPointerv(GLenum pname, GLvoid **params)
 {
-    UNIMPLEMENTED();
+    fixie::get_parameter(pname, params);
 }
 
 const GLubyte * FIXIE_APIENTRY glGetString(GLenum name)
@@ -2618,22 +2801,28 @@ const GLubyte * FIXIE_APIENTRY glGetString(GLenum name)
 
 void FIXIE_APIENTRY glGetTexEnviv(GLenum env, GLenum pname, GLint *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_texture_evironment_parameter(env, pname, params);
 }
 
 void FIXIE_APIENTRY glGetTexEnvxv(GLenum env, GLenum pname, GLfixed *params)
 {
-    UNIMPLEMENTED();
+    size_t write_count = fixie::get_texture_evironment_parameter<GLfloat>(env, pname, nullptr);
+    std::vector<GLfloat> float_values(write_count);
+    fixie::get_texture_evironment_parameter(env, pname, float_values.data());
+    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glGetTexParameteriv(GLenum target, GLenum pname, GLint *params)
 {
-    UNIMPLEMENTED();
+    fixie::get_texture_parameter(target, pname, params);
 }
 
 void FIXIE_APIENTRY glGetTexParameterxv(GLenum target, GLenum pname, GLfixed *params)
 {
-    UNIMPLEMENTED();
+    size_t write_count = fixie::get_texture_parameter<GLfloat>(target, pname, nullptr);
+    std::vector<GLfloat> float_values(write_count);
+    fixie::get_texture_parameter(target, pname, float_values.data());
+    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glHint(GLenum target, GLenum mode)
