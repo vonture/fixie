@@ -106,6 +106,20 @@ namespace fixie
         seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
 
+    template <typename iterator_type, typename second_type>
+    iterator_type reverse_find(iterator_type first, iterator_type last, const second_type& item)
+    {
+        for (iterator_type i = first; i != last; ++i)
+        {
+            if (i->second == item)
+            {
+                return i;
+            }
+        }
+
+        return last;
+    }
+
     template <typename dest_type, typename source_type>
     dest_type bit_cast(const source_type& source)
     {
