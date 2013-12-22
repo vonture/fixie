@@ -98,6 +98,7 @@ namespace fixie
         void delete_texture(GLuint id);
         std::weak_ptr<fixie::texture> texture(GLuint id);
         std::weak_ptr<const fixie::texture> texture(GLuint id) const;
+        GLuint texture_id(std::weak_ptr<const fixie::texture> texture) const;
 
         size_t& active_texture_unit();
         const size_t& active_texture_unit() const;
@@ -113,6 +114,7 @@ namespace fixie
         void delete_renderbuffer(GLuint id);
         std::weak_ptr<fixie::renderbuffer> renderbuffer(GLuint id);
         std::weak_ptr<const fixie::renderbuffer> renderbuffer(GLuint id) const;
+        GLuint renderbuffer_id(std::weak_ptr<const fixie::renderbuffer> renderbuffer) const;
 
         void bind_renderbuffer(std::weak_ptr<fixie::renderbuffer> renderbuffer);
         std::weak_ptr<const fixie::renderbuffer> bound_renderbuffer() const;
@@ -122,6 +124,7 @@ namespace fixie
         void delete_framebuffer(GLuint id);
         std::weak_ptr<fixie::framebuffer> framebuffer(GLuint id);
         std::weak_ptr<const fixie::framebuffer> framebuffer(GLuint id) const;
+        GLuint framebuffer_id(std::weak_ptr<const fixie::framebuffer> framebuffer) const;
         std::weak_ptr<fixie::framebuffer> default_framebuffer();
         std::weak_ptr<const fixie::framebuffer> default_framebuffer() const;
 
@@ -133,6 +136,7 @@ namespace fixie
         void delete_buffer(GLuint id);
         std::weak_ptr<fixie::buffer> buffer(GLuint id);
         std::weak_ptr<const fixie::buffer> buffer(GLuint id) const;
+        GLuint buffer_id(std::weak_ptr<const fixie::buffer> buffer) const;
 
         void bind_array_buffer(std::weak_ptr<fixie::buffer> buf);
         std::weak_ptr<const fixie::buffer> bound_array_buffer() const;
@@ -146,6 +150,7 @@ namespace fixie
         void delete_vertex_array(GLuint id);
         std::weak_ptr<fixie::vertex_array> vertex_array(GLuint id);
         std::weak_ptr<const fixie::vertex_array> vertex_array(GLuint id) const;
+        GLuint vertex_array_id(std::weak_ptr<const fixie::vertex_array> vertex_array) const;
         std::weak_ptr<fixie::vertex_array> default_vertex_array();
         std::weak_ptr<const fixie::vertex_array> default_vertex_array() const;
 

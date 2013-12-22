@@ -5,6 +5,7 @@
 #include "fixie/fixie_gl_es.h"
 #include "fixie_lib/exceptions.hpp"
 #include "fixie_lib/debug.hpp"
+#include "fixie_lib/util.hpp"
 
 namespace fixie
 {
@@ -258,6 +259,12 @@ namespace fixie
         return (iter != end(_textures)) ? iter->second : std::weak_ptr<fixie::texture>();
     }
 
+    GLuint state::texture_id(std::weak_ptr<const fixie::texture> texture) const
+    {
+        auto iter = reverse_find(begin(_textures), end(_textures), texture.lock());
+        return (iter != end(_textures)) ? iter->first : 0;
+    }
+
     size_t& state::active_texture_unit()
     {
         return _active_texture_unit;
@@ -321,6 +328,12 @@ namespace fixie
         return (iter != end(_renderbuffers)) ? iter->second : std::weak_ptr<fixie::renderbuffer>();
     }
 
+    GLuint state::renderbuffer_id(std::weak_ptr<const fixie::renderbuffer> renderbuffer) const
+    {
+        auto iter = reverse_find(begin(_renderbuffers), end(_renderbuffers), renderbuffer.lock());
+        return (iter != end(_renderbuffers)) ? iter->first : 0;
+    }
+
     void state::bind_renderbuffer(std::weak_ptr<fixie::renderbuffer> renderbuffer)
     {
         _bound_renderbuffer = renderbuffer;
@@ -362,6 +375,12 @@ namespace fixie
     {
         auto iter = _framebuffers.find(id);
         return (iter != end(_framebuffers)) ? iter->second : std::weak_ptr<fixie::framebuffer>();
+    }
+
+    GLuint state::framebuffer_id(std::weak_ptr<const fixie::framebuffer> framebuffer) const
+    {
+        auto iter = reverse_find(begin(_framebuffers), end(_framebuffers), framebuffer.lock());
+        return (iter != end(_framebuffers)) ? iter->first : 0;
     }
 
     std::weak_ptr<fixie::framebuffer> state::default_framebuffer()
@@ -415,6 +434,12 @@ namespace fixie
     {
         auto iter = _buffers.find(id);
         return (iter != end(_buffers)) ? iter->second : nullptr;
+    }
+
+    GLuint state::buffer_id(std::weak_ptr<const fixie::buffer> buffer) const
+    {
+        auto iter = reverse_find(begin(_buffers), end(_buffers), buffer.lock());
+        return (iter != end(_buffers)) ? iter->first : 0;
     }
 
     void state::bind_array_buffer(std::weak_ptr<fixie::buffer> buf)
@@ -493,6 +518,12 @@ namespace fixie
     {
         auto iter = _vertex_arrays.find(id);
         return (iter != end(_vertex_arrays)) ? iter->second : nullptr;
+    }
+
+    GLuint state::vertex_array_id(std::weak_ptr<const fixie::vertex_array> vertex_array) const
+    {
+        auto iter = reverse_find(begin(_vertex_arrays), end(_vertex_arrays), vertex_array.lock());
+        return (iter != end(_vertex_arrays)) ? iter->first : 0;
     }
 
     std::weak_ptr<fixie::vertex_array> state::default_vertex_array()
