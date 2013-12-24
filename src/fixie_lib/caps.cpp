@@ -28,6 +28,7 @@ namespace fixie
         , _depth_bits(0)
         , _stencil_bits(0)
         , _supports_framebuffer_objects(0)
+        , _max_renderbuffer_size(0)
         , _supports_rgb8_rgba8(0)
         , _supports_depth24(0)
         , _supports_depth32(0)
@@ -286,14 +287,14 @@ namespace fixie
         return _supports_framebuffer_objects;
     }
 
-    GLboolean& caps::supports_vertex_array_objects()
+    GLsizei& caps::max_renderbuffer_size()
     {
-        return _supports_vertex_array_objects;
+        return _max_renderbuffer_size;
     }
 
-    const GLboolean& caps::supports_vertex_array_objects() const
+    const GLsizei& caps::max_renderbuffer_size() const
     {
-        return _supports_vertex_array_objects;
+        return _max_renderbuffer_size;
     }
 
     const GLboolean& caps::supports_rgb8_rgba8() const
@@ -354,5 +355,15 @@ namespace fixie
     GLboolean& caps::supports_stencil8()
     {
         return _supports_stencil8;
+    }
+
+    GLboolean& caps::supports_vertex_array_objects()
+    {
+        return _supports_vertex_array_objects;
+    }
+
+    const GLboolean& caps::supports_vertex_array_objects() const
+    {
+        return _supports_vertex_array_objects;
     }
 }

@@ -7,6 +7,7 @@
 #include "fixie/fixie.h"
 #include "fixie/fixie_ext.h"
 #include "fixie/fixie_gl_es.h"
+#include "fixie/fixie_gl_es_ext.h"
 
 #include "fixie_lib/debug.hpp"
 #include "fixie_lib/context.hpp"
@@ -1134,6 +1135,30 @@ namespace fixie
 
             switch (pname)
             {
+            case GL_FRAMEBUFFER_BINDING_OES:
+                if (!ctx->caps().supports_framebuffer_objects())
+                {
+                    throw invalid_operation_error("framebuffers are not supported.");
+                }
+                output[0] = static_cast<output_type>(ctx->state().framebuffer_id(ctx->state().bound_framebuffer()));
+                return 1;
+
+            case GL_RENDERBUFFER_BINDING_OES:
+                if (!ctx->caps().supports_framebuffer_objects())
+                {
+                    throw invalid_operation_error("renderbuffers are not supported.");
+                }
+                output[0] = static_cast<output_type>(ctx->state().renderbuffer_id(ctx->state().bound_renderbuffer()));
+                return 1;
+
+            case GL_MAX_RENDERBUFFER_SIZE_OES:
+                if (!ctx->caps().supports_framebuffer_objects())
+                {
+                    throw invalid_operation_error("renderbuffers are not supported.");
+                }
+                output[0] = static_cast<output_type>(ctx->caps().max_renderbuffer_size());
+                return 1;
+
             default:
                 throw invalid_enum_error(format("invalid parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }

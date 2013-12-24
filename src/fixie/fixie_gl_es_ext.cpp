@@ -25,12 +25,94 @@ namespace fixie
             std::shared_ptr<context> ctx = get_current_context();
             if (!ctx->caps().supports_framebuffer_objects())
             {
-                throw fixie::invalid_operation_error("framebuffers are not supported.");
+                throw invalid_operation_error("framebuffers are not supported.");
+            }
+
+            std::shared_ptr<framebuffer> framebuffer = ctx->state().bound_framebuffer().lock();
+
+            const fixie::framebuffer_attachment* framebuffer_attachment = nullptr;
+            switch (attachment)
+            {
+            case GL_COLOR_ATTACHMENT0_OES:
+                framebuffer_attachment = &framebuffer->color_attachment();
+                break;
+
+            case GL_DEPTH_ATTACHMENT_OES:
+                framebuffer_attachment = &framebuffer->depth_attachment();
+                break;
+
+            case GL_STENCIL_ATTACHMENT_OES:
+                framebuffer_attachment = &framebuffer->stencil_attachment();
+                break;
+
+            default:
+                throw invalid_enum_error(format("invalid framebuffer attachment, %s.", get_gl_enum_name(attachment).c_str()));
             }
 
             switch (pname)
             {
-            default: throw invalid_enum_error(format("invalid framebuffer attachment parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            case GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE_OES:
+                if (!framebuffer_attachment->is_bound())
+                {
+                    output[0] = static_cast<output_type>(GL_NONE_OES);
+                }
+                else if (framebuffer_attachment->is_texture())
+                {
+                    output[0] = static_cast<output_type>(GL_TEXTURE);
+                }
+                else if (framebuffer_attachment->is_renderbuffer())
+                {
+                    output[0] = static_cast<output_type>(GL_RENDERBUFFER_OES);
+                }
+                else
+                {
+                    UNREACHABLE();
+                }
+                return 1;
+
+            case GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME_OES:
+                if (!framebuffer_attachment->is_bound())
+                {
+                    output[0] = static_cast<output_type>(0);
+                }
+                if (framebuffer_attachment->is_texture())
+                {
+                    output[0] = static_cast<output_type>(ctx->state().texture_id(framebuffer_attachment->texture()));
+                }
+                else if (framebuffer_attachment->is_renderbuffer())
+                {
+                    output[0] = static_cast<output_type>(ctx->state().renderbuffer_id(framebuffer_attachment->renderbuffer()));
+                }
+                else
+                {
+                    UNREACHABLE();
+                }
+                return 1;
+
+            case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_OES:
+                if (framebuffer_attachment->is_texture())
+                {
+                    output[0] = static_cast<output_type>(framebuffer_attachment->texture_level());
+                }
+                else
+                {
+                    throw invalid_operation_error("GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_OES is not a valid query when a texture is not bound.");
+                }
+                return 1;
+
+            case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE_OES:
+                if (framebuffer_attachment->is_texture())
+                {
+                    throw invalid_operation_error("cube maps are not supported.");
+                }
+                else
+                {
+                    throw invalid_operation_error("GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE_OES is not a valid query when a texture is not bound.");
+                }
+                return 1;
+
+            default:
+                throw invalid_enum_error(format("invalid framebuffer attachment parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -58,83 +140,87 @@ namespace fixie
             std::shared_ptr<context> ctx = get_current_context();
             if (!ctx->caps().supports_framebuffer_objects())
             {
-                throw fixie::invalid_operation_error("renderbuffers are not supported.");
+                throw invalid_operation_error("renderbuffers are not supported.");
             }
 
-            if (target != GL_RENDERBUFFER_OES)
+            std::shared_ptr<renderbuffer> renderbuffer;
+            switch (target)
             {
-                throw fixie::invalid_enum_error(fixie::format("renderbuffer target must be GL_RENDERBUFFER_OES, %s provided.", fixie::get_gl_enum_name(target).c_str()));
-            }
+            case GL_RENDERBUFFER_OES:
+                renderbuffer = ctx->state().bound_renderbuffer().lock();
+                break;
 
-            std::shared_ptr<fixie::renderbuffer> renderbuffer = ctx->state().bound_renderbuffer().lock();
+            default:
+                throw invalid_enum_error(format("unknown renderbuffer target, %s.", get_gl_enum_name(target).c_str()));;
+            }
 
             switch (pname)
             {
             case GL_RENDERBUFFER_WIDTH_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->width();
+                    output[0] = static_cast<output_type>(renderbuffer->width());
                 }
                 return 1;
 
             case GL_RENDERBUFFER_HEIGHT_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->height();
+                    output[0] = static_cast<output_type>(renderbuffer->height());
                 }
                 return 1;
 
             case GL_RENDERBUFFER_INTERNAL_FORMAT_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->internal_format();
+                    output[0] = static_cast<output_type>(renderbuffer->internal_format());
                 }
                 return 1;
 
             case GL_RENDERBUFFER_RED_SIZE_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->red_size();
+                    output[0] = static_cast<output_type>(renderbuffer->red_size());
                 }
                 break;
 
             case GL_RENDERBUFFER_GREEN_SIZE_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->green_size();
+                    output[0] = static_cast<output_type>(renderbuffer->green_size());
                 }
                 return 1;
 
             case GL_RENDERBUFFER_BLUE_SIZE_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->blue_size();
+                    output[0] = static_cast<output_type>(renderbuffer->blue_size());
                 }
                 return 1;
 
             case GL_RENDERBUFFER_ALPHA_SIZE_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->alpha_size();
+                    output[0] = static_cast<output_type>(renderbuffer->alpha_size());
                 }
                 return 1;
 
             case GL_RENDERBUFFER_DEPTH_SIZE_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->depth_size();
+                    output[0] = static_cast<output_type>(renderbuffer->depth_size());
                 }
                 return 1;
 
             case GL_RENDERBUFFER_STENCIL_SIZE_OES:
                 if (output != nullptr && renderbuffer != nullptr)
                 {
-                    output[0] = renderbuffer->stencil_size();
+                    output[0] = static_cast<output_type>(renderbuffer->stencil_size());
                 }
                 return 1;
 
             default:
-                throw fixie::invalid_enum_error(fixie::format("invalid renderbuffer parameter name, %s.", fixie::get_gl_enum_name(pname).c_str()));
+                throw invalid_enum_error(format("invalid renderbuffer parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)

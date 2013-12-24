@@ -554,6 +554,7 @@ namespace fixie
             if (version >= gl_3_0 || version >= gl_es_3_0 || extensions.find("GL_EXT_framebuffer_object") != end(extensions))
             {
                 #define GL_FRONT_LEFT 0x0400
+                #define GL_MAX_RENDERBUFFER_SIZE 0x84E8
                 #define GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE 0x8212
                 #define GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE 0x8213
                 #define GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE 0x8214
@@ -571,6 +572,7 @@ namespace fixie
                 gl_call(functions, get_framebuffer_attachment_parameter_iv, GL_FRAMEBUFFER, GL_STENCIL, GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE, &caps.stencil_bits());
 
                 caps.supports_framebuffer_objects() = GL_TRUE;
+                gl_call(functions, get_integer_v, GL_MAX_RENDERBUFFER_SIZE, &caps.max_renderbuffer_size());
                 caps.supports_rgb8_rgba8() = (version >= gl_3_0 || extensions.find("GL_OES_rgb8_rgba8") != end(extensions)) ? GL_TRUE : GL_FALSE;
                 caps.supports_depth24() = (version >= gl_3_0 || extensions.find("GL_OES_depth24") != end(extensions)) ? GL_TRUE : GL_FALSE;
                 caps.supports_depth32() = (version >= gl_3_0 || extensions.find("GL_OES_depth32") != end(extensions)) ? GL_TRUE : GL_FALSE;
@@ -588,6 +590,7 @@ namespace fixie
                 gl_call(functions, get_integer_v, GL_STENCIL_BITS, &caps.stencil_bits());
 
                 caps.supports_framebuffer_objects() = GL_FALSE;
+                caps.max_renderbuffer_size() = 0;
                 caps.supports_rgb8_rgba8() = GL_FALSE;
                 caps.supports_depth24() = GL_FALSE;
                 caps.supports_depth32() = GL_FALSE;

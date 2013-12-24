@@ -87,6 +87,9 @@ namespace fixie
         GLboolean& supports_framebuffer_objects();
         const GLboolean& supports_framebuffer_objects() const;
 
+        GLsizei& max_renderbuffer_size();
+        const GLsizei& max_renderbuffer_size() const;
+
         GLboolean& supports_rgb8_rgba8();
         const GLboolean& supports_rgb8_rgba8() const;
 
@@ -135,6 +138,7 @@ namespace fixie
 
         // extensions
         GLboolean _supports_framebuffer_objects;
+        GLsizei _max_renderbuffer_size;
         GLboolean _supports_rgb8_rgba8;
         GLboolean _supports_depth24;
         GLboolean _supports_depth32;
