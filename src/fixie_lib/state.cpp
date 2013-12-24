@@ -556,6 +556,11 @@ namespace fixie
         return _active_client_texture;
     }
 
+    const size_t& state::active_client_texture() const
+    {
+        return _active_client_texture;
+    }
+
     GLenum& state::shade_model()
     {
         return _shade_model;
