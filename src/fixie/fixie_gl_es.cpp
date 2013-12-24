@@ -1134,7 +1134,55 @@ namespace fixie
 
             switch (pname)
             {
-            default: throw invalid_enum_error(format("invalid parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            default:
+                throw invalid_enum_error(format("invalid parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            }
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+            return 0;
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+            return 0;
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+            return 0;
+        }
+    }
+
+    size_t get_pointer_parameter(GLenum pname, GLvoid** output)
+    {
+        try
+        {
+            std::shared_ptr<const context> ctx = get_current_context();
+
+            std::shared_ptr<const vertex_array> vertex_array = ctx->state().bound_vertex_array().lock();
+
+            switch (pname)
+            {
+            case GL_VERTEX_ARRAY_POINTER:
+                output[0] = const_cast<GLvoid*>(vertex_array->vertex_attribute().pointer());
+                return 1;
+
+            case GL_NORMAL_ARRAY_POINTER:
+                output[0] = const_cast<GLvoid*>(vertex_array->normal_attribute().pointer());
+                return 1;
+
+            case GL_COLOR_ARRAY_POINTER:
+                output[0] = const_cast<GLvoid*>(vertex_array->color_attribute().pointer());
+                return 1;
+
+            case GL_TEXTURE_COORD_ARRAY_POINTER:
+                output[0] = const_cast<GLvoid*>(vertex_array->texcoord_attribute(ctx->state().active_client_texture()).pointer());
+                return 1;
+
+            default:
+                throw invalid_enum_error(format("invalid pointer parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
@@ -2764,7 +2812,7 @@ void FIXIE_APIENTRY glGetMaterialxv(GLenum face, GLenum pname, GLfixed *params)
 
 void FIXIE_APIENTRY glGetPointerv(GLenum pname, GLvoid **params)
 {
-    fixie::get_parameter(pname, params);
+    fixie::get_pointer_parameter(pname, params);
 }
 
 const GLubyte * FIXIE_APIENTRY glGetString(GLenum name)
