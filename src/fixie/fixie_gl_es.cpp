@@ -1303,6 +1303,14 @@ namespace fixie
             output[0] = ctx->state().buffer_id(ctx->state().bound_element_array_buffer());
             return 1;
 
+        case GL_VERTEX_ARRAY_BINDING_OES:
+            if (!ctx->caps().supports_vertex_array_objects())
+            {
+                throw invalid_operation_error("vertex array objects are not supported.");
+            }
+            output[0] = ctx->state().vertex_array_id(ctx->state().bound_vertex_array());
+            return 1;
+
         case GL_FRAMEBUFFER_BINDING_OES:
             if (!ctx->caps().supports_framebuffer_objects())
             {
