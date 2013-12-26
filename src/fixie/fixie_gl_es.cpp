@@ -1480,9 +1480,39 @@ namespace fixie
         {
             std::shared_ptr<context> ctx = get_current_context();
 
+            std::shared_ptr<buffer> buffer = nullptr;
+            switch (target)
+            {
+            case GL_ARRAY_BUFFER:
+                buffer = ctx->state().bound_array_buffer().lock();
+                break;
+
+            case GL_ELEMENT_ARRAY_BUFFER:
+                buffer = ctx->state().bound_element_array_buffer().lock();
+                break;
+
+            default:
+                throw invalid_enum_error(format("invalid buffer target, %s.", get_gl_enum_name(target).c_str()));
+            }
+
             switch (pname)
             {
-            default: throw invalid_enum_error(format("invalid buffer parameter name, %s.", get_gl_enum_name(pname).c_str()));
+            case GL_BUFFER_SIZE:
+                if (buffer != nullptr && output != nullptr)
+                {
+                    output[0] = static_cast<output_type>(buffer->size());
+                }
+                return 1;
+
+            case GL_BUFFER_USAGE:
+                if (buffer != nullptr && output != nullptr)
+                {
+                    output[0] = static_cast<output_type>(buffer->usage());
+                }
+                return 1;
+
+            default:
+                throw invalid_enum_error(format("invalid buffer parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
         catch (gl_error e)
