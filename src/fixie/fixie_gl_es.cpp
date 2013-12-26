@@ -1138,6 +1138,7 @@ namespace fixie
         switch (pname)
         {
         case GL_CURRENT_COLOR:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->color_attribute().generic_values().x();
@@ -1148,6 +1149,7 @@ namespace fixie
             return 4;
 
         case GL_CURRENT_TEXTURE_COORDS:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->texcoord_attribute(ctx->state().active_client_texture()).generic_values().x();
@@ -1158,6 +1160,7 @@ namespace fixie
             return 4;
 
         case GL_CURRENT_NORMAL:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->normal_attribute().generic_values().x();
@@ -1177,6 +1180,7 @@ namespace fixie
         switch (pname)
         {
         case GL_CURRENT_COLOR:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = static_cast<GLint>(vao->color_attribute().generic_values().x() * std::numeric_limits<GLubyte>::max());
@@ -1187,10 +1191,14 @@ namespace fixie
             return 4;
 
         case GL_CLIENT_ACTIVE_TEXTURE:
-            output[0] = ctx->state().active_client_texture();
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().active_client_texture();
+            }
             return 1;
 
         case GL_VERTEX_ARRAY_SIZE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->vertex_attribute().size();
@@ -1198,6 +1206,7 @@ namespace fixie
             return 1;
 
         case GL_VERTEX_ARRAY_TYPE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->vertex_attribute().type();
@@ -1205,6 +1214,7 @@ namespace fixie
             return 1;
 
         case GL_VERTEX_ARRAY_STRIDE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->vertex_attribute().stride();
@@ -1212,6 +1222,7 @@ namespace fixie
             return 1;
 
         case GL_NORMAL_ARRAY_TYPE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->normal_attribute().type();
@@ -1219,6 +1230,7 @@ namespace fixie
             return 1;
 
         case GL_NORMAL_ARRAY_STRIDE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->normal_attribute().stride();
@@ -1226,6 +1238,7 @@ namespace fixie
             return 1;
 
         case GL_COLOR_ARRAY_SIZE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->color_attribute().size();
@@ -1233,6 +1246,7 @@ namespace fixie
             return 1;
 
         case GL_COLOR_ARRAY_TYPE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->color_attribute().type();
@@ -1240,6 +1254,7 @@ namespace fixie
             return 1;
 
         case GL_COLOR_ARRAY_STRIDE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->color_attribute().stride();
@@ -1247,6 +1262,7 @@ namespace fixie
             return 1;
 
         case GL_TEXTURE_COORD_ARRAY_SIZE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->texcoord_attribute(ctx->state().active_client_texture()).size();
@@ -1254,6 +1270,7 @@ namespace fixie
             return 1;
 
         case GL_TEXTURE_COORD_ARRAY_TYPE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->texcoord_attribute(ctx->state().active_client_texture()).type();
@@ -1261,6 +1278,7 @@ namespace fixie
             return 1;
 
         case GL_TEXTURE_COORD_ARRAY_STRIDE:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = vao->texcoord_attribute(ctx->state().active_client_texture()).stride();
@@ -1268,10 +1286,14 @@ namespace fixie
             return 1;
 
         case GL_ARRAY_BUFFER_BINDING:
-            output[0] = ctx->state().buffer_id(ctx->state().bound_array_buffer());
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().buffer_id(ctx->state().bound_array_buffer());
+            }
             return 1;
 
         case GL_VERTEX_ARRAY_BUFFER_BINDING:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = ctx->state().buffer_id(vao->vertex_attribute().buffer());
@@ -1279,6 +1301,7 @@ namespace fixie
             return 1;
 
         case GL_NORMAL_ARRAY_BUFFER_BINDING:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = ctx->state().buffer_id(vao->normal_attribute().buffer());
@@ -1286,6 +1309,7 @@ namespace fixie
             return 1;
 
         case GL_COLOR_ARRAY_BUFFER_BINDING:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = ctx->state().buffer_id(vao->color_attribute().buffer());
@@ -1293,6 +1317,7 @@ namespace fixie
             return 1;
 
         case GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING:
+            if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
                 output[0] = ctx->state().buffer_id(vao->texcoord_attribute(ctx->state().active_client_texture()).buffer());
@@ -1300,7 +1325,10 @@ namespace fixie
             return 1;
 
         case GL_ELEMENT_ARRAY_BUFFER_BINDING:
-            output[0] = ctx->state().buffer_id(ctx->state().bound_element_array_buffer());
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().buffer_id(ctx->state().bound_element_array_buffer());
+            }
             return 1;
 
         case GL_VERTEX_ARRAY_BINDING_OES:
@@ -1308,7 +1336,10 @@ namespace fixie
             {
                 throw invalid_operation_error("vertex array objects are not supported.");
             }
-            output[0] = ctx->state().vertex_array_id(ctx->state().bound_vertex_array());
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().vertex_array_id(ctx->state().bound_vertex_array());
+            }
             return 1;
 
         case GL_FRAMEBUFFER_BINDING_OES:
@@ -1316,7 +1347,10 @@ namespace fixie
             {
                 throw invalid_operation_error("framebuffers are not supported.");
             }
-            output[0] = ctx->state().framebuffer_id(ctx->state().bound_framebuffer());
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().framebuffer_id(ctx->state().bound_framebuffer());
+            }
             return 1;
 
         case GL_RENDERBUFFER_BINDING_OES:
@@ -1324,7 +1358,10 @@ namespace fixie
             {
                 throw invalid_operation_error("renderbuffers are not supported.");
             }
-            output[0] = ctx->state().renderbuffer_id(ctx->state().bound_renderbuffer());
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().renderbuffer_id(ctx->state().bound_renderbuffer());
+            }
             return 1;
 
         case GL_MAX_RENDERBUFFER_SIZE_OES:
@@ -1332,7 +1369,10 @@ namespace fixie
             {
                 throw invalid_operation_error("renderbuffers are not supported.");
             }
-            output[0] = ctx->caps().max_renderbuffer_size();
+            if (output != nullptr)
+            {
+                output[0] = ctx->caps().max_renderbuffer_size();
+            }
             return 1;
 
         default:
@@ -1385,19 +1425,31 @@ namespace fixie
             switch (pname)
             {
             case GL_VERTEX_ARRAY_POINTER:
-                output[0] = const_cast<GLvoid*>(vertex_array->vertex_attribute().pointer());
+                if (output != nullptr)
+                {
+                    output[0] = const_cast<GLvoid*>(vertex_array->vertex_attribute().pointer());
+                }
                 return 1;
 
             case GL_NORMAL_ARRAY_POINTER:
-                output[0] = const_cast<GLvoid*>(vertex_array->normal_attribute().pointer());
+                if (output != nullptr)
+                {
+                    output[0] = const_cast<GLvoid*>(vertex_array->normal_attribute().pointer());
+                }
                 return 1;
 
             case GL_COLOR_ARRAY_POINTER:
-                output[0] = const_cast<GLvoid*>(vertex_array->color_attribute().pointer());
+                if (output != nullptr)
+                {
+                    output[0] = const_cast<GLvoid*>(vertex_array->color_attribute().pointer());
+                }
                 return 1;
 
             case GL_TEXTURE_COORD_ARRAY_POINTER:
-                output[0] = const_cast<GLvoid*>(vertex_array->texcoord_attribute(ctx->state().active_client_texture()).pointer());
+                if (output != nullptr)
+                {
+                    output[0] = const_cast<GLvoid*>(vertex_array->texcoord_attribute(ctx->state().active_client_texture()).pointer());
+                }
                 return 1;
 
             default:
