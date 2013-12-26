@@ -1137,9 +1137,34 @@ namespace fixie
     {
         switch (pname)
         {
-
+        case GL_CURRENT_COLOR:
             {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->color_attribute().generic_values().x();
+                output[1] = vao->color_attribute().generic_values().y();
+                output[2] = vao->color_attribute().generic_values().z();
+                output[3] = vao->color_attribute().generic_values().w();
+            }
+            return 4;
 
+        case GL_CURRENT_TEXTURE_COORDS:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->texcoord_attribute(ctx->state().active_client_texture()).generic_values().x();
+                output[1] = vao->texcoord_attribute(ctx->state().active_client_texture()).generic_values().y();
+                output[2] = vao->texcoord_attribute(ctx->state().active_client_texture()).generic_values().z();
+                output[3] = vao->texcoord_attribute(ctx->state().active_client_texture()).generic_values().w();
+            }
+            return 4;
+
+        case GL_CURRENT_NORMAL:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->normal_attribute().generic_values().x();
+                output[1] = vao->normal_attribute().generic_values().y();
+                output[2] = vao->normal_attribute().generic_values().z();
+            }
+            return 4;
 
         default:
             return 0;
@@ -1151,6 +1176,133 @@ namespace fixie
     {
         switch (pname)
         {
+        case GL_CURRENT_COLOR:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = static_cast<GLint>(vao->color_attribute().generic_values().x() * std::numeric_limits<GLubyte>::max());
+                output[1] = static_cast<GLint>(vao->color_attribute().generic_values().y() * std::numeric_limits<GLubyte>::max());
+                output[2] = static_cast<GLint>(vao->color_attribute().generic_values().z() * std::numeric_limits<GLubyte>::max());
+                output[3] = static_cast<GLint>(vao->color_attribute().generic_values().w() * std::numeric_limits<GLubyte>::max());
+            }
+            return 4;
+
+        case GL_CLIENT_ACTIVE_TEXTURE:
+            output[0] = ctx->state().active_client_texture();
+            return 1;
+
+        case GL_VERTEX_ARRAY_SIZE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->vertex_attribute().size();
+            }
+            return 1;
+
+        case GL_VERTEX_ARRAY_TYPE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->vertex_attribute().type();
+            }
+            return 1;
+
+        case GL_VERTEX_ARRAY_STRIDE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->vertex_attribute().stride();
+            }
+            return 1;
+
+        case GL_NORMAL_ARRAY_TYPE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->normal_attribute().type();
+            }
+            return 1;
+
+        case GL_NORMAL_ARRAY_STRIDE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->normal_attribute().stride();
+            }
+            return 1;
+
+        case GL_COLOR_ARRAY_SIZE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->color_attribute().size();
+            }
+            return 1;
+
+        case GL_COLOR_ARRAY_TYPE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->color_attribute().type();
+            }
+            return 1;
+
+        case GL_COLOR_ARRAY_STRIDE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->color_attribute().stride();
+            }
+            return 1;
+
+        case GL_TEXTURE_COORD_ARRAY_SIZE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->texcoord_attribute(ctx->state().active_client_texture()).size();
+            }
+            return 1;
+
+        case GL_TEXTURE_COORD_ARRAY_TYPE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->texcoord_attribute(ctx->state().active_client_texture()).type();
+            }
+            return 1;
+
+        case GL_TEXTURE_COORD_ARRAY_STRIDE:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = vao->texcoord_attribute(ctx->state().active_client_texture()).stride();
+            }
+            return 1;
+
+        case GL_ARRAY_BUFFER_BINDING:
+            output[0] = ctx->state().buffer_id(ctx->state().bound_array_buffer());
+            return 1;
+
+        case GL_VERTEX_ARRAY_BUFFER_BINDING:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = ctx->state().buffer_id(vao->vertex_attribute().buffer());
+            }
+            return 1;
+
+        case GL_NORMAL_ARRAY_BUFFER_BINDING:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = ctx->state().buffer_id(vao->normal_attribute().buffer());
+            }
+            return 1;
+
+        case GL_COLOR_ARRAY_BUFFER_BINDING:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = ctx->state().buffer_id(vao->color_attribute().buffer());
+            }
+            return 1;
+
+        case GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING:
+            {
+                std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
+                output[0] = ctx->state().buffer_id(vao->texcoord_attribute(ctx->state().active_client_texture()).buffer());
+            }
+            return 1;
+
+        case GL_ELEMENT_ARRAY_BUFFER_BINDING:
+            output[0] = ctx->state().buffer_id(ctx->state().bound_element_array_buffer());
+            return 1;
+
         case GL_FRAMEBUFFER_BINDING_OES:
             if (!ctx->caps().supports_framebuffer_objects())
             {
