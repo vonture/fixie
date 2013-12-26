@@ -1127,39 +1127,73 @@ namespace fixie
     }
 
     template <typename output_type>
+    size_t get_parameter_specialized(std::shared_ptr<context> ctx, GLenum pname, output_type* output)
+    {
+        return 0;
+    }
+
+    template <>
+    size_t get_parameter_specialized(std::shared_ptr<context> ctx, GLenum pname, GLfloat* output)
+    {
+        switch (pname)
+        {
+
+            {
+
+
+        default:
+            return 0;
+        }
+    }
+
+    template <>
+    size_t get_parameter_specialized(std::shared_ptr<context> ctx, GLenum pname, GLint* output)
+    {
+        switch (pname)
+        {
+        case GL_FRAMEBUFFER_BINDING_OES:
+            if (!ctx->caps().supports_framebuffer_objects())
+            {
+                throw invalid_operation_error("framebuffers are not supported.");
+            }
+            output[0] = ctx->state().framebuffer_id(ctx->state().bound_framebuffer());
+            return 1;
+
+        case GL_RENDERBUFFER_BINDING_OES:
+            if (!ctx->caps().supports_framebuffer_objects())
+            {
+                throw invalid_operation_error("renderbuffers are not supported.");
+            }
+            output[0] = ctx->state().renderbuffer_id(ctx->state().bound_renderbuffer());
+            return 1;
+
+        case GL_MAX_RENDERBUFFER_SIZE_OES:
+            if (!ctx->caps().supports_framebuffer_objects())
+            {
+                throw invalid_operation_error("renderbuffers are not supported.");
+            }
+            output[0] = ctx->caps().max_renderbuffer_size();
+            return 1;
+
+        default:
+            return 0;
+        }
+    }
+
+    template <typename output_type>
     size_t get_parameter(GLenum pname, output_type* output)
     {
         try
         {
             std::shared_ptr<context> ctx = get_current_context();
 
-            switch (pname)
+            size_t specialized_return_count = get_parameter_specialized(ctx, pname, output);
+            if (specialized_return_count > 0)
             {
-            case GL_FRAMEBUFFER_BINDING_OES:
-                if (!ctx->caps().supports_framebuffer_objects())
-                {
-                    throw invalid_operation_error("framebuffers are not supported.");
-                }
-                output[0] = static_cast<output_type>(ctx->state().framebuffer_id(ctx->state().bound_framebuffer()));
-                return 1;
-
-            case GL_RENDERBUFFER_BINDING_OES:
-                if (!ctx->caps().supports_framebuffer_objects())
-                {
-                    throw invalid_operation_error("renderbuffers are not supported.");
-                }
-                output[0] = static_cast<output_type>(ctx->state().renderbuffer_id(ctx->state().bound_renderbuffer()));
-                return 1;
-
-            case GL_MAX_RENDERBUFFER_SIZE_OES:
-                if (!ctx->caps().supports_framebuffer_objects())
-                {
-                    throw invalid_operation_error("renderbuffers are not supported.");
-                }
-                output[0] = static_cast<output_type>(ctx->caps().max_renderbuffer_size());
-                return 1;
-
-            default:
+                return specialized_return_count;
+            }
+            else
+            {
                 throw invalid_enum_error(format("invalid parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
