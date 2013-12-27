@@ -1169,6 +1169,30 @@ namespace fixie
             }
             return 4;
 
+        case GL_MODELVIEW_MATRIX:
+            if (output != nullptr)
+            {
+                matrix4 matrix = ctx->state().model_view_matrix_stack().top_multiplied();
+                std::copy_n(matrix.data(), 16, output);
+            }
+            return 16;
+
+        case GL_PROJECTION_MATRIX:
+            if (output != nullptr)
+            {
+                matrix4 matrix = ctx->state().projection_matrix_stack().top_multiplied();
+                std::copy_n(matrix.data(), 16, output);
+            }
+            return 16;
+
+        case GL_TEXTURE_MATRIX:
+            if (output != nullptr)
+            {
+                matrix4 matrix = ctx->state().texture_matrix_stack(ctx->state().active_client_texture()).top_multiplied();
+                std::copy_n(matrix.data(), 16, output);
+            }
+            return 16;
+
         default:
             return 0;
         }
@@ -1330,6 +1354,30 @@ namespace fixie
                 output[0] = ctx->state().buffer_id(ctx->state().bound_element_array_buffer());
             }
             return 1;
+
+        case GL_MODELVIEW_MATRIX_FLOAT_AS_INT_BITS_OES:
+            if (output != nullptr)
+            {
+                matrix4 matrix = ctx->state().model_view_matrix_stack().top_multiplied();
+                for_each_n(0, 16, [&](size_t i){ output[i] = bit_cast<GLint>(matrix.data() + i); });
+            }
+            return 16;
+
+        case GL_PROJECTION_MATRIX_FLOAT_AS_INT_BITS_OES:
+            if (output != nullptr)
+            {
+                matrix4 matrix = ctx->state().projection_matrix_stack().top_multiplied();
+                for_each_n(0, 16, [&](size_t i){ output[i] = bit_cast<GLint>(matrix.data() + i); });
+            }
+            return 16;
+
+        case GL_TEXTURE_MATRIX_FLOAT_AS_INT_BITS_OES:
+            if (output != nullptr)
+            {
+                matrix4 matrix = ctx->state().texture_matrix_stack(ctx->state().active_client_texture()).top_multiplied();
+                for_each_n(0, 16, [&](size_t i){ output[i] = bit_cast<GLint>(matrix.data() + i); });
+            }
+            return 16;
 
         case GL_VERTEX_ARRAY_BINDING_OES:
             if (!ctx->caps().supports_vertex_array_objects())

@@ -133,6 +133,7 @@ namespace fixie
         std::unordered_set<std::string> extension_set;
         auto insert_if = [&](GLboolean cond, const std::string& extension){ extension_set.insert(std::move(extension)); };
 
+        insert_if(GL_TRUE, "GL_OES_matrix_get");
         insert_if(caps.supports_framebuffer_objects(), "GL_OES_framebuffer_object");
         insert_if(caps.supports_rgb8_rgba8(), "GL_OES_rgb8_rgba8");
         insert_if(caps.supports_depth24(), "GL_OES_depth24");
