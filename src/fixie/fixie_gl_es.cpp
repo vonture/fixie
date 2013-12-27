@@ -1399,6 +1399,27 @@ namespace fixie
             }
             return 4;
 
+        case GL_MODELVIEW_STACK_DEPTH:
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().model_view_matrix_stack().size();
+            }
+            return 1;
+
+        case GL_PROJECTION_STACK_DEPTH:
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().projection_matrix_stack().size();
+            }
+            return 1;
+
+        case GL_TEXTURE_STACK_DEPTH:
+            if (output != nullptr)
+            {
+                output[0] = ctx->state().texture_matrix_stack(ctx->state().active_client_texture()).size();
+            }
+            return 1;
+
         case GL_VERTEX_ARRAY_BINDING_OES:
             if (!ctx->caps().supports_vertex_array_objects())
             {
