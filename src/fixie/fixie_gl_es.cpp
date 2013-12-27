@@ -1379,6 +1379,26 @@ namespace fixie
             }
             return 16;
 
+        case GL_VIEWPORT:
+            if (output != nullptr)
+            {
+                const viewport_state& viewport = ctx->state().viewport_state();
+                output[0] = viewport.viewport().x();
+                output[1] = viewport.viewport().y();
+                output[2] = viewport.viewport().width();
+                output[3] = viewport.viewport().height();
+            }
+            return 4;
+
+        case GL_DEPTH_RANGE:
+            if (output != nullptr)
+            {
+                const viewport_state& viewport = ctx->state().viewport_state();
+                output[0] = viewport.depth_range().near();
+                output[1] = viewport.depth_range().far();
+            }
+            return 4;
+
         case GL_VERTEX_ARRAY_BINDING_OES:
             if (!ctx->caps().supports_vertex_array_objects())
             {
