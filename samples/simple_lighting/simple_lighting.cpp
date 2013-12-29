@@ -1,5 +1,6 @@
 #include "fixie/fixie.h"
 #include "fixie/fixie_gl_es.h"
+#include "fixie/fixie_gl_es_ext.h"
 
 #include "GLFW/glfw3.h"
 
@@ -136,8 +137,29 @@ int main(int argc, char** argv)
     GLuint teapot_position_vbo = make_model_vbo(teapot.vertices);
     GLuint teapot_normal_vbo = make_model_vbo(teapot.normals);
 
+    GLuint teapot_vao;
+    glGenVertexArraysOES(1, &teapot_vao);
+    glBindVertexArrayOES(teapot_vao);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, teapot_position_vbo);
+    glVertexPointer(4, GL_FLOAT, 0, 0);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, teapot_normal_vbo);
+    glNormalPointer(GL_FLOAT, 0, 0);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
     sample_util::model sphere = sample_util::load_model_from_file("sphere.obj");
     GLuint sphere_position_vbo = make_model_vbo(sphere.vertices);
+
+    GLuint sphere_vao;
+    glGenVertexArraysOES(1, &sphere_vao);
+    glBindVertexArrayOES(sphere_vao);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER, sphere_position_vbo);
+    glVertexPointer(4, GL_FLOAT, 0, 0);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
 
     std::vector<light_info> lights(8);
     std::for_each(begin(lights), end(lights), initialize_random_light);
@@ -168,16 +190,7 @@ int main(int argc, char** argv)
         glRotatef(time * 50.f, 0.0f, 1.0f, 0.0f);
         glTranslatef(0.0f, 0.0f, sinf(time) * 25.0f);
 
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glBindBuffer(GL_ARRAY_BUFFER, teapot_position_vbo);
-        glVertexPointer(4, GL_FLOAT, 0, 0);
-
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glBindBuffer(GL_ARRAY_BUFFER, teapot_normal_vbo);
-        glNormalPointer(GL_FLOAT, 0, 0);
-
-        glDisableClientState(GL_COLOR_ARRAY);
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glBindVertexArrayOES(teapot_vao);
 
         sample_util::sync_material(GL_FRONT_AND_BACK, teapot_material);
 
@@ -189,17 +202,8 @@ int main(int argc, char** argv)
         glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(teapot.vertices.size()));
 
         glDisable(GL_LIGHTING);
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glBindBuffer(GL_ARRAY_BUFFER, sphere_position_vbo);
-        glVertexPointer(4, GL_FLOAT, 0, 0);
-
-        glDisableClientState(GL_NORMAL_ARRAY);
-
-        glDisableClientState(GL_COLOR_ARRAY);
-
+        glBindVertexArrayOES(sphere_vao);
         glMatrixMode(GL_MODELVIEW);
-
         std::for_each(begin(lights), end(lights), std::bind(draw_light_model, sphere, std::placeholders::_1));
 
         glfwSwapBuffers(window);
