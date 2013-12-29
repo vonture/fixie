@@ -1169,6 +1169,15 @@ namespace fixie
             }
             return 4;
 
+        case GL_DEPTH_RANGE:
+            if (output != nullptr)
+            {
+                const viewport_state& viewport = ctx->state().viewport_state();
+                output[0] = viewport.depth_range().near();
+                output[1] = viewport.depth_range().far();
+            }
+            return 4;
+
         case GL_MODELVIEW_MATRIX:
             if (output != nullptr)
             {
@@ -1387,15 +1396,6 @@ namespace fixie
                 output[1] = viewport.viewport().y();
                 output[2] = viewport.viewport().width();
                 output[3] = viewport.viewport().height();
-            }
-            return 4;
-
-        case GL_DEPTH_RANGE:
-            if (output != nullptr)
-            {
-                const viewport_state& viewport = ctx->state().viewport_state();
-                output[0] = viewport.depth_range().near();
-                output[1] = viewport.depth_range().far();
             }
             return 4;
 
