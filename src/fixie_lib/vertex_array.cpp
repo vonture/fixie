@@ -59,10 +59,10 @@ namespace fixie
     fixie::vertex_array get_default_vertex_array(const caps& caps)
     {
         vertex_array vao(caps.max_texture_units());
-        vao.vertex_attribute() = get_default_vertex_attribute();
-        vao.normal_attribute() = get_default_normal_attribute();
-        vao.color_attribute() = get_default_color_attribute();
-        for_each_n<size_t>(0U, vao.texcoord_attribute_count(), [&](size_t i){ vao.texcoord_attribute(i) = get_default_texcoord_attribute(); });
+        vao.vertex_attribute() = default_vertex_attribute();
+        vao.normal_attribute() = default_normal_attribute();
+        vao.color_attribute() = default_color_attribute();
+        for_each_n<size_t>(0U, vao.texcoord_attribute_count(), [&](size_t i){ vao.texcoord_attribute(i) = default_texcoord_attribute(); });
         return vao;
     }
 

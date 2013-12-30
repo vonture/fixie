@@ -48,10 +48,10 @@ namespace fixie
     bool operator==(const vertex_attribute& a, const vertex_attribute& b);
     bool operator!=(const vertex_attribute& a, const vertex_attribute& b);
 
-    vertex_attribute get_default_vertex_attribute();
-    vertex_attribute get_default_normal_attribute();
-    vertex_attribute get_default_color_attribute();
-    vertex_attribute get_default_texcoord_attribute();
+    vertex_attribute default_vertex_attribute();
+    vertex_attribute default_normal_attribute();
+    vertex_attribute default_color_attribute();
+    vertex_attribute default_texcoord_attribute();
 }
 
 namespace std

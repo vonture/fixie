@@ -99,28 +99,28 @@ namespace fixie
         return attribute;
     }
 
-    vertex_attribute get_default_vertex_attribute()
+    vertex_attribute default_vertex_attribute()
     {
         vertex_attribute attribute = get_default_common_attribute();
         attribute.generic_values() = vector4(0.0f, 0.0f, 0.0f, 0.0f);
         return attribute;
     }
 
-    vertex_attribute get_default_normal_attribute()
+    vertex_attribute default_normal_attribute()
     {
         vertex_attribute attribute = get_default_common_attribute();
         attribute.generic_values() = vector4(0.0f, 0.0f, 1.0f, 1.0f);
         return attribute;
     }
 
-    vertex_attribute get_default_color_attribute()
+    vertex_attribute default_color_attribute()
     {
         vertex_attribute attribute = get_default_common_attribute();
         attribute.generic_values() = vector4(1.0f, 1.0f, 1.0f, 1.0f);
         return attribute;
     }
 
-    vertex_attribute get_default_texcoord_attribute()
+    vertex_attribute default_texcoord_attribute()
     {
         vertex_attribute attribute = get_default_common_attribute();
         attribute.generic_values() = vector4(0.0f, 0.0f, 0.0f, 1.0f);
