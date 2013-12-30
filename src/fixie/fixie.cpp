@@ -8,10 +8,15 @@ extern "C"
 
 fixie_context FIXIE_APIENTRY fixie_create_context()
 {
+    return fixie_create_context_shared(nullptr);
+}
+
+fixie_context FIXIE_APIENTRY fixie_create_context_shared(fixie_context share_ctx)
+{
     try
     {
-        std::shared_ptr<fixie::context> ctx = fixie::create_context();
-        fixie::set_current_context(ctx.get());
+        std::shared_ptr<fixie::context> ctx = fixie::create_context(fixie::get_context(reinterpret_cast<fixie::context*>(share_ctx)));
+        fixie::set_current_context(ctx);
         return ctx.get();
     }
     catch (const fixie::context_error& e)
@@ -30,7 +35,7 @@ void FIXIE_APIENTRY fixie_destroy_context(fixie_context ctx)
 {
     try
     {
-        fixie::destroy_context(reinterpret_cast<fixie::context*>(ctx));
+        fixie::destroy_context(fixie::get_context(reinterpret_cast<fixie::context*>(ctx)));
     }
     catch (...)
     {
@@ -42,7 +47,7 @@ void FIXIE_APIENTRY fixie_set_context(fixie_context ctx)
 {
     try
     {
-        fixie::set_current_context(reinterpret_cast<fixie::context*>(ctx));
+        fixie::set_current_context(fixie::get_context(reinterpret_cast<fixie::context*>(ctx)));
     }
     catch (...)
     {

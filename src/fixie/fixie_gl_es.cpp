@@ -1321,7 +1321,7 @@ namespace fixie
         case GL_ARRAY_BUFFER_BINDING:
             if (output != nullptr)
             {
-                output[0] = ctx->state().buffer_id(ctx->state().bound_array_buffer());
+                output[0] = ctx->buffers().get_handle(ctx->state().bound_array_buffer());
             }
             return 1;
 
@@ -1329,7 +1329,7 @@ namespace fixie
             if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
-                output[0] = ctx->state().buffer_id(vao->vertex_attribute().buffer());
+                output[0] = ctx->buffers().get_handle(vao->vertex_attribute().buffer());
             }
             return 1;
 
@@ -1337,7 +1337,7 @@ namespace fixie
             if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
-                output[0] = ctx->state().buffer_id(vao->normal_attribute().buffer());
+                output[0] = ctx->buffers().get_handle(vao->normal_attribute().buffer());
             }
             return 1;
 
@@ -1345,7 +1345,7 @@ namespace fixie
             if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
-                output[0] = ctx->state().buffer_id(vao->color_attribute().buffer());
+                output[0] = ctx->buffers().get_handle(vao->color_attribute().buffer());
             }
             return 1;
 
@@ -1353,14 +1353,14 @@ namespace fixie
             if (output != nullptr)
             {
                 std::shared_ptr<vertex_array> vao = ctx->state().bound_vertex_array().lock();
-                output[0] = ctx->state().buffer_id(vao->texcoord_attribute(ctx->state().active_client_texture()).buffer());
+                output[0] = ctx->buffers().get_handle(vao->texcoord_attribute(ctx->state().active_client_texture()).buffer());
             }
             return 1;
 
         case GL_ELEMENT_ARRAY_BUFFER_BINDING:
             if (output != nullptr)
             {
-                output[0] = ctx->state().buffer_id(ctx->state().bound_element_array_buffer());
+                output[0] = ctx->buffers().get_handle(ctx->state().bound_element_array_buffer());
             }
             return 1;
 
@@ -1427,7 +1427,7 @@ namespace fixie
             }
             if (output != nullptr)
             {
-                output[0] = ctx->state().vertex_array_id(ctx->state().bound_vertex_array());
+                output[0] = ctx->vertex_arrays().get_handle(ctx->state().bound_vertex_array());
             }
             return 1;
 
@@ -1438,7 +1438,7 @@ namespace fixie
             }
             if (output != nullptr)
             {
-                output[0] = ctx->state().framebuffer_id(ctx->state().bound_framebuffer());
+                output[0] = ctx->framebuffers().get_handle(ctx->state().bound_framebuffer());
             }
             return 1;
 
@@ -1449,7 +1449,7 @@ namespace fixie
             }
             if (output != nullptr)
             {
-                output[0] = ctx->state().renderbuffer_id(ctx->state().bound_renderbuffer());
+                output[0] = ctx->renderbuffers().get_handle(ctx->state().bound_renderbuffer());
             }
             return 1;
 
@@ -2231,7 +2231,7 @@ void FIXIE_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        std::weak_ptr<fixie::buffer> buf = ctx->state().buffer(buffer);
+        std::weak_ptr<fixie::buffer> buf = ctx->buffers().get_object(buffer);
 
         switch (target)
         {
@@ -2267,7 +2267,7 @@ void FIXIE_APIENTRY glBindTexture(GLenum target, GLuint texture)
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        std::weak_ptr<fixie::texture> tex = ctx->state().texture(texture);
+        std::weak_ptr<fixie::texture> tex = ctx->textures().get_object(texture);
 
         switch (target)
         {
@@ -2689,7 +2689,7 @@ void FIXIE_APIENTRY glDeleteBuffers(GLsizei n, const GLuint *buffers)
             throw fixie::invalid_value_error(fixie::format("invalid number of buffers, at least 0 required, %i provided.", n));
         }
 
-        fixie::for_each_n(0, n, [&](size_t i){ ctx->state().delete_buffer(buffers[i]); });
+        fixie::for_each_n(0, n, [&](size_t i){ ctx->buffers().erase_object(buffers[i]); });
     }
     catch (const fixie::gl_error& e)
     {
@@ -2716,7 +2716,7 @@ void FIXIE_APIENTRY glDeleteTextures(GLsizei n, const GLuint *textures)
             throw fixie::invalid_value_error(fixie::format("invalid number of textures, at least 0 required, %i provided.", n));
         }
 
-        fixie::for_each_n(0, n, [&](size_t i){ ctx->state().delete_texture(textures[i]); });
+        fixie::for_each_n(0, n, [&](size_t i){ ctx->textures().erase_object(textures[i]); });
     }
     catch (const fixie::gl_error& e)
     {
@@ -3080,7 +3080,7 @@ void FIXIE_APIENTRY glGenBuffers(GLsizei n, GLuint *buffers)
         {
             try
             {
-                std::for_each(buffers, buffers + n, [&](GLuint buf){ if (buf) { ctx->state().delete_buffer(buf); } });
+                std::for_each(buffers, buffers + n, [&](GLuint buf){ if (buf) { ctx->buffers().erase_object(buf); } });
             }
             catch (...)
             {
@@ -3125,7 +3125,7 @@ void FIXIE_APIENTRY glGenTextures(GLsizei n, GLuint *textures)
         {
             try
             {
-                std::for_each(textures, textures + n, [&](GLuint tex){ if (tex) { ctx->state().delete_texture(tex); } });
+                std::for_each(textures, textures + n, [&](GLuint tex){ if (tex) { ctx->textures().erase_object(tex); } });
             }
             catch (...)
             {
@@ -3273,7 +3273,7 @@ GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        return (ctx->state().buffer(buffer).use_count() > 0) ? GL_TRUE : GL_FALSE;
+        return ctx->buffers().contains_handle(buffer)? GL_TRUE : GL_FALSE;
     }
     catch (const fixie::gl_error& e)
     {
@@ -3302,7 +3302,7 @@ GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
     try
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
-        return (ctx->state().texture(texture).use_count() > 0) ? GL_TRUE : GL_FALSE;
+        return ctx->textures().contains_handle(texture) ? GL_TRUE : GL_FALSE;
     }
     catch (const fixie::gl_error& e)
     {

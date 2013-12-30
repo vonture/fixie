@@ -38,7 +38,7 @@ namespace fixie
     class state
     {
     public:
-        state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_fbo, std::unique_ptr<fixie::vertex_array> default_vao);
+        state(const caps& caps);
 
         const fixie::viewport_state& viewport_state() const;
         fixie::viewport_state& viewport_state();
@@ -94,12 +94,6 @@ namespace fixie
         matrix_stack& projection_matrix_stack();
         const matrix_stack& projection_matrix_stack() const;
 
-        GLuint insert_texture(std::unique_ptr<fixie::texture> texture);
-        void delete_texture(GLuint id);
-        std::weak_ptr<fixie::texture> texture(GLuint id);
-        std::weak_ptr<const fixie::texture> texture(GLuint id) const;
-        GLuint texture_id(std::weak_ptr<const fixie::texture> texture) const;
-
         size_t& active_texture_unit();
         const size_t& active_texture_unit() const;
 
@@ -110,33 +104,13 @@ namespace fixie
         fixie::texture_environment& texture_environment(size_t unit);
         const fixie::texture_environment& texture_environment(size_t unit) const;
 
-        GLuint insert_renderbuffer(std::unique_ptr<fixie::renderbuffer> renderbuffer);
-        void delete_renderbuffer(GLuint id);
-        std::weak_ptr<fixie::renderbuffer> renderbuffer(GLuint id);
-        std::weak_ptr<const fixie::renderbuffer> renderbuffer(GLuint id) const;
-        GLuint renderbuffer_id(std::weak_ptr<const fixie::renderbuffer> renderbuffer) const;
-
         void bind_renderbuffer(std::weak_ptr<fixie::renderbuffer> renderbuffer);
         std::weak_ptr<const fixie::renderbuffer> bound_renderbuffer() const;
         std::weak_ptr<fixie::renderbuffer> bound_renderbuffer();
 
-        GLuint insert_framebuffer(std::unique_ptr<fixie::framebuffer> framebuffer);
-        void delete_framebuffer(GLuint id);
-        std::weak_ptr<fixie::framebuffer> framebuffer(GLuint id);
-        std::weak_ptr<const fixie::framebuffer> framebuffer(GLuint id) const;
-        GLuint framebuffer_id(std::weak_ptr<const fixie::framebuffer> framebuffer) const;
-        std::weak_ptr<fixie::framebuffer> default_framebuffer();
-        std::weak_ptr<const fixie::framebuffer> default_framebuffer() const;
-
         void bind_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer);
         std::weak_ptr<const fixie::framebuffer> bound_framebuffer() const;
         std::weak_ptr<fixie::framebuffer> bound_framebuffer();
-
-        GLuint insert_buffer(std::unique_ptr<fixie::buffer> buffer);
-        void delete_buffer(GLuint id);
-        std::weak_ptr<fixie::buffer> buffer(GLuint id);
-        std::weak_ptr<const fixie::buffer> buffer(GLuint id) const;
-        GLuint buffer_id(std::weak_ptr<const fixie::buffer> buffer) const;
 
         void bind_array_buffer(std::weak_ptr<fixie::buffer> buf);
         std::weak_ptr<const fixie::buffer> bound_array_buffer() const;
@@ -145,14 +119,6 @@ namespace fixie
         void bind_element_array_buffer(std::weak_ptr<fixie::buffer> buf);
         std::weak_ptr<const fixie::buffer> bound_element_array_buffer() const;
         std::weak_ptr<fixie::buffer> bound_element_array_buffer();
-
-        GLuint insert_vertex_array(std::unique_ptr<fixie::vertex_array> vao);
-        void delete_vertex_array(GLuint id);
-        std::weak_ptr<fixie::vertex_array> vertex_array(GLuint id);
-        std::weak_ptr<const fixie::vertex_array> vertex_array(GLuint id) const;
-        GLuint vertex_array_id(std::weak_ptr<const fixie::vertex_array> vertex_array) const;
-        std::weak_ptr<fixie::vertex_array> default_vertex_array();
-        std::weak_ptr<const fixie::vertex_array> default_vertex_array() const;
 
         void bind_vertex_array(std::weak_ptr<fixie::vertex_array> vao);
         std::weak_ptr<const fixie::vertex_array> bound_vertex_array() const;
@@ -198,26 +164,16 @@ namespace fixie
         matrix_stack _model_view_matrix_stack;
         matrix_stack _projection_matrix_stack;
 
-        GLuint _next_texture_id;
-        std::unordered_map< GLuint, std::shared_ptr<fixie::texture> > _textures;
         std::vector< std::weak_ptr<fixie::texture> > _bound_textures;
         std::vector<fixie::texture_environment> _texture_environments;
 
-        GLuint _next_renderbuffer_id;
-        std::unordered_map< GLuint, std::shared_ptr<fixie::renderbuffer> > _renderbuffers;
         std::weak_ptr<fixie::renderbuffer> _bound_renderbuffer;
 
-        GLuint _next_framebuffer_id;
-        std::unordered_map< GLuint, std::shared_ptr<fixie::framebuffer> > _framebuffers;
         std::weak_ptr<fixie::framebuffer> _bound_framebuffer;
 
-        GLuint _next_buffer_id;
-        std::unordered_map< GLuint, std::shared_ptr<fixie::buffer> > _buffers;
         std::weak_ptr<fixie::buffer> _bound_array_buffer;
         std::weak_ptr<fixie::buffer> _bound_element_array_buffer;
 
-        GLuint _next_vertex_array_id;
-        std::unordered_map< GLuint, std::shared_ptr<fixie::vertex_array> > _vertex_arrays;
         std::weak_ptr<fixie::vertex_array> _bound_vertex_array;
 
         size_t _active_client_texture;

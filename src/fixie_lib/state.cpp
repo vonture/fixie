@@ -9,7 +9,7 @@
 
 namespace fixie
 {
-    state::state(const caps& caps, std::unique_ptr<fixie::framebuffer> default_fbo, std::unique_ptr<fixie::vertex_array> default_vao)
+    state::state(const caps& caps)
         : _viewport_state(default_viewport_state())
         , _scissor_state(default_scissor_state())
         , _color_buffer_state(default_color_buffer_state())
@@ -27,26 +27,16 @@ namespace fixie
         , _active_texture_unit(0)
         , _matrix_mode(GL_MODELVIEW)
         , _texture_matrix_stacks(caps.max_texture_units())
-        , _next_texture_id(1)
         , _bound_textures(caps.max_texture_units())
         , _texture_environments(caps.max_texture_units())
-        , _next_framebuffer_id(1)
         , _bound_framebuffer()
-        , _next_buffer_id(1)
         , _bound_array_buffer()
         , _bound_element_array_buffer()
-        , _next_vertex_array_id(1)
         , _bound_vertex_array()
         , _active_client_texture(0)
         , _shade_model(GL_SMOOTH)
         , _error(GL_NO_ERROR)
     {
-        _framebuffers.insert(std::make_pair(0, std::move(default_fbo)));
-        bind_framebuffer(default_framebuffer());
-
-        _vertex_arrays.insert(std::make_pair(0, std::move(default_vao)));
-        bind_vertex_array(default_vertex_array());
-
         std::generate(begin(_clip_planes), end(_clip_planes), default_clip_plane);
         std::generate(begin(_texture_environments), end(_texture_environments), default_texture_environment);
     }
@@ -231,40 +221,6 @@ namespace fixie
         return _projection_matrix_stack;
     }
 
-    GLuint state::insert_texture(std::unique_ptr<fixie::texture> texture)
-    {
-        GLuint id = _next_texture_id++;
-        _textures[id] = std::move(texture);
-        return id;
-    }
-
-    void state::delete_texture(GLuint id)
-    {
-        auto iter = _textures.find(id);
-        if (iter != end(_textures))
-        {
-            _textures.erase(iter);
-        }
-    }
-
-    std::weak_ptr<fixie::texture> state::texture(GLuint id)
-    {
-        auto iter = _textures.find(id);
-        return (iter != end(_textures)) ? iter->second : std::weak_ptr<fixie::texture>();
-    }
-
-    std::weak_ptr<const fixie::texture> state::texture(GLuint id) const
-    {
-        auto iter = _textures.find(id);
-        return (iter != end(_textures)) ? iter->second : std::weak_ptr<fixie::texture>();
-    }
-
-    GLuint state::texture_id(std::weak_ptr<const fixie::texture> texture) const
-    {
-        auto iter = reverse_find(begin(_textures), end(_textures), texture.lock());
-        return (iter != end(_textures)) ? iter->first : 0;
-    }
-
     size_t& state::active_texture_unit()
     {
         return _active_texture_unit;
@@ -300,40 +256,6 @@ namespace fixie
         return _texture_environments[unit];
     }
 
-    GLuint state::insert_renderbuffer(std::unique_ptr<fixie::renderbuffer> renderbuffer)
-    {
-        GLuint id = _next_renderbuffer_id++;
-        _renderbuffers[id] = std::move(renderbuffer);
-        return id;
-    }
-
-    void state::delete_renderbuffer(GLuint id)
-    {
-        auto iter = _renderbuffers.find(id);
-        if (iter != end(_renderbuffers))
-        {
-            _renderbuffers.erase(iter);
-        }
-    }
-
-    std::weak_ptr<fixie::renderbuffer> state::renderbuffer(GLuint id)
-    {
-        auto iter = _renderbuffers.find(id);
-        return (iter != end(_renderbuffers)) ? iter->second : std::weak_ptr<fixie::renderbuffer>();
-    }
-
-    std::weak_ptr<const fixie::renderbuffer> state::renderbuffer(GLuint id) const
-    {
-        auto iter = _renderbuffers.find(id);
-        return (iter != end(_renderbuffers)) ? iter->second : std::weak_ptr<fixie::renderbuffer>();
-    }
-
-    GLuint state::renderbuffer_id(std::weak_ptr<const fixie::renderbuffer> renderbuffer) const
-    {
-        auto iter = reverse_find(begin(_renderbuffers), end(_renderbuffers), renderbuffer.lock());
-        return (iter != end(_renderbuffers)) ? iter->first : 0;
-    }
-
     void state::bind_renderbuffer(std::weak_ptr<fixie::renderbuffer> renderbuffer)
     {
         _bound_renderbuffer = renderbuffer;
@@ -349,50 +271,6 @@ namespace fixie
         return _bound_renderbuffer;
     }
 
-    GLuint state::insert_framebuffer(std::unique_ptr<fixie::framebuffer> framebuffer)
-    {
-        GLuint id = _next_framebuffer_id++;
-        _framebuffers[id] = std::move(framebuffer);
-        return id;
-    }
-
-    void state::delete_framebuffer(GLuint id)
-    {
-        auto iter = _framebuffers.find(id);
-        if (iter != end(_framebuffers) && id != 0)
-        {
-            _framebuffers.erase(iter);
-        }
-    }
-
-    std::weak_ptr<fixie::framebuffer> state::framebuffer(GLuint id)
-    {
-        auto iter = _framebuffers.find(id);
-        return (iter != end(_framebuffers)) ? iter->second : std::weak_ptr<fixie::framebuffer>();
-    }
-
-    std::weak_ptr<const fixie::framebuffer> state::framebuffer(GLuint id) const
-    {
-        auto iter = _framebuffers.find(id);
-        return (iter != end(_framebuffers)) ? iter->second : std::weak_ptr<fixie::framebuffer>();
-    }
-
-    GLuint state::framebuffer_id(std::weak_ptr<const fixie::framebuffer> framebuffer) const
-    {
-        auto iter = reverse_find(begin(_framebuffers), end(_framebuffers), framebuffer.lock());
-        return (iter != end(_framebuffers)) ? iter->first : 0;
-    }
-
-    std::weak_ptr<fixie::framebuffer> state::default_framebuffer()
-    {
-        return framebuffer(0);
-    }
-
-    std::weak_ptr<const fixie::framebuffer> state::default_framebuffer() const
-    {
-        return framebuffer(0);
-    }
-
     void state::bind_framebuffer(std::weak_ptr<fixie::framebuffer> framebuffer)
     {
         _bound_framebuffer = framebuffer;
@@ -400,46 +278,12 @@ namespace fixie
 
     std::weak_ptr<const fixie::framebuffer> state::bound_framebuffer() const
     {
-        return _bound_framebuffer.expired() ? default_framebuffer() : _bound_framebuffer;
+        return _bound_framebuffer;
     }
 
     std::weak_ptr<fixie::framebuffer> state::bound_framebuffer()
     {
-        return _bound_framebuffer.expired() ? default_framebuffer() : _bound_framebuffer;
-    }
-
-    GLuint state::insert_buffer(std::unique_ptr<fixie::buffer> buffer)
-    {
-        GLuint id = _next_buffer_id++;
-        _buffers[id] = std::move(buffer);
-        return id;
-    }
-
-    void state::delete_buffer(GLuint id)
-    {
-        auto iter = _buffers.find(id);
-        if (iter != end(_buffers))
-        {
-            _buffers.erase(iter);
-        }
-    }
-
-    std::weak_ptr<fixie::buffer> state::buffer(GLuint id)
-    {
-        auto iter = _buffers.find(id);
-        return (iter != end(_buffers)) ? iter->second : nullptr;
-    }
-
-    std::weak_ptr<const fixie::buffer> state::buffer(GLuint id) const
-    {
-        auto iter = _buffers.find(id);
-        return (iter != end(_buffers)) ? iter->second : nullptr;
-    }
-
-    GLuint state::buffer_id(std::weak_ptr<const fixie::buffer> buffer) const
-    {
-        auto iter = reverse_find(begin(_buffers), end(_buffers), buffer.lock());
-        return (iter != end(_buffers)) ? iter->first : 0;
+        return _bound_framebuffer;
     }
 
     void state::bind_array_buffer(std::weak_ptr<fixie::buffer> buf)
@@ -492,50 +336,6 @@ namespace fixie
         return _bound_element_array_buffer;
     }
 
-    GLuint state::insert_vertex_array(std::unique_ptr<fixie::vertex_array> vao)
-    {
-        GLuint id = _next_vertex_array_id++;
-        _vertex_arrays[id] = std::move(vao);
-        return id;
-    }
-
-    void state::delete_vertex_array(GLuint id)
-    {
-        auto iter = _vertex_arrays.find(id);
-        if (iter != end(_vertex_arrays) && id != 0)
-        {
-            _vertex_arrays.erase(iter);
-        }
-    }
-
-    std::weak_ptr<fixie::vertex_array> state::vertex_array(GLuint id)
-    {
-        auto iter = _vertex_arrays.find(id);
-        return (iter != end(_vertex_arrays)) ? iter->second : nullptr;
-    }
-
-    std::weak_ptr<const fixie::vertex_array> state::vertex_array(GLuint id) const
-    {
-        auto iter = _vertex_arrays.find(id);
-        return (iter != end(_vertex_arrays)) ? iter->second : nullptr;
-    }
-
-    GLuint state::vertex_array_id(std::weak_ptr<const fixie::vertex_array> vertex_array) const
-    {
-        auto iter = reverse_find(begin(_vertex_arrays), end(_vertex_arrays), vertex_array.lock());
-        return (iter != end(_vertex_arrays)) ? iter->first : 0;
-    }
-
-    std::weak_ptr<fixie::vertex_array> state::default_vertex_array()
-    {
-        return vertex_array(0);
-    }
-
-    std::weak_ptr<const fixie::vertex_array> state::default_vertex_array() const
-    {
-        return vertex_array(0);
-    }
-
     void state::bind_vertex_array(std::weak_ptr<fixie::vertex_array> vao)
     {
         _bound_vertex_array = vao;
@@ -543,12 +343,12 @@ namespace fixie
 
     std::weak_ptr<const fixie::vertex_array> state::bound_vertex_array() const
     {
-        return _bound_vertex_array.expired() ? default_vertex_array() : _bound_vertex_array;
+        return _bound_vertex_array;
     }
 
     std::weak_ptr<fixie::vertex_array> state::bound_vertex_array()
     {
-        return _bound_vertex_array.expired() ? default_vertex_array() : _bound_vertex_array;
+        return _bound_vertex_array;
     }
 
     size_t& state::active_client_texture()

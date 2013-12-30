@@ -77,11 +77,11 @@ namespace fixie
                 }
                 if (framebuffer_attachment->is_texture())
                 {
-                    output[0] = static_cast<output_type>(ctx->state().texture_id(framebuffer_attachment->texture()));
+                    output[0] = static_cast<output_type>(ctx->textures().get_handle(framebuffer_attachment->texture()));
                 }
                 else if (framebuffer_attachment->is_renderbuffer())
                 {
-                    output[0] = static_cast<output_type>(ctx->state().renderbuffer_id(framebuffer_attachment->renderbuffer()));
+                    output[0] = static_cast<output_type>(ctx->renderbuffers().get_handle(framebuffer_attachment->renderbuffer()));
                 }
                 else
                 {
@@ -255,7 +255,7 @@ GLboolean FIXIE_APIENTRY glIsRenderbufferOES(GLuint renderbuffer)
             throw fixie::invalid_operation_error("renderbuffers are not supported.");
         }
 
-        return (ctx->state().renderbuffer(renderbuffer).use_count() > 0) ? GL_TRUE : GL_FALSE;
+        return ctx->renderbuffers().contains_handle(renderbuffer) ? GL_TRUE : GL_FALSE;
     }
     catch (const fixie::gl_error& e)
     {
@@ -285,7 +285,7 @@ void FIXIE_APIENTRY glBindRenderbufferOES(GLenum target, GLuint renderbuffer)
             throw fixie::invalid_operation_error("renderbuffers are not supported.");
         }
 
-        std::weak_ptr<fixie::renderbuffer> rb = ctx->state().renderbuffer(renderbuffer);
+        std::weak_ptr<fixie::renderbuffer> rb = ctx->renderbuffers().get_object(renderbuffer);
 
         switch (target)
         {
@@ -327,7 +327,7 @@ void FIXIE_APIENTRY glDeleteRenderbuffersOES(GLsizei n, const GLuint* renderbuff
             throw fixie::invalid_value_error(fixie::format("invalid number of renderbuffers, at least 0 required, %i provided.", n));
         }
 
-        fixie::for_each_n(0, n, [&](size_t i){ ctx->state().delete_renderbuffer(renderbuffers[i]); });
+        fixie::for_each_n(0, n, [&](size_t i){ ctx->renderbuffers().erase_object(renderbuffers[i]); });
     }
     catch (const fixie::gl_error& e)
     {
@@ -369,7 +369,7 @@ void FIXIE_APIENTRY glGenRenderbuffersOES(GLsizei n, GLuint* renderbuffers)
         {
             try
             {
-                std::for_each(renderbuffers, renderbuffers + n, [&](GLuint rb){ ctx->state().delete_renderbuffer(rb); });
+                std::for_each(renderbuffers, renderbuffers + n, [&](GLuint rb){ ctx->renderbuffers().erase_object(rb); });
             }
             catch (...)
             {
@@ -481,7 +481,7 @@ GLboolean FIXIE_APIENTRY glIsFramebufferOES(GLuint framebuffer)
             throw fixie::invalid_operation_error("framebuffers are not supported.");
         }
 
-        return (ctx->state().framebuffer(framebuffer).use_count() > 0) ? GL_TRUE : GL_FALSE;
+        return ctx->framebuffers().contains_handle(framebuffer) ? GL_TRUE : GL_FALSE;
     }
     catch (const fixie::gl_error& e)
     {
@@ -511,7 +511,9 @@ void FIXIE_APIENTRY glBindFramebufferOES(GLenum target, GLuint framebuffer)
             throw fixie::invalid_operation_error("framebuffers are not supported.");
         }
 
-        std::weak_ptr<fixie::framebuffer> fbo = ctx->state().framebuffer(framebuffer);
+        std::weak_ptr<fixie::framebuffer> fbo = ctx->framebuffers().get_object(framebuffer);
+
+        // TODO: handle creating temporary framebuffers if fbo is null
 
         switch (target)
         {
@@ -553,7 +555,18 @@ void FIXIE_APIENTRY glDeleteFramebuffersOES(GLsizei n, const GLuint* framebuffer
             throw fixie::invalid_value_error(fixie::format("invalid number of framebuffers, at least 0 required, %i provided.", n));
         }
 
-        fixie::for_each_n(0, n, [&](size_t i){ ctx->state().delete_framebuffer(framebuffers[i]); });
+        auto erase_func = [&](GLuint framebuffer)
+        {
+            std::shared_ptr<fixie::framebuffer> frammebuffer_object = ctx->framebuffers().get_object(framebuffer).lock();
+            if (ctx->state().bound_framebuffer().lock() == frammebuffer_object)
+            {
+                ctx->state().bind_framebuffer(ctx->framebuffers().get_object(0));
+            }
+
+            ctx->framebuffers().erase_object(framebuffer);
+        };
+
+        std::for_each(framebuffers, framebuffers + n, erase_func);
     }
     catch (const fixie::gl_error& e)
     {
@@ -595,7 +608,7 @@ void FIXIE_APIENTRY glGenFramebuffersOES(GLsizei n, GLuint* framebuffers)
         {
             try
             {
-                std::for_each(framebuffers, framebuffers + n, [&](GLuint fbo){ ctx->state().delete_framebuffer(fbo); });
+                std::for_each(framebuffers, framebuffers + n, [&](GLuint fbo){ ctx->framebuffers().erase_object(fbo); });
             }
             catch (...)
             {
@@ -697,7 +710,7 @@ void FIXIE_APIENTRY glFramebufferRenderbufferOES(GLenum target, GLenum attachmen
         switch (renderbuffertarget)
         {
         case GL_RENDERBUFFER_OES:
-            rb = ctx->state().renderbuffer(renderbuffer);
+            rb = ctx->renderbuffers().get_object(renderbuffer);
             break;
 
         default:
@@ -768,7 +781,7 @@ void FIXIE_APIENTRY glFramebufferTexture2DOES(GLenum target, GLenum attachment, 
         switch (textarget)
         {
         case GL_TEXTURE_2D:
-            tex = ctx->state().texture(texture);
+            tex = ctx->textures().get_object(texture);
             break;
 
         default:
@@ -871,7 +884,13 @@ void FIXIE_APIENTRY glBindVertexArrayOES(GLuint array)
             throw fixie::invalid_operation_error("vertex array objects are not supported.");
         }
 
-        ctx->state().bind_vertex_array(ctx->state().vertex_array(array));
+        std::weak_ptr<fixie::vertex_array> vao = ctx->vertex_arrays().get_object(array);
+        if (vao.expired())
+        {
+            throw fixie::invalid_operation_error(fixie::format("vertex array %u is not valid.", array));
+        }
+
+        ctx->state().bind_vertex_array(vao);
     }
     catch (const fixie::gl_error& e)
     {
@@ -903,7 +922,7 @@ void FIXIE_APIENTRY glDeleteVertexArraysOES(GLsizei n, const GLuint *arrays)
             throw fixie::invalid_value_error(fixie::format("invalid number of textures, at least 0 required, %i provided.", n));
         }
 
-        std::for_each(arrays, arrays + n, [&](GLuint array){ if (array) { ctx->state().delete_vertex_array(array); } });
+        std::for_each(arrays, arrays + n, [&](GLuint array){ if (array) { ctx->vertex_arrays().erase_object(array); } });
     }
     catch (const fixie::gl_error& e)
     {
@@ -945,7 +964,7 @@ void FIXIE_APIENTRY glGenVertexArraysOES(GLsizei n, GLuint *arrays)
         {
             try
             {
-                std::for_each(arrays, arrays + n, [&](GLuint array){ if (array) { ctx->state().delete_vertex_array(array); } });
+                std::for_each(arrays, arrays + n, [&](GLuint array){ if (array) { ctx->vertex_arrays().erase_object(array); } });
             }
             catch (...)
             {
@@ -980,7 +999,7 @@ GLboolean FIXIE_APIENTRY glIsVertexArrayOES(GLuint array)
             throw fixie::invalid_operation_error("vertex array objects are not supported.");
         }
 
-        return (ctx->state().vertex_array(array).use_count() > 0) ? GL_TRUE : GL_FALSE;
+        return ctx->vertex_arrays().contains_handle(array) ? GL_TRUE : GL_FALSE;
     }
     catch (const fixie::gl_error& e)
     {

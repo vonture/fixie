@@ -13,6 +13,7 @@ typedef void* fixie_context;
 #define FIXIE_ERROR 0
 
 FIXIE_API fixie_context FIXIE_APIENTRY fixie_create_context();
+FIXIE_API fixie_context FIXIE_APIENTRY fixie_create_context_shared(fixie_context share_ctx);
 FIXIE_API void FIXIE_APIENTRY fixie_destroy_context(fixie_context ctx);
 
 FIXIE_API void FIXIE_APIENTRY fixie_set_context(fixie_context ctx);
