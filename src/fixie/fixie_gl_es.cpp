@@ -1133,6 +1133,7 @@ namespace fixie
             case GL_DEPTH_TEST:   return ctx->state().depth_buffer_state().depth_test_enabled();
             case GL_LIGHTING:     return ctx->state().lighting_state().lighting_enabled();
             case GL_FOG:          return ctx->state().fog_state().fog_enabled();
+            case GL_CULL_FACE:    return ctx->state().polygon_state().cull_face_enabled();
             default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
             }
         }
@@ -2769,7 +2770,35 @@ void FIXIE_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffse
 
 void FIXIE_APIENTRY glCullFace(GLenum mode)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (mode)
+        {
+        case GL_FRONT:
+        case GL_BACK:
+        case GL_FRONT_AND_BACK:
+            break;
+
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid cull face, %s.", fixie::get_gl_enum_name(mode).c_str()));
+        }
+
+        ctx->state().polygon_state().cull_face_mode() = mode;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glDeleteBuffers(GLsizei n, const GLuint *buffers)
