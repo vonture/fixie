@@ -1081,6 +1081,33 @@ namespace fixie
         set_matrix(mat, multiply);
     }
 
+    static void set_line_width(const real& width)
+    {
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            if (width.as_float() <= 0.0f)
+            {
+                throw invalid_value_error(format("line width must be greater than 0.0, %g provided.", width.as_float()));
+            }
+
+            ctx->state().line_state().line_width() = width.as_float();
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
     static GLboolean& get_property(GLenum target)
     {
         try
@@ -2017,7 +2044,7 @@ void FIXIE_APIENTRY glLightfv(GLenum light, GLenum pname, const GLfloat *params)
 
 void FIXIE_APIENTRY glLineWidth(GLfloat width)
 {
-    UNIMPLEMENTED();
+    fixie::set_line_width(width);
 }
 
 void FIXIE_APIENTRY glLoadMatrixf(const GLfloat *m)
@@ -3343,7 +3370,7 @@ void FIXIE_APIENTRY glLightxv(GLenum light, GLenum pname, const GLfixed *params)
 
 void FIXIE_APIENTRY glLineWidthx(GLfixed width)
 {
-    UNIMPLEMENTED();
+    fixie::set_line_width(width);
 }
 
 void FIXIE_APIENTRY glLoadIdentity(void)
