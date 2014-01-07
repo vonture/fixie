@@ -20,6 +20,16 @@ namespace fixie
     {
     }
 
+    color& color_buffer_state::clear_color()
+    {
+        return _clear_color;
+    }
+
+    const color& color_buffer_state::clear_color() const
+    {
+        return _clear_color;
+    }
+
     const GLboolean& color_buffer_state::alpha_test_enabled() const
     {
         return _alpha_test_enabled;
@@ -130,19 +140,50 @@ namespace fixie
         return _color_logic_op_func;
     }
 
-    color& color_buffer_state::clear_color()
+    const GLboolean& color_buffer_state::write_mask_red() const
     {
-        return _clear_color;
+        return _write_mask_red;
     }
 
-    const color& color_buffer_state::clear_color() const
+    GLboolean& color_buffer_state::write_mask_red()
     {
-        return _clear_color;
+        return _write_mask_red;
+    }
+
+    const GLboolean& color_buffer_state::write_mask_green() const
+    {
+        return _write_mask_green;
+    }
+
+    GLboolean& color_buffer_state::write_mask_green()
+    {
+        return _write_mask_green;
+    }
+
+    const GLboolean& color_buffer_state::write_mask_blue() const
+    {
+        return _write_mask_blue;
+    }
+
+    GLboolean& color_buffer_state::write_mask_blue()
+    {
+        return _write_mask_blue;
+    }
+
+    const GLboolean& color_buffer_state::write_mask_alpha() const
+    {
+        return _write_mask_alpha;
+    }
+
+    GLboolean& color_buffer_state::write_mask_alpha()
+    {
+        return _write_mask_alpha;
     }
 
     color_buffer_state default_color_buffer_state()
     {
         color_buffer_state state;
+        state.clear_color() = color(0.0f, 0.0f, 0.0f, 0.0f);
         state.alpha_test_enabled() = GL_FALSE;
         state.alpha_test_func() = GL_ALWAYS;
         state.alpha_test_ref() = 0.0f;
@@ -154,7 +195,10 @@ namespace fixie
         state.dither_enabled() = GL_TRUE;
         state.color_logic_op_enabled() = GL_FALSE;
         state.color_logic_op_func() = GL_COPY;
-        state.clear_color() = color(0.0f, 0.0f, 0.0f, 0.0f);
+        state.write_mask_red() = GL_TRUE;
+        state.write_mask_green() = GL_TRUE;
+        state.write_mask_blue() = GL_TRUE;
+        state.write_mask_alpha() = GL_TRUE;
         return state;
     }
 }

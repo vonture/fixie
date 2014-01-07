@@ -12,6 +12,9 @@ namespace fixie
     public:
         color_buffer_state();
 
+        color& clear_color();
+        const color& clear_color() const;
+
         const GLboolean& alpha_test_enabled() const;
         GLboolean& alpha_test_enabled();
 
@@ -45,8 +48,17 @@ namespace fixie
         const GLenum& color_logic_op_func() const;
         GLenum& color_logic_op_func();
 
-        color& clear_color();
-        const color& clear_color() const;
+        const GLboolean& write_mask_red() const;
+        GLboolean& write_mask_red();
+
+        const GLboolean& write_mask_green() const;
+        GLboolean& write_mask_green();
+
+        const GLboolean& write_mask_blue() const;
+        GLboolean& write_mask_blue();
+
+        const GLboolean& write_mask_alpha() const;
+        GLboolean& write_mask_alpha();
 
     private:
         color _clear_color;
@@ -65,6 +77,11 @@ namespace fixie
 
         GLboolean _color_logic_op_enabled;
         GLenum _color_logic_op_func;
+
+        GLboolean _write_mask_red;
+        GLboolean _write_mask_green;
+        GLboolean _write_mask_blue;
+        GLboolean _write_mask_alpha;
     };
 
     color_buffer_state default_color_buffer_state();

@@ -2672,7 +2672,23 @@ void FIXIE_APIENTRY glColor4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed 
 
 void FIXIE_APIENTRY glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        ctx->state().color_buffer_state().write_mask_red() = red;
+        ctx->state().color_buffer_state().write_mask_green() = green;
+        ctx->state().color_buffer_state().write_mask_blue() = blue;
+        ctx->state().color_buffer_state().write_mask_alpha() = alpha;
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
