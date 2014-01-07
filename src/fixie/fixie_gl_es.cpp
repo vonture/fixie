@@ -3452,7 +3452,48 @@ void FIXIE_APIENTRY glLoadMatrixx(const GLfixed *m)
 
 void FIXIE_APIENTRY glLogicOp(GLenum opcode)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (opcode)
+        {
+        case GL_CLEAR:
+        case GL_AND:
+        case GL_AND_REVERSE:
+        case GL_COPY:
+        case GL_AND_INVERTED:
+        case GL_NOOP:
+        case GL_XOR:
+        case GL_OR:
+        case GL_NOR:
+        case GL_EQUIV:
+        case GL_INVERT:
+        case GL_OR_REVERSE:
+        case GL_COPY_INVERTED:
+        case GL_OR_INVERTED:
+        case GL_NAND:
+        case GL_SET:
+            break;
+
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid op code, %s.", fixie::get_gl_enum_name(opcode).c_str()));
+        }
+
+        ctx->state().color_buffer_state().color_logic_op_func() = opcode;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glMaterialx(GLenum face, GLenum pname, GLfixed param)
