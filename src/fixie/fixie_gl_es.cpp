@@ -19,7 +19,7 @@
 
 namespace fixie
 {
-    static void set_material_parameters(GLenum face, GLenum pname, const real_ptr& params, bool vector_call)
+    static void set_material_parameters(GLenum face, GLenum pname, const const_real_ptr& params, bool vector_call)
     {
         try
         {
@@ -121,7 +121,7 @@ namespace fixie
         }
     }
 
-    static void set_light_parameters(GLenum l, GLenum pname, const real_ptr& params, bool vector_call)
+    static void set_light_parameters(GLenum l, GLenum pname, const const_real_ptr& params, bool vector_call)
     {
         try
         {
@@ -234,7 +234,7 @@ namespace fixie
         }
     }
 
-    static void set_light_model_parameters(GLenum pname, const real_ptr& params, bool vector_call)
+    static void set_light_model_parameters(GLenum pname, const const_real_ptr& params, bool vector_call)
     {
         try
         {
@@ -272,7 +272,7 @@ namespace fixie
         }
     }
 
-    static void set_texture_env_real_parameters(GLenum target, GLenum pname, const real_ptr& params, bool vector_call)
+    static void set_texture_env_real_parameters(GLenum target, GLenum pname, const const_real_ptr& params, bool vector_call)
     {
         try
         {
@@ -604,7 +604,7 @@ namespace fixie
         }
     }
 
-    static void set_texture_real_parameters(GLenum target, GLenum pname, const real_ptr& params, bool vector_call)
+    static void set_texture_real_parameters(GLenum target, GLenum pname, const const_real_ptr& params, bool vector_call)
     {
         try
         {
@@ -820,7 +820,7 @@ namespace fixie
         }
     }
 
-    static void set_point_parameters(GLenum pname, const real_ptr& params, bool vector_call)
+    static void set_point_parameters(GLenum pname, const const_real_ptr& params, bool vector_call)
     {
         try
         {
@@ -880,7 +880,7 @@ namespace fixie
         }
     }
 
-    static void set_point_size(const real& size)
+    static void set_point_size(const const_real& size)
     {
         try
         {
@@ -907,7 +907,7 @@ namespace fixie
         }
     }
 
-    static void set_polgyon_offset(const real& factor, const real& units)
+    static void set_polgyon_offset(const const_real& factor, const const_real& units)
     {
         try
         {
@@ -930,7 +930,7 @@ namespace fixie
         }
     }
 
-    static void set_fog_parameters(GLenum pname, const real_ptr& params, bool vector_call)
+    static void set_fog_parameters(GLenum pname, const const_real_ptr& params, bool vector_call)
     {
         try
         {
@@ -995,7 +995,7 @@ namespace fixie
         }
     }
 
-    static void set_clip_plane(GLenum p, const real_ptr& params)
+    static void set_clip_plane(GLenum p, const const_real_ptr& params)
     {
         try
         {
@@ -1072,7 +1072,7 @@ namespace fixie
         }
     }
 
-    static void set_matrix(const real_ptr& m, bool multiply)
+    static void set_matrix(const const_real_ptr& m, bool multiply)
     {
         fixie::matrix4 mat(m.as_float( 0), m.as_float( 4), m.as_float( 8), m.as_float(12),
                            m.as_float( 1), m.as_float( 5), m.as_float( 9), m.as_float(13),
@@ -1081,7 +1081,7 @@ namespace fixie
         set_matrix(mat, multiply);
     }
 
-    static void set_line_width(const real& width)
+    static void set_line_width(const const_real& width)
     {
         try
         {
@@ -1803,7 +1803,7 @@ namespace fixie
         }
     }
 
-    static void set_alpha_func(GLenum func, const real& ref)
+    static void set_alpha_func(GLenum func, const const_real& ref)
     {
         try
         {
