@@ -1023,6 +1023,39 @@ namespace fixie
         }
     }
 
+    static void get_clip_plane(GLenum p, real_ptr eqn)
+    {
+
+        try
+        {
+            std::shared_ptr<context> ctx = get_current_context();
+
+            GLsizei max_clip_planes = ctx->caps().max_clip_planes();
+            if (p < GL_CLIP_PLANE0 || static_cast<GLsizei>(p - GL_CLIP_PLANE0) > max_clip_planes)
+            {
+                throw invalid_enum_error(format("invalid clip plane, must be between GL_CLIP_PLANE0 and GL_CLIP_PLANE%i, %s provided.", max_clip_planes - 1, get_gl_enum_name(p).c_str()));
+            }
+
+            const vector4& clip_plane_eqn = ctx->state().clip_plane(p - GL_CLIP_PLANE0).equation();
+            eqn[0] = clip_plane_eqn.x();
+            eqn[1] = clip_plane_eqn.y();
+            eqn[2] = clip_plane_eqn.z();
+            eqn[3] = clip_plane_eqn.w();
+        }
+        catch (gl_error e)
+        {
+            log_gl_error(e);
+        }
+        catch (context_error e)
+        {
+            log_context_error(e);
+        }
+        catch (...)
+        {
+            UNREACHABLE();
+        }
+    }
+
     static void set_matrix(const matrix4& matrix, bool multiply)
     {
         try
@@ -1995,7 +2028,7 @@ void FIXIE_APIENTRY glFrustumf(GLfloat left, GLfloat right, GLfloat bottom, GLfl
 
 void FIXIE_APIENTRY glGetClipPlanef(GLenum pname, GLfloat eqn[4])
 {
-    UNIMPLEMENTED();
+    fixie::get_clip_plane(pname, eqn);
 }
 
 void FIXIE_APIENTRY glGetFloatv(GLenum pname, GLfloat *params)
@@ -3179,7 +3212,7 @@ void FIXIE_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint *p
 
 void FIXIE_APIENTRY glGetClipPlanex(GLenum pname, GLfixed eqn[4])
 {
-    UNIMPLEMENTED();
+    fixie::get_clip_plane(pname, eqn);
 }
 
 void FIXIE_APIENTRY glGenBuffers(GLsizei n, GLuint *buffers)
