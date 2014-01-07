@@ -3388,7 +3388,47 @@ void FIXIE_APIENTRY glGetTexParameterxv(GLenum target, GLenum pname, GLfixed *pa
 
 void FIXIE_APIENTRY glHint(GLenum target, GLenum mode)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (mode)
+        {
+        case GL_FASTEST:
+        case GL_NICEST:
+        case GL_DONT_CARE:
+            break;
+
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid hint mode, %s.", fixie::get_gl_enum_name(mode).c_str()));
+        }
+
+        fixie::hint_state& hint_state = ctx->state().hint_state();
+
+        switch (target)
+        {
+        case GL_PERSPECTIVE_CORRECTION_HINT: hint_state.perspective_correction_hint() = mode; break;
+        case GL_POINT_SMOOTH_HINT:           hint_state.point_smooth_hint() = mode;           break;
+        case GL_LINE_SMOOTH_HINT:            hint_state.line_smooth_hint() = mode;            break;
+        case GL_FOG_HINT:                    hint_state.fog_hint() = mode;                    break;
+        case GL_GENERATE_MIPMAP_HINT:        hint_state.generate_mipmap_hint() = mode;        break;
+
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid hint target, %s.", fixie::get_gl_enum_name(target).c_str()));
+        }
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
