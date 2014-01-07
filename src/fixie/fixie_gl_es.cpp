@@ -2322,7 +2322,58 @@ void FIXIE_APIENTRY glBindTexture(GLenum target, GLuint texture)
 
 void FIXIE_APIENTRY glBlendFunc(GLenum sfactor, GLenum dfactor)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        switch (sfactor)
+        {
+        case GL_ZERO:
+        case GL_ONE:
+        case GL_DST_COLOR:
+        case GL_ONE_MINUS_DST_COLOR:
+        case GL_SRC_ALPHA:
+        case GL_ONE_MINUS_SRC_ALPHA:
+        case GL_DST_ALPHA:
+        case GL_ONE_MINUS_DST_ALPHA:
+        case GL_SRC_ALPHA_SATURATE:
+            break;
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid source blend function, %s.", fixie::get_gl_enum_name(sfactor).c_str()));
+        }
+
+        switch (sfactor)
+        {
+        case GL_ZERO:
+        case GL_ONE:
+        case GL_SRC_COLOR:
+        case GL_ONE_MINUS_SRC_COLOR:
+        case GL_SRC_ALPHA:
+        case GL_ONE_MINUS_SRC_ALPHA:
+        case GL_DST_ALPHA:
+        case GL_ONE_MINUS_DST_ALPHA:
+            break;
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid dest blend function, %s.", fixie::get_gl_enum_name(dfactor).c_str()));
+        }
+
+        ctx->state().color_buffer_state().blend_src_rgb_func() = sfactor;
+        ctx->state().color_buffer_state().blend_src_alpha_func() = sfactor;
+        ctx->state().color_buffer_state().blend_dst_rgb_func() = dfactor;
+        ctx->state().color_buffer_state().blend_dst_alpha_func() = dfactor;
+    }
+    catch (const fixie::gl_error& e)
+    {
+        fixie::log_gl_error(e);
+    }
+    catch (const fixie::context_error& e)
+    {
+        fixie::log_context_error(e);
+    }
+    catch (...)
+    {
+        UNREACHABLE();
+    }
 }
 
 void FIXIE_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid *data, GLenum usage)
