@@ -7,6 +7,7 @@
 #include "fixie/fixie_ext.h"
 #include "fixie/fixie_gl_es.h"
 #include "fixie/fixie_gl_es_ext.h"
+#include "fixie/exceptions.hpp"
 
 #include "fixie_lib/debug.hpp"
 #include "fixie_lib/context.hpp"
@@ -115,20 +116,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid framebuffer attachment parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 
@@ -223,20 +213,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid renderbuffer parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 }
@@ -257,20 +236,9 @@ GLboolean FIXIE_APIENTRY glIsRenderbufferOES(GLuint renderbuffer)
 
         return ctx->renderbuffers().contains_handle(renderbuffer) ? GL_TRUE : GL_FALSE;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-        return GL_FALSE;
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return GL_FALSE;
-    }
     catch (...)
     {
-        UNREACHABLE();
-        return GL_FALSE;
+        return fixie::handle_entry_point_exception(GL_FALSE);
     }
 }
 
@@ -297,17 +265,9 @@ void FIXIE_APIENTRY glBindRenderbufferOES(GLenum target, GLuint renderbuffer)
             throw fixie::invalid_enum_error(fixie::format("unknown renderbuffer binding target, %s.", fixie::get_gl_enum_name(target).c_str()));
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -329,17 +289,9 @@ void FIXIE_APIENTRY glDeleteRenderbuffersOES(GLsizei n, const GLuint* renderbuff
 
         fixie::for_each_n(0, n, [&](size_t i){ ctx->renderbuffers().erase_object(renderbuffers[i]); });
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -379,17 +331,9 @@ void FIXIE_APIENTRY glGenRenderbuffersOES(GLsizei n, GLuint* renderbuffers)
             throw;
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -451,17 +395,9 @@ void FIXIE_APIENTRY glRenderbufferStorageOES(GLenum target, GLenum internalforma
             renderbuffer->set_storage(target, internalformat, width, height);
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -483,20 +419,9 @@ GLboolean FIXIE_APIENTRY glIsFramebufferOES(GLuint framebuffer)
 
         return ctx->framebuffers().contains_handle(framebuffer) ? GL_TRUE : GL_FALSE;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-        return GL_FALSE;
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return GL_FALSE;
-    }
     catch (...)
     {
-        UNREACHABLE();
-        return GL_FALSE;
+        return fixie::handle_entry_point_exception(GL_FALSE);
     }
 }
 
@@ -525,17 +450,9 @@ void FIXIE_APIENTRY glBindFramebufferOES(GLenum target, GLuint framebuffer)
             throw fixie::invalid_enum_error(fixie::format("unknown framebuffer target, %s.", fixie::get_gl_enum_name(target).c_str()));
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -568,17 +485,9 @@ void FIXIE_APIENTRY glDeleteFramebuffersOES(GLsizei n, const GLuint* framebuffer
 
         std::for_each(framebuffers, framebuffers + n, erase_func);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -618,17 +527,9 @@ void FIXIE_APIENTRY glGenFramebuffersOES(GLsizei n, GLuint* framebuffers)
             throw;
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -662,20 +563,9 @@ GLenum FIXIE_APIENTRY glCheckFramebufferStatusOES(GLenum target)
 
         return framebuffer->status();
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-        return 0;
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return 0;
-    }
     catch (...)
     {
-        UNREACHABLE();
-        return 0;
+        return fixie::handle_entry_point_exception(0);
     }
 }
 
@@ -736,17 +626,9 @@ void FIXIE_APIENTRY glFramebufferRenderbufferOES(GLenum target, GLenum attachmen
             throw fixie::invalid_enum_error(fixie::format("unknown framebuffer attachment, %s.", fixie::get_gl_enum_name(attachment).c_str()));
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -807,17 +689,9 @@ void FIXIE_APIENTRY glFramebufferTexture2DOES(GLenum target, GLenum attachment, 
             throw fixie::invalid_enum_error(fixie::format("unknown framebuffer attachment, %s.", fixie::get_gl_enum_name(attachment).c_str()));
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -859,17 +733,9 @@ void FIXIE_APIENTRY glGenerateMipmapOES(GLenum target)
             tex->generate_mipmaps();
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -892,17 +758,9 @@ void FIXIE_APIENTRY glBindVertexArrayOES(GLuint array)
 
         ctx->state().bind_vertex_array(vao);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -924,17 +782,9 @@ void FIXIE_APIENTRY glDeleteVertexArraysOES(GLsizei n, const GLuint *arrays)
 
         std::for_each(arrays, arrays + n, [&](GLuint array){ if (array) { ctx->vertex_arrays().erase_object(array); } });
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -974,17 +824,9 @@ void FIXIE_APIENTRY glGenVertexArraysOES(GLsizei n, GLuint *arrays)
             throw;
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -1001,20 +843,9 @@ GLboolean FIXIE_APIENTRY glIsVertexArrayOES(GLuint array)
 
         return ctx->vertex_arrays().contains_handle(array) ? GL_TRUE : GL_FALSE;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-        return GL_FALSE;
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return GL_FALSE;
-    }
     catch (...)
     {
-        UNREACHABLE();
-        return GL_FALSE;
+        return fixie::handle_entry_point_exception(GL_FALSE);
     }
 }
 

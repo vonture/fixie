@@ -8,6 +8,7 @@
 #include "fixie/fixie_ext.h"
 #include "fixie/fixie_gl_es.h"
 #include "fixie/fixie_gl_es_ext.h"
+#include "fixie/exceptions.hpp"
 
 #include "fixie_lib/debug.hpp"
 #include "fixie_lib/context.hpp"
@@ -107,17 +108,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid material parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -220,17 +213,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid light parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -258,17 +243,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid light model parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -317,17 +294,9 @@ namespace fixie
             }
 
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -590,17 +559,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid texture environment parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -698,17 +659,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid texture parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -806,17 +759,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid texture parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -866,17 +811,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid point parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -893,17 +830,9 @@ namespace fixie
 
             ctx->state().point_state().point_size() = size.as_float();
         }
-        catch (const fixie::gl_error& e)
-        {
-            fixie::log_gl_error(e);
-        }
-        catch (const fixie::context_error& e)
-        {
-            fixie::log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -916,17 +845,9 @@ namespace fixie
             ctx->state().polygon_state().polygon_offset_factor() = factor.as_float();
             ctx->state().polygon_state().polygon_offset_units() = units.as_float();
         }
-        catch (const fixie::gl_error& e)
-        {
-            fixie::log_gl_error(e);
-        }
-        catch (const fixie::context_error& e)
-        {
-            fixie::log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -981,17 +902,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid fog parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -1009,17 +922,9 @@ namespace fixie
 
             ctx->state().clip_plane(p - GL_CLIP_PLANE0).equation() = vector4(params.as_float(0), params.as_float(1), params.as_float(2), params.as_float(3));
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -1042,17 +947,9 @@ namespace fixie
             eqn[2] = clip_plane_eqn.z();
             eqn[3] = clip_plane_eqn.w();
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -1091,17 +988,9 @@ namespace fixie
                 stack->top() = matrix;
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -1127,17 +1016,9 @@ namespace fixie
 
             ctx->state().line_state().line_width() = width.as_float();
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -1170,17 +1051,9 @@ namespace fixie
             default: throw invalid_enum_error(format("invalid cap, %s.", get_gl_enum_name(target).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
 
         static GLboolean default_bool = GL_FALSE;
@@ -1547,20 +1420,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 
@@ -1606,20 +1468,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid pointer parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 
@@ -1665,20 +1516,9 @@ namespace fixie
                 throw invalid_enum_error(format("invalid buffer parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 
@@ -1694,20 +1534,9 @@ namespace fixie
             default: throw invalid_enum_error(format("invalid texture parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 
@@ -1723,20 +1552,9 @@ namespace fixie
             default: throw invalid_enum_error(format("invalid texture environment parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 
@@ -1752,20 +1570,9 @@ namespace fixie
             default: throw invalid_enum_error(format("invalid light parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 
@@ -1781,20 +1588,9 @@ namespace fixie
             default: throw invalid_enum_error(format("invalid material parameter name, %s.", get_gl_enum_name(pname).c_str()));
             }
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-            return 0;
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-            return 0;
-        }
         catch (...)
         {
-            UNREACHABLE();
-            return 0;
+            return handle_entry_point_exception(0);
         }
     }
 
@@ -1822,17 +1618,9 @@ namespace fixie
 
             attribute->attribute_enabled() = enabled ? GL_TRUE : GL_FALSE;
         }
-        catch (gl_error e)
-        {
-            log_gl_error(e);
-        }
-        catch (context_error e)
-        {
-            log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 
@@ -1860,17 +1648,9 @@ namespace fixie
             ctx->state().color_buffer_state().alpha_test_func() = func;
             ctx->state().color_buffer_state().alpha_test_ref() = ref.as_float();
         }
-        catch (const fixie::gl_error& e)
-        {
-            fixie::log_gl_error(e);
-        }
-        catch (const fixie::context_error& e)
-        {
-            fixie::log_context_error(e);
-        }
         catch (...)
         {
-            UNREACHABLE();
+            handle_entry_point_exception();
         }
     }
 }
@@ -1890,17 +1670,9 @@ void FIXIE_APIENTRY glClearColor(GLclampf red, GLclampf green, GLclampf blue, GL
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().color_buffer_state().clear_color() = fixie::color(red, green, blue, alpha);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -1911,17 +1683,9 @@ void FIXIE_APIENTRY glClearDepthf(GLclampf depth)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().depth_buffer_state().clear_depth() = depth;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -1945,17 +1709,9 @@ void FIXIE_APIENTRY glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat 
         fixie::vertex_attribute& attribute = vertex_array->color_attribute();
         attribute.generic_values() = fixie::vector4(red, green, blue, alpha);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -1966,17 +1722,9 @@ void FIXIE_APIENTRY glDepthRangef(GLclampf zNear, GLclampf zFar)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().viewport_state().depth_range() = fixie::range(zNear, zFar);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2016,13 +1764,9 @@ void FIXIE_APIENTRY glFrustumf(GLfloat left, GLfloat right, GLfloat bottom, GLfl
 
         fixie::set_matrix(fixie::matrix4::frustum(left, right, bottom, top, zNear, zFar), true);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2123,17 +1867,9 @@ void FIXIE_APIENTRY glMultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLflo
         fixie::vertex_attribute& attribute = vertex_array->texcoord_attribute(target - GL_TEXTURE0);
         attribute.generic_values() = fixie::vector4(s, t, r, q);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2152,17 +1888,9 @@ void FIXIE_APIENTRY glNormal3f(GLfloat nx, GLfloat ny, GLfloat nz)
         fixie::vertex_attribute& attribute = vertex_array->normal_attribute();
         attribute.generic_values() = fixie::vector4(nx, ny, nz, 1.0f);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2187,13 +1915,9 @@ void FIXIE_APIENTRY glOrthof(GLfloat left, GLfloat right, GLfloat bottom, GLfloa
 
         fixie::set_matrix(fixie::matrix4::ortho(left, right, bottom, top, zNear, zFar), true);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2267,17 +1991,9 @@ void FIXIE_APIENTRY glActiveTexture(GLenum texture)
 
         ctx->state().active_texture_unit() = (texture - GL_TEXTURE0);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2308,17 +2024,9 @@ void FIXIE_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
             throw fixie::invalid_enum_error("unknown buffer binding target.");
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2340,17 +2048,9 @@ void FIXIE_APIENTRY glBindTexture(GLenum target, GLuint texture)
             throw fixie::invalid_enum_error("unknown texture binding target.");
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2396,17 +2096,9 @@ void FIXIE_APIENTRY glBlendFunc(GLenum sfactor, GLenum dfactor)
         ctx->state().color_buffer_state().blend_dst_rgb_func() = dfactor;
         ctx->state().color_buffer_state().blend_dst_alpha_func() = dfactor;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2452,17 +2144,9 @@ void FIXIE_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid *d
              locked_buffer->set_data(size, data, usage);
          }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2504,17 +2188,9 @@ void FIXIE_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr s
             locked_buffer->set_sub_data(offset, size, data);
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2532,17 +2208,9 @@ void FIXIE_APIENTRY glClear(GLbitfield mask)
 
         ctx->clear(mask);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2554,17 +2222,9 @@ void FIXIE_APIENTRY glClearColorx(GLclampx red, GLclampx green, GLclampx blue, G
         ctx->state().color_buffer_state().clear_color() = fixie::color(fixie::fixed_to_float(red), fixie::fixed_to_float(green),
                                                                        fixie::fixed_to_float(blue), fixie::fixed_to_float(alpha));
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2575,17 +2235,9 @@ void FIXIE_APIENTRY glClearDepthx(GLclampx depth)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().depth_buffer_state().clear_depth() = fixie::fixed_to_float(depth);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2596,17 +2248,9 @@ void FIXIE_APIENTRY glClearStencil(GLint s)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().stencil_buffer_state().clear_stencil() = s;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2625,17 +2269,9 @@ void FIXIE_APIENTRY glClientActiveTexture(GLenum texture)
 
         ctx->state().active_client_texture() = texture - GL_TEXTURE0;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2661,17 +2297,9 @@ void FIXIE_APIENTRY glColor4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte
         GLfloat divisor = static_cast<GLfloat>(std::numeric_limits<GLubyte>::max());
         attribute.generic_values() = fixie::vector4(red / divisor, green / divisor, blue / divisor, alpha / divisor);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2690,17 +2318,9 @@ void FIXIE_APIENTRY glColor4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed 
         fixie::vertex_attribute& attribute = vertex_array->color_attribute();
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(red), fixie::fixed_to_float(green), fixie::fixed_to_float(blue), fixie::fixed_to_float(alpha));
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2715,13 +2335,9 @@ void FIXIE_APIENTRY glColorMask(GLboolean red, GLboolean green, GLboolean blue, 
         ctx->state().color_buffer_state().write_mask_blue() = blue;
         ctx->state().color_buffer_state().write_mask_alpha() = alpha;
     }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2767,17 +2383,9 @@ void FIXIE_APIENTRY glColorPointer(GLint size, GLenum type, GLsizei stride, cons
         attribute.pointer() = pointer;
         attribute.buffer() = ctx->state().bound_array_buffer();
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2820,17 +2428,9 @@ void FIXIE_APIENTRY glCullFace(GLenum mode)
 
         ctx->state().polygon_state().cull_face_mode() = mode;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2847,17 +2447,9 @@ void FIXIE_APIENTRY glDeleteBuffers(GLsizei n, const GLuint *buffers)
 
         fixie::for_each_n(0, n, [&](size_t i){ ctx->buffers().erase_object(buffers[i]); });
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2874,17 +2466,9 @@ void FIXIE_APIENTRY glDeleteTextures(GLsizei n, const GLuint *textures)
 
         fixie::for_each_n(0, n, [&](size_t i){ ctx->textures().erase_object(textures[i]); });
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2911,17 +2495,9 @@ void FIXIE_APIENTRY glDepthFunc(GLenum func)
 
         ctx->state().depth_buffer_state().depth_func() = func;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2932,17 +2508,9 @@ void FIXIE_APIENTRY glDepthMask(GLboolean flag)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().depth_buffer_state().depth_write_mask() = flag;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -2953,17 +2521,9 @@ void FIXIE_APIENTRY glDepthRangex(GLclampx zNear, GLclampx zFar)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().viewport_state().depth_range() = fixie::range(fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar));
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3009,17 +2569,9 @@ void FIXIE_APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
 
         ctx->draw_arrays(mode, first, count);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3059,23 +2611,15 @@ void FIXIE_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, cons
 
         ctx->draw_elements(mode, count, type, indices);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
 void FIXIE_APIENTRY glEnable(GLenum cap)
 {
-    GLboolean& property = fixie::get_property(cap) = GL_TRUE;
+    fixie::get_property(cap) = GL_TRUE;
 }
 
 void FIXIE_APIENTRY glEnableClientState(GLenum array)
@@ -3090,13 +2634,9 @@ void FIXIE_APIENTRY glFinish(void)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->finish();
     }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3107,13 +2647,9 @@ void FIXIE_APIENTRY glFlush(void)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->flush();
     }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3144,17 +2680,9 @@ void FIXIE_APIENTRY glFrontFace(GLenum mode)
 
         ctx->state().polygon_state().front_face() = mode;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3190,13 +2718,9 @@ void FIXIE_APIENTRY glFrustumx(GLfixed left, GLfixed right, GLfixed bottom, GLfi
                                                   fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
                           true);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3246,17 +2770,9 @@ void FIXIE_APIENTRY glGenBuffers(GLsizei n, GLuint *buffers)
             throw;
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3291,17 +2807,9 @@ void FIXIE_APIENTRY glGenTextures(GLsizei n, GLuint *textures)
             throw;
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3315,15 +2823,9 @@ GLenum FIXIE_APIENTRY glGetError(void)
         ctx->state().error() = GL_NO_ERROR;
         return error;
     }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return GL_NO_ERROR;
-    }
     catch (...)
     {
-        UNREACHABLE();
-        return GL_NO_ERROR;
+        return fixie::handle_entry_point_exception(0);
     }
 }
 
@@ -3376,20 +2878,9 @@ const GLubyte * FIXIE_APIENTRY glGetString(GLenum name)
         default:            throw fixie::invalid_enum_error(fixie::format("invalid string name, %s.", fixie::get_gl_enum_name(name).c_str()));
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-        return nullptr;
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return nullptr;
-    }
     catch (...)
     {
-        UNREACHABLE();
-        return nullptr;
+        return fixie::handle_entry_point_exception(nullptr);
     }
 }
 
@@ -3450,17 +2941,9 @@ void FIXIE_APIENTRY glHint(GLenum target, GLenum mode)
             throw fixie::invalid_enum_error(fixie::format("invalid hint target, %s.", fixie::get_gl_enum_name(target).c_str()));
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3471,20 +2954,9 @@ GLboolean FIXIE_APIENTRY glIsBuffer(GLuint buffer)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         return ctx->buffers().contains_handle(buffer)? GL_TRUE : GL_FALSE;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-        return GL_FALSE;
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return GL_FALSE;
-    }
     catch (...)
     {
-        UNREACHABLE();
-        return GL_FALSE;
+        return fixie::handle_entry_point_exception(GL_FALSE);
     }
 }
 
@@ -3500,20 +2972,9 @@ GLboolean FIXIE_APIENTRY glIsTexture(GLuint texture)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         return ctx->textures().contains_handle(texture) ? GL_TRUE : GL_FALSE;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-        return GL_FALSE;
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-        return GL_FALSE;
-    }
     catch (...)
     {
-        UNREACHABLE();
-        return GL_FALSE;
+        return fixie::handle_entry_point_exception(GL_FALSE);
     }
 }
 
@@ -3584,17 +3045,9 @@ void FIXIE_APIENTRY glLogicOp(GLenum opcode)
 
         ctx->state().color_buffer_state().color_logic_op_func() = opcode;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3627,17 +3080,9 @@ void FIXIE_APIENTRY glMatrixMode(GLenum mode)
 
         ctx->state().matrix_mode() = mode;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3668,17 +3113,9 @@ void FIXIE_APIENTRY glMultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfix
         fixie::vertex_attribute& attribute = vertex_array->texcoord_attribute(target - GL_TEXTURE0);
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(s), fixie::fixed_to_float(t), fixie::fixed_to_float(r), fixie::fixed_to_float(q));
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3697,17 +3134,9 @@ void FIXIE_APIENTRY glNormal3x(GLfixed nx, GLfixed ny, GLfixed nz)
         fixie::vertex_attribute& attribute = vertex_array->color_attribute();
         attribute.generic_values() = fixie::vector4(fixie::fixed_to_float(nx), fixie::fixed_to_float(ny), fixie::fixed_to_float(nz), 1.0f);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3746,17 +3175,9 @@ void FIXIE_APIENTRY glNormalPointer(GLenum type, GLsizei stride, const GLvoid *p
         attribute.pointer() = pointer;
         attribute.buffer() = ctx->state().bound_array_buffer();
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3786,13 +3207,9 @@ void FIXIE_APIENTRY glOrthox(GLfixed left, GLfixed right, GLfixed bottom, GLfixe
                                             fixie::fixed_to_float(zNear), fixie::fixed_to_float(zFar)),
                           true);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3823,13 +3240,9 @@ void FIXIE_APIENTRY glPixelStorei(GLenum pname, GLint param)
             throw fixie::invalid_enum_error(fixie::format("invalid pixel store parameter, %s", fixie::get_gl_enum_name(pname).c_str()));
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3885,17 +3298,9 @@ void FIXIE_APIENTRY glPopMatrix(void)
         }
         stack->pop();
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3936,17 +3341,9 @@ void FIXIE_APIENTRY glPushMatrix(void)
 
         stack->push();
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -3982,17 +3379,9 @@ void FIXIE_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height
 
         framebuffer->read_pixels(ctx->state().pixel_store_state(), x, y, width, height, format, type, pixels);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4012,13 +3401,9 @@ void FIXIE_APIENTRY glSampleCoverage(GLclampf value, GLboolean invert)
         ctx->state().multisample_state().sample_coverage_value() = value;
         ctx->state().multisample_state().sample_coverage_invert() = invert;
     }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4031,13 +3416,9 @@ void FIXIE_APIENTRY glSampleCoveragex(GLclampx value, GLboolean invert)
         ctx->state().multisample_state().sample_coverage_value() = fixie::fixed_to_float(value);
         ctx->state().multisample_state().sample_coverage_invert() = invert;
     }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4059,17 +3440,9 @@ void FIXIE_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
 
         ctx->state().scissor_state().scissor() = fixie::rectangle(x, y, width, height);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4090,17 +3463,9 @@ void FIXIE_APIENTRY glShadeModel(GLenum mode)
 
         ctx->state().shade_model() = mode;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4129,17 +3494,9 @@ void FIXIE_APIENTRY glStencilFunc(GLenum func, GLint ref, GLuint mask)
         ctx->state().stencil_buffer_state().stencil_ref() = ref;
         ctx->state().stencil_buffer_state().stencil_read_mask() = mask;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4150,17 +3507,9 @@ void FIXIE_APIENTRY glStencilMask(GLuint mask)
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
         ctx->state().stencil_buffer_state().stencil_write_mask() = mask;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4197,17 +3546,9 @@ void FIXIE_APIENTRY glStencilOp(GLenum fail, GLenum zfail, GLenum zpass)
         ctx->state().stencil_buffer_state().stencil_pass_depth_fail_operation() = zfail;
         ctx->state().stencil_buffer_state().stencil_pass_depth_pass_operation() = zpass;
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4256,17 +3597,9 @@ void FIXIE_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, c
         attribute.pointer() = pointer;
         attribute.buffer() = ctx->state().bound_array_buffer();
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4350,17 +3683,9 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
             texture->set_data(ctx->state().pixel_store_state(), level, internalformat, width, height, format, type, pixels);
         }
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4439,17 +3764,9 @@ void FIXIE_APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, con
         attribute.pointer() = pointer;
         attribute.buffer() = ctx->state().bound_array_buffer();
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
@@ -4466,17 +3783,9 @@ void FIXIE_APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 
         ctx->state().viewport_state().viewport() = fixie::rectangle(x, y, width, height);
     }
-    catch (const fixie::gl_error& e)
-    {
-        fixie::log_gl_error(e);
-    }
-    catch (const fixie::context_error& e)
-    {
-        fixie::log_context_error(e);
-    }
     catch (...)
     {
-        UNREACHABLE();
+        fixie::handle_entry_point_exception();
     }
 }
 
