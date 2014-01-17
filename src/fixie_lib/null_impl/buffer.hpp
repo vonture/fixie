@@ -1,5 +1,5 @@
-#ifndef _NULL_BUFFER_HPP_
-#define _NULL_BUFFER_HPP_
+#ifndef _FIXIE_LIB_NULL_BUFFER_HPP_
+#define _FIXIE_LIB_NULL_BUFFER_HPP_
 
 #include "fixie_lib/buffer.hpp"
 
@@ -17,4 +17,4 @@ namespace fixie
     }
 }
 
-#endif // _NULL_BUFFER_HPP_
+#endif // _FIXIE_LIB_NULL_BUFFER_HPP_

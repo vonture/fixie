@@ -1,5 +1,5 @@
-#ifndef _NULL_RENDERBUFFER_HPP_
-#define _NULL_RENDERBUFFER_HPP_
+#ifndef _FIXIE_LIB_NULL_RENDERBUFFER_HPP_
+#define _FIXIE_LIB_NULL_RENDERBUFFER_HPP_
 
 #include "fixie_lib/renderbuffer.hpp"
 
@@ -23,4 +23,4 @@ namespace fixie
     }
 }
 
-#endif // _NULL_RENDERBUFFER_HPP_
+#endif // _FIXIE_LIB_NULL_RENDERBUFFER_HPP_

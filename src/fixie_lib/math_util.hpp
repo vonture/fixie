@@ -1,5 +1,5 @@
-#ifndef _MATH_UTIL_HPP_
-#define _MATH_UTIL_HPP_
+#ifndef _FIXIE_LIB_MATH_UTIL_HPP_
+#define _FIXIE_LIB_MATH_UTIL_HPP_
 
 namespace fixie
 {
@@ -15,4 +15,4 @@ namespace fixie
 
 #include "fixie_lib/math_util.inl"
 
-#endif // _MATH_UTIL_HPP_
+#endif // _FIXIE_LIB_MATH_UTIL_HPP_

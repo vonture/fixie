@@ -1,5 +1,5 @@
-#ifndef _POINT_STATE_HPP_
-#define _POINT_STATE_HPP_
+#ifndef _FIXIE_LIB_POINT_STATE_HPP_
+#define _FIXIE_LIB_POINT_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/range.hpp"
@@ -42,4 +42,4 @@ namespace fixie
     point_state default_point_state();
 }
 
-#endif // _POINT_STATE_HPP_
+#endif // _FIXIE_LIB_POINT_STATE_HPP_

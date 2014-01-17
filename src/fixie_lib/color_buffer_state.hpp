@@ -1,5 +1,5 @@
-#ifndef _COLOR_BUFFER_STATE_HPP_
-#define _COLOR_BUFFER_STATE_HPP_
+#ifndef _FIXIE_LIB_COLOR_BUFFER_STATE_HPP_
+#define _FIXIE_LIB_COLOR_BUFFER_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -87,4 +87,4 @@ namespace fixie
     color_buffer_state default_color_buffer_state();
 }
 
-#endif // _COLOR_BUFFER_STATE_HPP_
+#endif // _FIXIE_LIB_COLOR_BUFFER_STATE_HPP_

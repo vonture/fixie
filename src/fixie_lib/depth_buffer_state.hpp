@@ -1,5 +1,5 @@
-#ifndef _DEPTH_STENCIL_STATE_HPP_
-#define _DEPTH_STENCIL_STATE_HPP_
+#ifndef _FIXIE_LIB_DEPTH_STENCIL_STATE_HPP_
+#define _FIXIE_LIB_DEPTH_STENCIL_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -36,4 +36,4 @@ namespace fixie
     depth_buffer_state default_depth_buffer_state();
 }
 
-#endif // _DEPTH_STENCIL_STATE_HPP_
+#endif // _FIXIE_LIB_DEPTH_STENCIL_STATE_HPP_

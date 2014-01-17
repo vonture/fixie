@@ -1,5 +1,5 @@
-#ifndef _LIGHTING_HPP_
-#define _LIGHTING_HPP_
+#ifndef _SAMPLE_UTIL_LIGHTING_HPP_
+#define _SAMPLE_UTIL_LIGHTING_HPP_
 
 #include "vectors.hpp"
 
@@ -31,4 +31,4 @@ namespace sample_util
     void sync_light(GLenum slot, const light& light);
 }
 
-#endif // _LIGHTING_HPP_
+#endif // _SAMPLE_UTIL_LIGHTING_HPP_

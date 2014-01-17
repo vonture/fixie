@@ -1,5 +1,5 @@
-#ifndef _DESKTOP_GL_RENDERBUFFER_HPP_
-#define _DESKTOP_GL_RENDERBUFFER_HPP_
+#ifndef _FIXIE_LIB_DESKTOP_GL_RENDERBUFFER_HPP_
+#define _FIXIE_LIB_DESKTOP_GL_RENDERBUFFER_HPP_
 
 #include "fixie_lib/renderbuffer.hpp"
 #include "fixie_lib/desktop_gl_impl/gl_functions.hpp"
@@ -33,4 +33,4 @@ namespace fixie
     }
 }
 
-#endif // _DESKTOP_GL_RENDERBUFFER_HPP_
+#endif // _FIXIE_LIB_DESKTOP_GL_RENDERBUFFER_HPP_

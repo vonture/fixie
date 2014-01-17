@@ -1,5 +1,5 @@
-#ifndef _DESKTOP_GL_FUNCTIONS_HPP_
-#define _DESKTOP_GL_FUNCTIONS_HPP_
+#ifndef _FIXIE_LIB_DESKTOP_GL_FUNCTIONS_HPP_
+#define _FIXIE_LIB_DESKTOP_GL_FUNCTIONS_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie/fixie_ext.h"
@@ -206,4 +206,4 @@ namespace fixie
     }
 }
 
-#endif // _DESKTOP_GL_FUNCTIONS_HPP_
+#endif // _FIXIE_LIB_DESKTOP_GL_FUNCTIONS_HPP_

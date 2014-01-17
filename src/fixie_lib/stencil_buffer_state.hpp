@@ -1,5 +1,5 @@
-#ifndef _STENCIL_BUFFER_STATE_HPP_
-#define _STENCIL_BUFFER_STATE_HPP_
+#ifndef _FIXIE_LIB_STENCIL_BUFFER_STATE_HPP_
+#define _FIXIE_LIB_STENCIL_BUFFER_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -56,4 +56,4 @@ namespace fixie
     stencil_buffer_state default_stencil_buffer_state();
 }
 
-#endif // _STENCIL_BUFFER_STATE_HPP_
+#endif // _FIXIE_LIB_STENCIL_BUFFER_STATE_HPP_

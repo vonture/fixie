@@ -1,5 +1,5 @@
-#ifndef _NULL_TEXTURE_HPP_
-#define _NULL_TEXTURE_HPP_
+#ifndef _FIXIE_LIB_NULL_TEXTURE_HPP_
+#define _FIXIE_LIB_NULL_TEXTURE_HPP_
 
 #include "fixie_lib/texture.hpp"
 
@@ -22,4 +22,4 @@ namespace fixie
     }
 }
 
-#endif // _NULL_TEXTURE_HPP_
+#endif // _FIXIE_LIB_NULL_TEXTURE_HPP_

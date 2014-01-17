@@ -1,5 +1,5 @@
-#ifndef _LIGHTING_STATE_HPP_
-#define _LIGHTING_STATE_HPP_
+#ifndef _FIXIE_LIB_LIGHTING_STATE_HPP_
+#define _FIXIE_LIB_LIGHTING_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/caps.hpp"
@@ -45,4 +45,4 @@ namespace fixie
     lighting_state default_lighting_state(const caps& caps);
 }
 
-#endif // _LIGHTING_STATE_HPP_
+#endif // _FIXIE_LIB_LIGHTING_STATE_HPP_

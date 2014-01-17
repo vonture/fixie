@@ -1,5 +1,5 @@
-#ifndef _VECTOR_HPP_
-#define _VECTOR_HPP_
+#ifndef _FIXIE_LIB_VECTOR_HPP_
+#define _FIXIE_LIB_VECTOR_HPP_
 
 #include <cstddef>
 #include <array>
@@ -97,4 +97,4 @@ namespace std
     };
 }
 
-#endif // _VECTOR_HPP_
+#endif // _FIXIE_LIB_VECTOR_HPP_

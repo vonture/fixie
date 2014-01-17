@@ -1,5 +1,5 @@
-#ifndef _STATE_HPP_
-#define _STATE_HPP_
+#ifndef _FIXIE_LIB_STATE_HPP_
+#define _FIXIE_LIB_STATE_HPP_
 
 #include <memory>
 #include <unordered_map>
@@ -184,4 +184,4 @@ namespace fixie
     };
 }
 
-#endif // STATE_HPP_
+#endif // _FIXIE_LIB_STATE_HPP_

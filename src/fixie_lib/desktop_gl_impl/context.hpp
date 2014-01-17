@@ -1,5 +1,5 @@
-#ifndef _DESKTOP_GL_CONTEXT_HPP_
-#define _DESKTOP_GL_CONTEXT_HPP_
+#ifndef _FIXIE_LIB_DESKTOP_GL_CONTEXT_HPP_
+#define _FIXIE_LIB_DESKTOP_GL_CONTEXT_HPP_
 
 #include <unordered_set>
 
@@ -92,4 +92,4 @@ namespace fixie
     }
 }
 
-#endif // _DESKTOP_GL_CONTEXT_HPP_
+#endif // _FIXIE_LIB_DESKTOP_GL_CONTEXT_HPP_

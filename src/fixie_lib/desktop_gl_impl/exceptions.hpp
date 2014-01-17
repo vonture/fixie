@@ -1,5 +1,5 @@
-#ifndef _DESKTOP_GL_EXCEPTIONS_HPP_
-#define _DESKTOP_GL_EXCEPTIONS_HPP_
+#ifndef _FIXIE_LIB_DESKTOP_GL_EXCEPTIONS_HPP_
+#define _FIXIE_LIB_DESKTOP_GL_EXCEPTIONS_HPP_
 
 #include "fixie_lib/exceptions.hpp"
 
@@ -33,4 +33,4 @@ namespace fixie
     }
 }
 
-#endif // _DESKTOP_GL_EXCEPTIONS_HPP_
+#endif // _FIXIE_LIB_DESKTOP_GL_EXCEPTIONS_HPP_

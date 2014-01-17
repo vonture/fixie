@@ -1,5 +1,5 @@
-#ifndef _RESOURCE_MANAGER_HPP_
-#define _RESOURCE_MANAGER_HPP_
+#ifndef _FIXIE_LIB_RESOURCE_MANAGER_HPP_
+#define _FIXIE_LIB_RESOURCE_MANAGER_HPP_
 
 #include "fixie_lib/handle_manager.hpp"
 #include "fixie_lib/noncopyable.hpp"
@@ -25,4 +25,4 @@ namespace fixie
     };
 }
 
-#endif // _RESOURCE_MANAGER_HPP_
+#endif // _FIXIE_LIB_RESOURCE_MANAGER_HPP_

@@ -1,5 +1,5 @@
-#ifndef _EXCEPTIONS_HPP_
-#define _EXCEPTIONS_HPP_
+#ifndef _FIXIE_LIB_EXCEPTIONS_HPP_
+#define _FIXIE_LIB_EXCEPTIONS_HPP_
 
 #include <stdexcept>
 #include <string>
@@ -91,4 +91,4 @@ namespace fixie
     void throw_gl_error(GLenum error_code, const std::string& msg);
 }
 
-#endif // _EXCEPTIONS_HPP_
+#endif // _FIXIE_LIB_EXCEPTIONS_HPP_

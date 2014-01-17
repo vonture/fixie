@@ -1,5 +1,5 @@
-#ifndef _NULL_FRAMEBUFFER_HPP_
-#define _NULL_FRAMEBUFFER_HPP_
+#ifndef _FIXIE_LIB_NULL_FRAMEBUFFER_HPP_
+#define _FIXIE_LIB_NULL_FRAMEBUFFER_HPP_
 
 #include "fixie_lib/framebuffer.hpp"
 
@@ -23,4 +23,4 @@ namespace fixie
     }
 }
 
-#endif // _NULL_FRAMEBUFFER_HPP_
+#endif // _FIXIE_LIB_NULL_FRAMEBUFFER_HPP_

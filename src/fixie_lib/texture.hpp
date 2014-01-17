@@ -1,5 +1,5 @@
-#ifndef _TEXTURE_HPP_
-#define _TEXTURE_HPP_
+#ifndef _FIXIE_LIB_TEXTURE_HPP_
+#define _FIXIE_LIB_TEXTURE_HPP_
 
 #include <vector>
 #include <memory>
@@ -83,4 +83,4 @@ namespace fixie
     };
 }
 
-#endif // _TEXTURE_HPP_
+#endif // _FIXIE_LIB_TEXTURE_HPP_

@@ -1,5 +1,5 @@
-#ifndef _CLIP_PLANE_HPP_
-#define _CLIP_PLANE_HPP_
+#ifndef _FIXIE_LIB_CLIP_PLANE_HPP_
+#define _FIXIE_LIB_CLIP_PLANE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "vector.hpp"
@@ -25,4 +25,4 @@ namespace fixie
     clip_plane default_clip_plane();
 }
 
-#endif // _CLIP_PLANE_HPP_
+#endif // _FIXIE_LIB_CLIP_PLANE_HPP_

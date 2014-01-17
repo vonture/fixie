@@ -1,5 +1,5 @@
-#ifndef _LIGHT_HPP_
-#define _LIGHT_HPP_
+#ifndef _FIXIE_LIB_LIGHT_HPP_
+#define _FIXIE_LIB_LIGHT_HPP_
 
 #include "fixie_lib/color.hpp"
 #include "fixie_lib/vector.hpp"
@@ -61,4 +61,4 @@ namespace fixie
     light get_default_light(size_t idx);
 }
 
-#endif // _LIGHT_HPP_
+#endif // _FIXIE_LIB_LIGHT_HPP_

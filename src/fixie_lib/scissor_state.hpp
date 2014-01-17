@@ -1,5 +1,5 @@
-#ifndef _SCISSOR_STATE_HPP_
-#define _SCISSOR_STATE_HPP_
+#ifndef _FIXIE_LIB_SCISSOR_STATE_HPP_
+#define _FIXIE_LIB_SCISSOR_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -26,4 +26,4 @@ namespace fixie
     scissor_state default_scissor_state();
 }
 
-#endif // _SCISSOR_STATE_HPP_
+#endif // _FIXIE_LIB_SCISSOR_STATE_HPP_

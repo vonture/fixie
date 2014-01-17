@@ -1,5 +1,5 @@
-#ifndef _HANDLE_MANAGER_HPP_
-#define _HANDLE_MANAGER_HPP_
+#ifndef _FIXIE_LIB_HANDLE_MANAGER_HPP_
+#define _FIXIE_LIB_HANDLE_MANAGER_HPP_
 
 #include <vector>
 #include <unordered_map>
@@ -34,4 +34,4 @@ namespace fixie
 
 #include "handle_manager.inl"
 
-#endif // _HANDLE_MANAGER_HPP_
+#endif // _FIXIE_LIB_HANDLE_MANAGER_HPP_

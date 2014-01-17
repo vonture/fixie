@@ -1,5 +1,5 @@
-#ifndef _PIXEL_STORE_STATE_HPP_
-#define _PIXEL_STORE_STATE_HPP_
+#ifndef _FIXIE_LIB_PIXEL_STORE_STATE_HPP_
+#define _FIXIE_LIB_PIXEL_STORE_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -24,4 +24,4 @@ namespace fixie
     pixel_store_state default_pixel_store_state();
 }
 
-#endif // _PIXEL_STORE_STATE_HPP_
+#endif // _FIXIE_LIB_PIXEL_STORE_STATE_HPP_

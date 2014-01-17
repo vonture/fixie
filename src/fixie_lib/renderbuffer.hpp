@@ -1,5 +1,5 @@
-#ifndef _RENDERBUFFER_HPP_
-#define _RENDERBUFFER_HPP_
+#ifndef _FIXIE_LIB_RENDERBUFFER_HPP_
+#define _FIXIE_LIB_RENDERBUFFER_HPP_
 
 #include <memory>
 
@@ -55,4 +55,4 @@ namespace fixie
     };
 }
 
-#endif // _RENDERBUFFER_HPP_
+#endif // _FIXIE_LIB_RENDERBUFFER_HPP_

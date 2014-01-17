@@ -1,5 +1,5 @@
-#ifndef _FUNCTION_LOADER_HPP_
-#define _FUNCTION_LOADER_HPP_
+#ifndef _FIXIE_LIB_FUNCTION_LOADER_HPP_
+#define _FIXIE_LIB_FUNCTION_LOADER_HPP_
 
 #include <functional>
 #include <string>
@@ -23,4 +23,4 @@ namespace fixie
 
 #include "function_loader.inl"
 
-#endif // _FUNCTION_LOADER_HPP_
+#endif // _FIXIE_LIB_FUNCTION_LOADER_HPP_

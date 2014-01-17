@@ -1,5 +1,5 @@
-#ifndef _RANGE_HPP_
-#define _RANGE_HPP_
+#ifndef _FIXIE_LIB_RANGE_HPP_
+#define _FIXIE_LIB_RANGE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -26,4 +26,4 @@ namespace fixie
     bool operator!=(const range& a, const range& b);
 }
 
-#endif // _RANGE_HPP_
+#endif // _FIXIE_LIB_RANGE_HPP_

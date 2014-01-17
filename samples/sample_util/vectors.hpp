@@ -1,5 +1,5 @@
-#ifndef _VECTORS_HPP_
-#define _VECTORS_HPP_
+#ifndef _SAMPLE_UTIL_VECTORS_HPP_
+#define _SAMPLE_UTIL_VECTORS_HPP_
 
 #include <array>
 #include <vector>
@@ -102,4 +102,4 @@ namespace sample_util
 
 #include "vectors.inl"
 
-#endif // _VECTORS_HPP_
+#endif // _SAMPLE_UTIL_VECTORS_HPP_

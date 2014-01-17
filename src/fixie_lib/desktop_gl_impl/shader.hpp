@@ -1,5 +1,5 @@
-#ifndef _DESKTOP_GL_SHADER_HPP_
-#define _DESKTOP_GL_SHADER_HPP_
+#ifndef _FIXIE_LIB_DESKTOP_GL_SHADER_HPP_
+#define _FIXIE_LIB_DESKTOP_GL_SHADER_HPP_
 
 #include <memory>
 #include <cstddef>
@@ -73,4 +73,4 @@ namespace fixie
     }
 }
 
-#endif // _DESKTOP_GL_SHADER_HPP_
+#endif // _FIXIE_LIB_DESKTOP_GL_SHADER_HPP_

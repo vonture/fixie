@@ -1,5 +1,5 @@
-#ifndef _MULTISAMPLE_STATE_HPP
-#define _MULTISAMPLE_STATE_HPP
+#ifndef _FIXIE_LIB_MULTISAMPLE_STATE_HPP
+#define _FIXIE_LIB_MULTISAMPLE_STATE_HPP
 
 #include "fixie/fixie_gl_types.h"
 
@@ -40,4 +40,4 @@ namespace fixie
     multisample_state default_multisample_state();
 }
 
-#endif // _MULTISAMPLE_STATE_HPP
+#endif // _FIXIE_LIB_MULTISAMPLE_STATE_HPP

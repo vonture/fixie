@@ -1,5 +1,5 @@
-#ifndef _OBJ_LOADER_HPP_
-#define _OBJ_LOADER_HPP_
+#ifndef _SAMPLE_UTIL_OBJ_LOADER_HPP_
+#define _SAMPLE_UTIL_OBJ_LOADER_HPP_
 
 #include <vector>
 #include <string>
@@ -35,4 +35,4 @@ namespace sample_util
     model_material load_material_from_file(const std::string& path);
 }
 
-#endif // _OBJ_LOADER_HPP_
+#endif // _SAMPLE_UTIL_OBJ_LOADER_HPP_

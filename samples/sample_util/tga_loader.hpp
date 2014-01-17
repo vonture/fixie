@@ -1,5 +1,5 @@
-#ifndef _TGA_LOADER_HPP_
-#define _TGA_LOADER_HPP_
+#ifndef _SAMPLE_UTIL_TGA_LOADER_HPP_
+#define _SAMPLE_UTIL_TGA_LOADER_HPP_
 
 #include <array>
 #include <vector>
@@ -18,4 +18,4 @@ namespace sample_util
     tga_image load_tga_image_from_file(const std::string& path);
 }
 
-#endif // _TGA_LOADER_HPP_
+#endif // _SAMPLE_UTIL_TGA_LOADER_HPP_

@@ -1,5 +1,5 @@
-#ifndef _UTIL_HPP_
-#define _UTIL_HPP_
+#ifndef _FIXIE_LIB_UTIL_HPP_
+#define _FIXIE_LIB_UTIL_HPP_
 
 #include <string>
 
@@ -32,4 +32,4 @@ namespace fixie
 
 #include "util.inl"
 
-#endif // _UTIL_HPP_
+#endif // _FIXIE_LIB_UTIL_HPP_

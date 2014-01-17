@@ -1,5 +1,5 @@
-#ifndef _HINT_STATE_HPP_
-#define _HINT_STATE_HPP_
+#ifndef _FIXIE_LIB_HINT_STATE_HPP_
+#define _FIXIE_LIB_HINT_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -36,4 +36,4 @@ namespace fixie
     hint_state default_hint_state();
 }
 
-#endif // _HINT_STATE_HPP_
+#endif // FIXIE_LIB__HINT_STATE_HPP_

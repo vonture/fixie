@@ -1,5 +1,5 @@
-#ifndef _LIGHT_MODEL_HPP_
-#define _LIGHT_MODEL_HPP_
+#ifndef _FIXIE_LIB_LIGHT_MODEL_HPP_
+#define _FIXIE_LIB_LIGHT_MODEL_HPP_
 
 #include "fixie_lib/color.hpp"
 #include "fixie/fixie_gl_types.h"
@@ -25,4 +25,4 @@ namespace fixie
     light_model get_default_light_model();
 }
 
-#endif // _LIGHT_MODEL_HPP_
+#endif // _FIXIE_LIB_LIGHT_MODEL_HPP_

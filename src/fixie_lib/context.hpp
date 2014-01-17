@@ -1,5 +1,5 @@
-#ifndef _FIXIE_CONTEXT_HPP_
-#define _FIXIE_CONTEXT_HPP_
+#ifndef _FIXIE_LIB_FIXIE_CONTEXT_HPP_
+#define _FIXIE_LIB_FIXIE_CONTEXT_HPP_
 
 #include <memory>
 #include <unordered_set>
@@ -121,4 +121,4 @@ namespace fixie
     void log_message(GLenum source, GLenum type, GLuint id, GLenum severity, const std::string& msg);
 }
 
-#endif //_FIXIE_CONTEXT_HPP_
+#endif //_FIXIE_LIB_FIXIE_CONTEXT_HPP_

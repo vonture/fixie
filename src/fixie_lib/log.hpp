@@ -1,5 +1,5 @@
-#ifndef _LOG_HPP_
-#define _LOG_HPP_
+#ifndef _FIXIE_LIB_LOG_HPP_
+#define _FIXIE_LIB_LOG_HPP_
 
 #include <functional>
 
@@ -30,4 +30,4 @@ namespace fixie
     debug_msg_callback get_default_debug_msg_callback();
 }
 
-#endif // _LOG_HPP_
+#endif // _FIXIE_LIB_LOG_HPP_

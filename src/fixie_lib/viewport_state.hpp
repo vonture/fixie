@@ -1,5 +1,5 @@
-#ifndef _VIEWPORT_STATE_HPP_
-#define _VIEWPORT_STATE_HPP_
+#ifndef _FIXIE_LIB_VIEWPORT_STATE_HPP_
+#define _FIXIE_LIB_VIEWPORT_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -27,4 +27,4 @@ namespace fixie
     viewport_state default_viewport_state();
 }
 
-#endif // _VIEWPORT_STATE_HPP_
+#endif // _FIXIE_LIB_VIEWPORT_STATE_HPP_

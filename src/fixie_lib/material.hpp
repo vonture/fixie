@@ -1,5 +1,5 @@
-#ifndef _MATERIAL_HPP_
-#define _MATERIAL_HPP_
+#ifndef _FIXIE_LIB_MATERIAL_HPP_
+#define _FIXIE_LIB_MATERIAL_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/color.hpp"
@@ -37,4 +37,4 @@ namespace fixie
     material get_default_material();
 }
 
-#endif // _MATERIAL_HPP_
+#endif // _FIXIE_LIB_MATERIAL_HPP_

@@ -1,5 +1,5 @@
-#ifndef _MATRIX_HPP_
-#define _MATRIX_HPP_
+#ifndef _FIXIE_LIB_MATRIX_HPP_
+#define _FIXIE_LIB_MATRIX_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/vector.hpp"
@@ -48,4 +48,4 @@ namespace fixie
     bool operator!=(const matrix4& a, const matrix4& b);
 }
 
-#endif // _MATRIX_HPP_
+#endif // _FIXIE_LIB_MATRIX_HPP_

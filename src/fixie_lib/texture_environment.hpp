@@ -1,5 +1,5 @@
-#ifndef _TEXTURE_ENVIRONMENT_HPP_
-#define _TEXTURE_ENVIRONMENT_HPP_
+#ifndef _FIXIE_LIB_TEXTURE_ENVIRONMENT_HPP_
+#define _FIXIE_LIB_TEXTURE_ENVIRONMENT_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/color.hpp"
@@ -114,4 +114,4 @@ namespace std
     };
 }
 
-#endif // _TEXTURE_ENVIRONMENT_HPP_
+#endif // _FIXIE_LIB_TEXTURE_ENVIRONMENT_HPP_

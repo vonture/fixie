@@ -1,5 +1,5 @@
-#ifndef _BUFFER_HPP_
-#define _BUFFER_HPP_
+#ifndef _FIXIE_LIB_BUFFER_HPP_
+#define _FIXIE_LIB_BUFFER_HPP_
 
 #include <memory>
 
@@ -40,4 +40,4 @@ namespace fixie
     };
 }
 
-#endif // _BUFFER_HPP
+#endif // _FIXIE_LIB_BUFFER_HPP

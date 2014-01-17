@@ -1,5 +1,5 @@
-#ifndef _FRAMEBUFFER_HPP_
-#define _FRAMEBUFFER_HPP_
+#ifndef _FIXIE_LIB_FRAMEBUFFER_HPP_
+#define _FIXIE_LIB_FRAMEBUFFER_HPP_
 
 #include <memory>
 
@@ -82,4 +82,4 @@ namespace fixie
     };
 }
 
-#endif // _FRAMEBUFFER_HPP_
+#endif // _FIXIE_LIB_FRAMEBUFFER_HPP_

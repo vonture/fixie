@@ -1,5 +1,5 @@
-#ifndef _VERTEX_ARRAY_HPP_
-#define _VERTEX_ARRAY_HPP_
+#ifndef _FIXIE_LIB_VERTEX_ARRAY_HPP_
+#define _FIXIE_LIB_VERTEX_ARRAY_HPP_
 
 #include "fixie_lib/vertex_attribute.hpp"
 #include "fixie_lib/caps.hpp"
@@ -49,4 +49,4 @@ namespace std
     };
 }
 
-#endif //_VERTEX_ARRAY_HPP_
+#endif //_FIXIE_LIB_VERTEX_ARRAY_HPP_

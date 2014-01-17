@@ -1,5 +1,5 @@
-#ifndef _NULL_CONTEXT_HPP_
-#define _NULL_CONTEXT_HPP_
+#ifndef _FIXIE_LIB_NULL_CONTEXT_HPP_
+#define _FIXIE_LIB_NULL_CONTEXT_HPP_
 
 #include "fixie_lib/context.hpp"
 
@@ -32,4 +32,4 @@ namespace fixie
     }
 }
 
-#endif // _NULL_CONTEXT_HPP_
+#endif // _FIXIE_LIB_NULL_CONTEXT_HPP_

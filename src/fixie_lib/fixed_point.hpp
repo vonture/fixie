@@ -1,5 +1,5 @@
-#ifndef _FIXED_POINT_HPP_
-#define _FIXED_POINT_HPP_
+#ifndef _FIXIE_LIB_FIXED_POINT_HPP_
+#define _FIXIE_LIB_FIXED_POINT_HPP_
 
 #include <cstddef>
 #include "fixie/fixie_gl_types.h"
@@ -88,4 +88,4 @@ namespace fixie
     };
 }
 
-#endif // _FIXED_POINT_HPP_
+#endif // _FIXIE_LIB_FIXED_POINT_HPP_

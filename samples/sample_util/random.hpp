@@ -1,5 +1,5 @@
-#ifndef _RANDOM_HPP_
-#define _RANDOM_HPP_
+#ifndef _SAMPLE_UTIL_RANDOM_HPP_
+#define _SAMPLE_UTIL_RANDOM_HPP_
 
 namespace sample_util
 {
@@ -7,4 +7,4 @@ namespace sample_util
     bool random_bool();
 }
 
-#endif // _RANDOM_HPP_
+#endif // _SAMPLE_UTIL_RANDOM_HPP_

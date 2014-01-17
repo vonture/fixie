@@ -1,5 +1,5 @@
-#ifndef _LINE_STATE_HPP_
-#define _LINE_STATE_HPP_
+#ifndef _FIXIE_LIB_LINE_STATE_HPP_
+#define _FIXIE_LIB_LINE_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -24,4 +24,4 @@ namespace fixie
     line_state default_line_state();
 }
 
-#endif // _LINE_STATE_HPP_
+#endif // _FIXIE_LIB_LINE_STATE_HPP_

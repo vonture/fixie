@@ -1,5 +1,5 @@
-#ifndef _SAMPLER_STATE_HPP_
-#define _SAMPLER_STATE_HPP_
+#ifndef _FIXIE_LIB_SAMPLER_STATE_HPP_
+#define _FIXIE_LIB_SAMPLER_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -32,4 +32,4 @@ namespace fixie
     sampler_state get_default_sampler_state();
 }
 
-#endif // _SAMPLER_STATE_HPP_
+#endif // _FIXIE_LIB_SAMPLER_STATE_HPP_

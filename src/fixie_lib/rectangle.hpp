@@ -1,5 +1,5 @@
-#ifndef _RECTANGLE_HPP_
-#define _RECTANGLE_HPP_
+#ifndef _FIXIE_LIB_RECTANGLE_HPP_
+#define _FIXIE_LIB_RECTANGLE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -34,4 +34,4 @@ namespace fixie
     bool operator!=(const rectangle& a, const rectangle& b);
 }
 
-#endif // _RECTANGLE_HPP_
+#endif // _FIXIE_LIB_RECTANGLE_HPP_

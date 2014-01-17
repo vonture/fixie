@@ -1,5 +1,5 @@
-#ifndef _VERTEX_ATTRIBUTE_HPP_
-#define _VERTEX_ATTRIBUTE_HPP_
+#ifndef _FIXIE_LIB_VERTEX_ATTRIBUTE_HPP_
+#define _FIXIE_LIB_VERTEX_ATTRIBUTE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -63,4 +63,4 @@ namespace std
     };
 }
 
-#endif // _VERTEX_ATTRIBUTE_HPP_
+#endif // _FIXIE_LIB_VERTEX_ATTRIBUTE_HPP_

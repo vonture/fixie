@@ -1,5 +1,5 @@
-#ifndef _NONCOPYABLE_HPP_
-#define _NONCOPYABLE_HPP_
+#ifndef _FIXIE_LIB_NONCOPYABLE_HPP_
+#define _FIXIE_LIB_NONCOPYABLE_HPP_
 
 namespace fixie
 {
@@ -15,4 +15,4 @@ namespace fixie
     };
 }
 
-#endif // _NONCOPYABLE_HPP_
+#endif // _FIXIE_LIB_NONCOPYABLE_HPP_

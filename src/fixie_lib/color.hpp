@@ -1,5 +1,5 @@
-#ifndef _COLOR_HPP_
-#define _COLOR_HPP_
+#ifndef _FIXIE_LIB_COLOR_HPP_
+#define _FIXIE_LIB_COLOR_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -47,4 +47,4 @@ namespace std
     };
 }
 
-#endif // _COLOR_HPP_
+#endif // _FIXIE_LIB_COLOR_HPP_

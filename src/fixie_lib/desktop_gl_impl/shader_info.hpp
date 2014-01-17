@@ -1,5 +1,5 @@
-#ifndef _DESKTOP_GL_SHADER_INFO_HPP_
-#define _DESKTOP_GL_SHADER_INFO_HPP_
+#ifndef _FIXIE_LIB_DESKTOP_GL_SHADER_INFO_HPP_
+#define _FIXIE_LIB_DESKTOP_GL_SHADER_INFO_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/state.hpp"
@@ -58,4 +58,4 @@ namespace std
     };
 }
 
-#endif // _DESKTOP_GL_SHADER_INFO_HPP_
+#endif // _FIXIE_LIB_DESKTOP_GL_SHADER_INFO_HPP_

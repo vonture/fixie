@@ -1,5 +1,5 @@
-#ifndef _CAPS_HPP_
-#define _CAPS_HPP_
+#ifndef _FIXIE_LIB_CAPS_HPP_
+#define _FIXIE_LIB_CAPS_HPP_
 
 #include <vector>
 #include <cstddef>
@@ -149,4 +149,4 @@ namespace fixie
     };
 }
 
-#endif // _CAPS_HPP_
+#endif // _FIXIE_LIB_CAPS_HPP_

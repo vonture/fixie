@@ -1,5 +1,5 @@
-#ifndef _DESKTOP_GL_VERSION_HPP_
-#define _DESKTOP_GL_VERSION_HPP_
+#ifndef _FIXIE_LIB_DESKTOP_GL_VERSION_HPP_
+#define _FIXIE_LIB_DESKTOP_GL_VERSION_HPP_
 
 #include "fixie/fixie_gl_types.h"
 
@@ -50,4 +50,4 @@ namespace fixie
     bool operator<(const gl_version& a, const gl_version& b);
 }
 
-#endif // _DESKTOP_GL_VERSION_HPP_
+#endif // _FIXIE_LIB_DESKTOP_GL_VERSION_HPP_

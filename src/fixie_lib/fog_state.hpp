@@ -1,5 +1,5 @@
-#ifndef _FOG_STATE_HPP_
-#define _FOG_STATE_HPP_
+#ifndef _FIXIE_LIB_FOG_STATE_HPP_
+#define _FIXIE_LIB_FOG_STATE_HPP_
 
 #include "fixie/fixie_gl_types.h"
 #include "fixie_lib/color.hpp"
@@ -38,4 +38,4 @@ namespace fixie
     fog_state default_fog_state();
 }
 
-#endif // _FOG_STATE_HPP_
+#endif // _FIXIE_LIB_FOG_STATE_HPP_

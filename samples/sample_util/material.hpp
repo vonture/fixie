@@ -1,5 +1,5 @@
-#ifndef _MATERIAL_HPP_
-#define _MATERIAL_HPP_
+#ifndef _SAMPLE_UTIL_MATERIAL_HPP_
+#define _SAMPLE_UTIL_MATERIAL_HPP_
 
 #include "vectors.hpp"
 
@@ -21,4 +21,4 @@ namespace sample_util
     void sync_material(GLenum material_face, const material& mat);
 }
 
-#endif // _MATERIAL_HPP_
+#endif // _SAMPLE_UTIL_MATERIAL_HPP_

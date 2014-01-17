@@ -1,5 +1,5 @@
-#ifndef _MATRIX_STACK_HPP_
-#define _MATRIX_STACK_HPP_
+#ifndef _FIXIE_LIB_MATRIX_STACK_HPP_
+#define _FIXIE_LIB_MATRIX_STACK_HPP_
 
 #include <vector>
 
@@ -30,4 +30,4 @@ namespace fixie
     };
 }
 
-#endif // _MATRIX_STACK_HPP_
+#endif // _FIXIE_LIB_MATRIX_STACK_HPP_
