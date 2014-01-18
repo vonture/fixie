@@ -1061,7 +1061,7 @@ namespace fixie
     }
 
     template <typename output_type>
-    size_t get_parameter_specialized(std::shared_ptr<context> ctx, GLenum pname, output_type* output)
+    size_t get_parameter_specialized(std::shared_ptr<context> ctx, GLenum pname, output_type output)
     {
         return 0;
     }
@@ -1404,7 +1404,7 @@ namespace fixie
     }
 
     template <typename output_type>
-    size_t get_parameter(GLenum pname, output_type* output)
+    size_t get_parameter(GLenum pname, output_type output)
     {
         try
         {
@@ -1475,7 +1475,7 @@ namespace fixie
     }
 
     template <typename output_type>
-    size_t get_buffer_parameter(GLenum target, GLenum pname, output_type* output)
+    size_t get_buffer_parameter(GLenum target, GLenum pname, output_type output)
     {
         try
         {
@@ -1501,14 +1501,14 @@ namespace fixie
             case GL_BUFFER_SIZE:
                 if (buffer != nullptr && output != nullptr)
                 {
-                    output[0] = static_cast<output_type>(buffer->size());
+                    output[0] = buffer->size();
                 }
                 return 1;
 
             case GL_BUFFER_USAGE:
                 if (buffer != nullptr && output != nullptr)
                 {
-                    output[0] = static_cast<output_type>(buffer->usage());
+                    output[0] = buffer->usage();
                 }
                 return 1;
 
@@ -1523,7 +1523,7 @@ namespace fixie
     }
 
     template <typename output_type>
-    size_t get_texture_parameter(GLenum target, GLenum pname, output_type* output)
+    size_t get_texture_parameter(GLenum target, GLenum pname, output_type output)
     {
         try
         {
@@ -1541,7 +1541,7 @@ namespace fixie
     }
 
     template <typename output_type>
-    size_t get_texture_evironment_parameter(GLenum env, GLenum pname, output_type* output)
+    size_t get_texture_evironment_parameter(GLenum env, GLenum pname, output_type output)
     {
         try
         {
@@ -1559,7 +1559,7 @@ namespace fixie
     }
 
     template <typename output_type>
-    size_t get_light_parameter(GLenum light, GLenum pname, output_type* output)
+    size_t get_light_parameter(GLenum light, GLenum pname, output_type output)
     {
         try
         {
@@ -1577,7 +1577,7 @@ namespace fixie
     }
 
     template <typename output_type>
-    size_t get_material_parameter(GLenum face, GLenum pname, output_type* output)
+    size_t get_material_parameter(GLenum face, GLenum pname, output_type output)
     {
         try
         {
@@ -2831,10 +2831,10 @@ GLenum FIXIE_APIENTRY glGetError(void)
 
 void FIXIE_APIENTRY glGetFixedv(GLenum pname, GLfixed *params)
 {
-    size_t write_count = fixie::get_parameter<GLfloat>(pname, nullptr);
-    std::vector<GLfloat> float_values(write_count);
-    fixie::get_parameter(pname, float_values.data());
-    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
+    fixie::get_parameter(pname, fixie::real_ptr(params));
+    //std::vector<GLfloat> float_values(write_count);
+    //fixie::get_parameter(pname, float_values.data());
+    //fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glGetIntegerv(GLenum pname, GLint *params)
@@ -2844,18 +2844,18 @@ void FIXIE_APIENTRY glGetIntegerv(GLenum pname, GLint *params)
 
 void FIXIE_APIENTRY glGetLightxv(GLenum light, GLenum pname, GLfixed *params)
 {
-    size_t write_count = fixie::get_light_parameter<GLfloat>(light, pname, nullptr);
-    std::vector<GLfloat> float_values(write_count);
-    fixie::get_light_parameter(light, pname, float_values.data());
-    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
+    fixie::get_light_parameter(light, pname, fixie::real_ptr(params));
+    //std::vector<GLfloat> float_values(write_count);
+    //fixie::get_light_parameter(light, pname, float_values.data());
+    //fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glGetMaterialxv(GLenum face, GLenum pname, GLfixed *params)
 {
-    size_t write_count = fixie::get_material_parameter<GLfloat>(face, pname, nullptr);
-    std::vector<GLfloat> float_values(write_count);
-    fixie::get_material_parameter(face, pname, float_values.data());
-    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
+    fixie::get_material_parameter(face, pname, fixie::real_ptr(params));
+    //std::vector<GLfloat> float_values(write_count);
+    //fixie::get_material_parameter(face, pname, float_values.data());
+    //fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glGetPointerv(GLenum pname, GLvoid **params)
@@ -2891,10 +2891,10 @@ void FIXIE_APIENTRY glGetTexEnviv(GLenum env, GLenum pname, GLint *params)
 
 void FIXIE_APIENTRY glGetTexEnvxv(GLenum env, GLenum pname, GLfixed *params)
 {
-    size_t write_count = fixie::get_texture_evironment_parameter<GLfloat>(env, pname, nullptr);
-    std::vector<GLfloat> float_values(write_count);
-    fixie::get_texture_evironment_parameter(env, pname, float_values.data());
-    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
+    fixie::get_texture_evironment_parameter(env, pname, fixie::real_ptr(params));
+    //std::vector<GLfloat> float_values(write_count);
+    //fixie::get_texture_evironment_parameter(env, pname, float_values.data());
+    //fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glGetTexParameteriv(GLenum target, GLenum pname, GLint *params)
@@ -2904,10 +2904,10 @@ void FIXIE_APIENTRY glGetTexParameteriv(GLenum target, GLenum pname, GLint *para
 
 void FIXIE_APIENTRY glGetTexParameterxv(GLenum target, GLenum pname, GLfixed *params)
 {
-    size_t write_count = fixie::get_texture_parameter<GLfloat>(target, pname, nullptr);
-    std::vector<GLfloat> float_values(write_count);
-    fixie::get_texture_parameter(target, pname, float_values.data());
-    fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
+    fixie::get_texture_parameter(target, pname, fixie::real_ptr(params));
+    //std::vector<GLfloat> float_values(write_count);
+    //fixie::get_texture_parameter(target, pname, float_values.data());
+    //fixie::for_each_n(0U, write_count, [&](size_t i){ params[i] = fixie::float_to_fixed(float_values[i]); });
 }
 
 void FIXIE_APIENTRY glHint(GLenum target, GLenum mode)
