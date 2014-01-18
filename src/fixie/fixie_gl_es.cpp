@@ -3629,9 +3629,15 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
     {
         std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
 
-        if (target != GL_TEXTURE_2D)
+        std::shared_ptr<fixie::texture> texture = nullptr;
+        switch (target)
         {
-            throw fixie::invalid_enum_error(fixie::format("texture target must be GL_TEXTURE_2D, %s provided.", fixie::get_gl_enum_name(target).c_str()));
+        case GL_TEXTURE_2D:
+            texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
+            break;
+
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid texture target, %s.", fixie::get_gl_enum_name(target).c_str()));
         }
 
         std::set<GLenum> valid_types;
@@ -3677,7 +3683,6 @@ void FIXIE_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalforma
             throw fixie::invalid_value_error(fixie::format("invalid type, %s.", fixie::get_gl_enum_name(internalformat).c_str()));
         }
 
-        std::shared_ptr<fixie::texture> texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
         if (texture != nullptr)
         {
             texture->set_data(ctx->state().pixel_store_state(), level, internalformat, width, height, format, type, pixels);
