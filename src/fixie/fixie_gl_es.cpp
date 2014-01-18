@@ -3716,7 +3716,75 @@ void FIXIE_APIENTRY glTexParameterxv(GLenum target, GLenum pname, const GLfixed 
 
 void FIXIE_APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
 {
-    UNIMPLEMENTED();
+    try
+    {
+        std::shared_ptr<fixie::context> ctx = fixie::get_current_context();
+
+        std::shared_ptr<fixie::texture> texture = nullptr;
+        switch (target)
+        {
+        case GL_TEXTURE_2D:
+            texture = ctx->state().bound_texture(ctx->state().active_texture_unit()).lock();
+            break;
+
+        default:
+            throw fixie::invalid_enum_error(fixie::format("invalid texture target, %s.", fixie::get_gl_enum_name(target).c_str()));
+        }
+
+        GLsizei max_texture_size = ctx->caps().max_texture_size();
+        GLsizei max_levels = fixie::log_two(max_texture_size);
+        if (level < 0 || level >= max_levels)
+        {
+            throw fixie::invalid_value_error(fixie::format("level must be between 0 and %i, %i provided.", max_levels, level));
+        }
+
+        if (xoffset < 0 || width < 0 || yoffset < 0 || height < 0)
+        {
+            throw fixie::invalid_value_error(fixie::format("xoffset, yoffset, width, and height must be at least 0, %i, %i %i and %i provided.",
+                                                           xoffset, yoffset, width, height));
+        }
+
+        GLsizei max_level_size = (max_texture_size >> level);
+        if (xoffset + width > max_level_size || yoffset + height > max_level_size)
+        {
+            throw fixie::invalid_value_error(fixie::format("xoffset + width and yoffset + height must be between 0 and %i for level %i, "
+                                                           "%i and %i provided.", max_level_size, level,  xoffset + width, yoffset + height));
+        }
+
+        std::set<GLenum> valid_types;
+        switch (format)
+        {
+        case GL_ALPHA:           valid_types.insert(GL_UNSIGNED_BYTE);                                                                                               break;
+        case GL_LUMINANCE:       valid_types.insert(GL_UNSIGNED_BYTE);                                                                                               break;
+        case GL_LUMINANCE_ALPHA: valid_types.insert(GL_UNSIGNED_BYTE);                                                                                               break;
+        case GL_RGB:             valid_types.insert(GL_UNSIGNED_BYTE); valid_types.insert(GL_UNSIGNED_SHORT_5_6_5);                                                  break;
+        case GL_RGBA:            valid_types.insert(GL_UNSIGNED_BYTE); valid_types.insert(GL_UNSIGNED_SHORT_4_4_4_4); valid_types.insert(GL_UNSIGNED_SHORT_5_5_5_1); break;
+            break;
+        default:
+            throw fixie::invalid_value_error(fixie::format("invalid internal format, %s", fixie::get_gl_enum_name(format).c_str()));
+        }
+
+        if (valid_types.find(type) == end(valid_types))
+        {
+            throw fixie::invalid_value_error(fixie::format("invalid type, %s.", fixie::get_gl_enum_name(format).c_str()));
+        }
+
+        if (texture != nullptr)
+        {
+            if (format != texture->mip_level_internal_format(level))
+            {
+                throw fixie::invalid_operation_error(fixie::format("format must match the internal format of the texture level (%s), %s provided.",
+                                                                   fixie::get_gl_enum_name(texture->mip_level_internal_format(level)).c_str(),
+                                                                   fixie::get_gl_enum_name(format).c_str()));
+            }
+
+            texture->set_sub_data(ctx->state().pixel_store_state(), level, xoffset, yoffset, width, height, format, type, pixels);
+        }
+    }
+    catch (...)
+    {
+        fixie::handle_entry_point_exception();
+    }
 }
 
 void FIXIE_APIENTRY glTranslatex(GLfixed x, GLfixed y, GLfixed z)
